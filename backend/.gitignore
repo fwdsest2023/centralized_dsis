@@ -127,4 +127,3 @@ nb-configuration.xml
 
 .env
 composer.lock
-composer.json
