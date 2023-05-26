@@ -15,6 +15,9 @@ const myConfig = {
           Accept: "*/*",
           "Content-Type": "application/json",
         },
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': '*',
+        'Access-Control-Allow-Credentials': 'true'
     },
 }
 
