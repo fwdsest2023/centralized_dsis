@@ -71,7 +71,7 @@ class Auth extends BaseController
                 // //Generate Token
                 $token = [
                     "fullName" => $user->firstName .' '. $user->lastName,
-                    "iss" => $user->email,
+                    "iss" => $user->username,
                     "aud" => $user->username,
                     "uui" => $user->userInterface,
                     "iat" => $issueTimeClaim,

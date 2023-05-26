@@ -38,9 +38,23 @@ $routes->group('mlrs/api/v1', function($routes){
 	$routes->group('auth', function($routes){
 		$routes->post('login', 'Auth::login');
 		$routes->post('firstLoginChange', 'Auth::firstLoginChangePassword');
-		$routes->get('reconnect/(:any)', 'Auth::reconnect/$1');
 	}); 
 
+
+	// Client and Patient API
+	$routes->group('client', function($routes){
+		$routes->post('generate', 'Client::registerClient');
+		$routes->get('clientList', 'Client::getAllClientList');
+		$routes->post('get/patient/list', 'Client::getClientPatientList');
+	});
+	$routes->group('patient', function($routes){
+		$routes->post('add/new', 'Client::registerPet');
+		$routes->post('update', 'Client::updatePet');
+		$routes->post('details', 'Client::getPatientDetails');
+	});
+
+
+	// All Users mmodule
 	$routes->group('users', function($routes){
 		$routes->post('create', 'Users::registerUser');
 		$routes->get('getUsersList', 'Users::getAllUserList');
@@ -48,20 +62,13 @@ $routes->group('mlrs/api/v1', function($routes){
 		$routes->post('getUserById', 'Users::getUserDetails');
 	});
 
-	$routes->group('fixData', function($routes){
-		$routes->post('fix/application', 'ApplicationController::fixDataForms');
-	});
 
+	// Distribution Processflow 
 	$routes->group('processflow', function($routes){
 		$routes->post('getStatus', 'ProcessFlow::getProcessStatus');
 		$routes->post('updateStatus', 'ProcessFlow::updateProcessStatus');
 		$routes->post('preEncodeStatus', 'ProcessFlow::updatePreProcessStatus');
 		$routes->post('updateStatusMultiple', 'ProcessFlow::updateProcessStatusMultiple');
-	});
-	
-
-	$routes->group('verify', function($routes){
-		$routes->get('qr/testResult/(:any)', 'Generate::getVerifyTestResultQRCode/$1');
 	});
 	
 });

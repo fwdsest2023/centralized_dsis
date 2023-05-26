@@ -9,6 +9,9 @@ class UsersModel extends Model
     protected $table      = 'tblusers';
     protected $typeTable  = 'tblusertypes';
     protected $branchTable= 'tblbranches';
+    protected $patientTable= 'tblpatient_info';
+    protected $checkupTable= 'tblcheckups';
+    protected $scheduleTable= 'tblschedule';
     protected $primaryKey = 'id';
 
     protected $useAutoIncrement = true;
@@ -16,7 +19,7 @@ class UsersModel extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = false;
 
-    protected $allowedFields = ['username', 'password', 'firstName', 'lastName', 'middleName', 'suffix','userType', 'email', 'contact', 'branchId', 'profilePhoto', 'eSignature', 'status'];
+    protected $allowedFields = ['username', 'password', 'firstName', 'lastName', 'middleName', 'suffix','userType', 'contact', 'address', 'branchId', 'profilePhoto', 'eSignature', 'status'];
 
     protected $useTimestamps = false;
     protected $createdField  = 'createdDate';
@@ -35,15 +38,12 @@ class UsersModel extends Model
         return $results;
     }
 
-    public function getAllUserInfo(){
+    public function getAllUserInfo($where){
 
-        $query = $this->db->table($this->table)->get();
+        $query = $this->db->table($this->table)->where($where)->get();
         $results = $query->getResult('array');
 
-        
-
         $all = array_map(function($el){
-
             foreach($el as $key => $val){
                 $type = $this->db->table($this->typeTable)->where('id', $el['userType'])->get()->getRow();
                 $el['userTypeDescription'] = $type->description;
@@ -70,5 +70,18 @@ class UsersModel extends Model
 
     }
 
+
+    // Get PAtients Data
+    public function getClientPatients($where){
+
+        $query = $this->db->table($this->patientTable)->where($where)->get();
+        $results = $query->getResult('array');
+
+        return $results;
+    }
+    public function insertPetDetails($data){
+        $query = $this->db->table($this->patientTable)->insert($data);
+        return $query ? true : false;
+    }
 
 }

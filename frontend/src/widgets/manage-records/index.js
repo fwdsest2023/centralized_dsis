@@ -1,0 +1,1 @@
+export * from '@/widgets/manage-records/patient-list'

@@ -24,6 +24,12 @@ export function reducer(state, action) {
     case "OPEN_CONFIGURATOR": {
       return { ...state, openConfigurator: action.value };
     }
+    case "OPEN_CLIENT_ADD_MODAL": {
+      return { ...state, openClientForm: action.value };
+    }
+    case "OPEN_PATIENT_ADD_MODAL": {
+      return { ...state, openPatientForm: action.value };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -38,6 +44,8 @@ export function MaterialTailwindControllerProvider({ children }) {
     transparentNavbar: true,
     fixedNavbar: false,
     openConfigurator: false,
+    openClientForm: false,
+    openPatientForm: false,
   };
 
   const [controller, dispatch] = React.useReducer(reducer, initialState);
@@ -83,3 +91,7 @@ export const setFixedNavbar = (dispatch, value) =>
   dispatch({ type: "FIXED_NAVBAR", value });
 export const setOpenConfigurator = (dispatch, value) =>
   dispatch({ type: "OPEN_CONFIGURATOR", value });
+export const setOpenClientForm = (dispatch, value) =>
+  dispatch({ type: "OPEN_CLIENT_ADD_MODAL", value });
+export const setOpenPatientForm = (dispatch, value) =>
+  dispatch({ type: "OPEN_PATIENT_ADD_MODAL", value });

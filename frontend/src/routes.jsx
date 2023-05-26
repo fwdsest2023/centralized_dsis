@@ -3,6 +3,8 @@ import {
   FolderIcon,
   ArrowRightOnRectangleIcon,
   UserPlusIcon,
+  BuildingStorefrontIcon,
+  CalendarDaysIcon
 } from "@heroicons/react/24/solid";
 import { Home, Patients } from "@/pages/dashboard";
 import { SignIn, SignUp } from "@/pages/auth";
@@ -25,6 +27,18 @@ export const routes = [
         icon: <FolderIcon {...icon} />,
         name: "Manage Records",
         path: "/records",
+        element: <Patients />,
+      },
+      {
+        icon: <CalendarDaysIcon {...icon} />,
+        name: "Schedule List",
+        path: "/schedule-list",
+        element: <Patients />,
+      },
+      {
+        icon: <BuildingStorefrontIcon {...icon} />,
+        name: "Inventory Management",
+        path: "/inventory-management",
         element: <Patients />,
       },
     ],
