@@ -56,13 +56,25 @@ export function Home() {
                     // base properties
                     title: 'Product planning',
                     color: '#56ca70',
-                    start: '2023-05-28T09:00AM',
-                    end: '2023-05-28T10:00PM',
+                    start: '2023-05-28T13:00',
+                    end: '2023-05-28T14:00',
                     // add any property you'd like
                     busy: true,
                     description: 'Weekly meeting with team',
                     location: 'Office'
-                  }
+                  },
+                  {
+                    id: 2,
+                    // base properties
+                    title: 'Product planning',
+                    color: '#56ca70',
+                    start: '2023-06-02T10:00',
+                    end: '2023-06-02T11:00',
+                    // add any property you'd like
+                    busy: true,
+                    description: 'Weekly meeting with team',
+                    location: 'Office'
+                  },
                 ]
             }
         }
