@@ -2,7 +2,8 @@ import axios from "axios"
 // import {dotenv} from 'dotenv'
 // dotenv.config();
 // check API Endpoint
-const apiEndpoint = "http://8.219.180.176:8080/index.php/mlrs/api/v1/";
+// const apiEndpoint = "http://8.219.180.176:8080/index.php/mlrs/api/v1/";
+const apiEndpoint = "http://localhost:8080/mlrs/api/v1/";
 // const apiEndpoint = process.env.NODE_ENV === "production" ? 
 // process.env.API_ENDPOINT_DEV : process.env.API_ENDPOINT_LOCAL;
 
