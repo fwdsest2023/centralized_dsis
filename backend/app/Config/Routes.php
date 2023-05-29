@@ -49,6 +49,8 @@ $routes->group('mlrs/api/v1', function($routes){
 	});
 	$routes->group('patient', function($routes){
 		$routes->post('add/new', 'Client::registerPet');
+		$routes->post('add/schedule', 'Client::addSchedule');
+		$routes->post('add/checkup', 'Client::addCheckup');
 		$routes->post('update', 'Client::updatePet');
 		$routes->post('details', 'Client::getPatientDetails');
 	});

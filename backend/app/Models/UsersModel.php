@@ -83,5 +83,14 @@ class UsersModel extends Model
         $query = $this->db->table($this->patientTable)->insert($data);
         return $query ? true : false;
     }
+    public function insertScheduleDetails($data){
+        $query = $this->db->table($this->scheduleTable)->insert($data);
+        return $query ? true : false;
+    }
+    public function insertCheckupDetails($data){
+        $query = $this->db->table($this->checkupTable)->insert($data);
+        return $query ? true : false;
+    }
+
 
 }

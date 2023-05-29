@@ -113,6 +113,106 @@ class Client extends BaseController
         }
 
     }
+    
+    public function addSchedule(){
+        // Check Auth header bearer
+        // $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
+        // if(!$authorization){
+        //     $response = [
+        //         'message' => 'Unauthorized Access'
+        //     ];
+
+        //     return $this->response
+        //             ->setStatusCode(401)
+        //             ->setContentType('application/json')
+        //             ->setBody(json_encode($response));
+        //     exit();
+        // }
+
+        //Get API Request Data from Frontend
+        $payload = $this->request->getJSON();
+
+        // conversion of dateTime
+        $payload->scheduleDate = date('c', strtotime($payload->scheduleDate));
+        $payload->scheduleEnd = date('c', strtotime($payload->scheduleEnd));
+        $payload = json_decode(json_encode($payload), true);
+        
+        // Insert the data
+        $query = $this->userModel->insertScheduleDetails($payload);
+
+        if($query){
+
+            $response = [
+                'title' => 'Schedule Added',
+                'message' => 'Pet schedule has been successfully save.',
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+            
+        } else {
+            $response = [
+                'title' => 'Registration Failed!',
+                'message' => 'Please check your data.'
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
+
+    public function addCheckup(){
+        // Check Auth header bearer
+        // $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
+        // if(!$authorization){
+        //     $response = [
+        //         'message' => 'Unauthorized Access'
+        //     ];
+
+        //     return $this->response
+        //             ->setStatusCode(401)
+        //             ->setContentType('application/json')
+        //             ->setBody(json_encode($response));
+        //     exit();
+        // }
+
+        //Get API Request Data from Frontend
+        $payload = $this->request->getJSON();
+        $payload = json_decode(json_encode($payload), true);
+        
+        // Insert the data
+        $query = $this->userModel->insertCheckupDetails($payload);
+
+        if($query){
+
+            $response = [
+                'title' => 'Checkup information',
+                'message' => 'Pet checkup has been successfully save.',
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+            
+        } else {
+            $response = [
+                'title' => 'Registration Failed!',
+                'message' => 'Please check your data.'
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
 
     public function getAllClientList(){
         // Check Auth header bearer
