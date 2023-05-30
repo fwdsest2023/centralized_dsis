@@ -14,7 +14,11 @@ import {
 } from "@material-tailwind/react";
 import Client from '@/api/Client'
 import { AddClient, AddPatient } from "@/widgets/dialogs";
-import { PatientList } from "@/widgets/manage-records";
+import { 
+    PatientList,
+    PatientDetails,
+    ClientList
+} from "@/widgets/manage-records";
 import {
     useMaterialTailwindController,
     setOpenClientForm,
@@ -25,12 +29,14 @@ export function Patients() {
     const [controller, dispatch] = useMaterialTailwindController();
     const { openClientForm, openPatientForm } = controller;
 
-    const [open, setOpen] = useState(false);
-    const [modalData, setModalData] = useState([]);
+    // Set the View of the Component Display
+    const [compView, setCompView] = useState("clientList");
+    const [listData, setListData] = useState([]);
+    const [selectedDetails, setSelectedDetails] = useState({});
     const [clientDetail, setClientDetail] = useState({});
-    const [clientList, setClientList] = useState([]);
 
-    async function handleOpen (id, details) {
+    async function handleOpenClientPet (id, details) {
+
         let payload = {
             uid: id
         }
@@ -38,87 +44,79 @@ export function Patients() {
         const {status, data} = await Client.getClientPatients(payload);
         // Action Scenario
         if(status <= 200){
+            setCompView("patientList")
             setClientDetail(details)
-            setModalData(data.list)
-        } 
-
-        setOpen(!open)
+            setListData(data.list)
+        }
+    };
+ 
+    async function handleOpenPatient (data) {
+       setSelectedDetails(data)
+       setCompView("patientDetails")
     };
  
     const fetchClients =  async () => {
-        setOpen(false)
-        setModalData([])
         const {status, data} = await Client.getClientList();
         // Action Scenario
         if(status <= 200){
-            setClientList(data.list)
-        }
-    }
-
-
-    const mapClientList = () => {
-        if(clientList.length >= 1 && !open){
-            return clientList.map(
-                (val, _index) => {
-                    return (
-                        <Tooltip 
-                            content={
-                            <div className="w-80">
-                                <Typography color="white" className="font-medium">{`${val.firstName} ${val.lastName}`}</Typography>
-                                <Typography
-                                    variant="small"
-                                    color="white" 
-                                    className="font-normal opacity-80"
-                                >
-                                    {`Contact #: ${val.contact}`}
-                                </Typography>
-                                <Typography
-                                    variant="small"
-                                    color="white" 
-                                    className="font-normal opacity-80"
-                                >
-                                    {`Address: ${val.address}`}
-                                </Typography>
-                            </div>} 
-                            placement="bottom"
-                        >
-                            <Card key={val.id} onClick={() => handleOpen(val.id, val)} className="w-40">
-                                <CardBody className="text-center">
-                                    <FolderIcon color="orange" />
-                                    <Typography variant="small" color="blue-gray">
-                                        {`${val.firstName} ${val.lastName}`}
-                                    </Typography>
-                                </CardBody>
-                            </Card>
-                        </Tooltip>
-                    );
-                },
-            )
+            setListData(data.list)
         } else {
-            return <PatientList dataList={modalData} />;
+            setListData([])
         }
     }
+
+
+    const mapComponentDisplay = () => {
+        if(compView === "clientList"){
+            return <ClientList 
+                    dataList={listData}
+                    onClientClick={handleOpenClientPet}
+                />
+        } else if(compView === "patientList") {
+            return <PatientList 
+                    dataList={listData}
+                    clientDetails={clientDetail}
+                    onPatientClick={handleOpenPatient}
+                />;
+        } else if(compView === "patientDetails") {
+            return <PatientDetails
+                    patientDetails={selectedDetails}
+                />
+        }
+    }
+
+    const breadCrumbsHandle = () => {
+        if(compView === "patientList") {
+            fetchClients()
+            setCompView("clientList")
+        } else if(compView === "patientDetails") {
+            handleOpenClientPet(clientDetail.id, clientDetail)
+            setCompView("patientList")
+        }
+    }
+
+
 
     const mapBreadCrumbs = () => {
         
-        if(open){
+        if(compView === "clientList"){
+            return '';
+        } else {
             return (
                 <div className="flex flex-wrap w-max gap-8 mx-5">
                     <Breadcrumbs>
-                        <a onClick={() => fetchClients()} className="opacity-60">
+                        <a onClick={() => breadCrumbsHandle()} className="opacity-60">
                             <ArrowUturnLeftIcon className="h-6 w-6 text-blue-500" />
                         </a>
                     </Breadcrumbs>
                 </div>
             );
-        } else {
-            return '';
         }
     }
 
     const addButtons = () => {
         
-        if(open){
+        if(compView === "patientList"){
             return (
                 <Button
                     variant="gradient"
@@ -129,7 +127,7 @@ export function Patients() {
                 </Button>
                 
             );
-        } else {
+        } else if(compView === "clientList") {
             return (
                 <Button
                     variant="gradient"
@@ -139,8 +137,19 @@ export function Patients() {
                     <span>Add Client</span>
                 </Button>
             );
+        } else {
+            return ''
         }
     }
+
+    const parentHandleChange = () => {
+        fetchClients()
+        setCompView("clientList")
+    }
+    const addPatientHandleChange = (id, details) => {
+        handleOpenClientPet(clientDetail.id, clientDetail)
+        setCompView("patientList")
+    }   
 
     React.useEffect(() => {
         fetchClients()
@@ -170,21 +179,25 @@ export function Patients() {
                             
                         </div>
                     </div>
-                </CardHeader>
-                <CardBody className="px-0">
-                    
                     {mapBreadCrumbs()}
-                    
+                </CardHeader>
+                {mapComponentDisplay()}
+                {/* <CardBody className="flex  flex-wrap px-0">
                     <div className="flex flex-wrap mt-4 w-max gap-8 mx-5">
-                        {mapClientList()}
+                        
                     </div>
-                </CardBody>
+                </CardBody> */}
                 
             </Card>
 
             {/* FORM DIALOGS*/}
-            <AddClient />
-            <AddPatient clientDetails={clientDetail} />
+            <AddClient 
+                handleChange={parentHandleChange} 
+            />
+            <AddPatient 
+                clientDetails={clientDetail} 
+                handleChange={addPatientHandleChange} 
+            />
         </div>
     );
 }

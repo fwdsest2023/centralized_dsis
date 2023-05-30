@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 29, 2023 at 05:18 PM
+-- Generation Time: May 30, 2023 at 07:34 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -62,13 +62,6 @@ CREATE TABLE `tblcheckups` (
   `createdBy` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `tblcheckups`
---
-
-INSERT INTO `tblcheckups` (`id`, `patientId`, `weight`, `temperature`, `complain`, `history`, `laboratories`, `treatment`, `diagnosis`, `remarks`, `createdDate`, `createdBy`) VALUES
-(1, 3, 4, 37, '6IN1 + 3RD DEWORM APPETITE (+) * NO V/D', 'no history', 'xray', 'PROXANTEL + C6', 'lack of vitamins', 'dasdasdasdasdasdasdas', '2023-05-29 15:10:07', 4);
-
 -- --------------------------------------------------------
 
 --
@@ -117,7 +110,22 @@ INSERT INTO `tblpatient_info` (`id`, `clientId`, `petName`, `birthDate`, `age`, 
 (3, 6, 'ROCKET', '2023-02-24', 0, 'MALE', 'CHOW-CHOW', 'CANINE', '', '2023-05-26 16:26:43', 4, 0),
 (4, 7, 'NHALA', '2023-03-28', 0, 'FEMALE', 'SHIH - TZU', 'CANINE', '', '2023-05-26 16:30:14', 4, 0),
 (5, 8, 'GUCCI', '2019-07-01', 0, 'FEMALE', 'SHIH - TZU', 'CANINE', '', '2023-05-26 16:32:59', 4, 0),
-(6, 9, 'COOPER', '2022-11-26', 0, 'MALE', 'SHIH - TZU', 'CANINE', '', '2023-05-26 16:35:28', 0, 0);
+(6, 9, 'COOPER', '2022-11-26', 0, 'MALE', 'SHIH - TZU', 'CANINE', '', '2023-05-26 16:35:28', 0, 0),
+(7, 11, 'MAX', '2023-02-03', 0, 'MALE', 'BM', 'CANINE', '', '2023-05-30 14:54:29', 0, 0),
+(8, 10, 'PRINCESS POPPY', '2022-12-31', 0, 'FEMALE', 'CHOW-CHOW', 'CANINE', '', '2023-05-30 14:59:28', 0, 0),
+(9, 12, 'FUJI', '', 0, 'MALE', 'SHIH - TZU', 'CANINE', '', '2023-05-30 15:02:33', 0, 0),
+(10, 13, 'DIOR', '2022-02-14', 0, 'MALE', 'SHIH-TZU', 'CANINE', '', '2023-05-30 15:09:34', 0, 0),
+(11, 14, 'CUPY', '', 0, 'MALE', 'POMERANIAN', 'CANINE', '', '2023-05-30 15:12:35', 0, 0),
+(12, 15, 'UNA', '2023-05-01', 0, 'MALE', 'SIBERIAN HUSKY', 'CANINE', '', '2023-05-30 15:15:09', 0, 0),
+(13, 16, 'THIRDY', '', 0, '', '', 'CANINE', '', '2023-05-30 15:18:45', 0, 0),
+(14, 17, ' MOLLY', '2022-11-14', 0, 'MALE', 'SHIH-TZU', 'CANINE', '', '2023-05-30 15:19:34', 0, 0),
+(15, 18, '9 PUPS', '2023-03-23', 0, '', 'BM', 'CANINE', '', '2023-05-30 15:20:05', 0, 0),
+(16, 19, 'MOLLY', '', 0, 'FEMALE', 'BM', 'CANINE', '', '2023-05-30 15:20:27', 0, 0),
+(17, 20, 'No Pet Name', '', 0, 'MALE', 'BM', 'CANINE', '', '2023-05-30 15:20:57', 0, 0),
+(18, 21, 'HERSHEY', '', 0, 'FEMALE', 'BM', 'CANINE', '', '2023-05-30 15:21:17', 0, 0),
+(19, 22, 'BABLE', '2022-02-14', 0, 'FEMALE', 'SHIH-TZU', 'CANINE', '', '2023-05-30 15:22:31', 0, 0),
+(20, 22, 'SASI', '2021-05-15', 0, 'FEMALE', '', 'CANINE', '', '2023-05-30 15:25:01', 0, 0),
+(21, 5, 'Kurimaw', '2023-05-09', 0, 'MALE', 'BM', 'CANINE', '', '2023-05-30 16:57:36', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -183,13 +191,6 @@ CREATE TABLE `tblschedule` (
   `status` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `tblschedule`
---
-
-INSERT INTO `tblschedule` (`id`, `patientId`, `clientId`, `scheduleDate`, `scheduleEnd`, `remarks`, `createdBy`, `createdDate`, `status`) VALUES
-(1, 3, 6, '2023-06-02 01:00:00', '2023-06-02 01:30:00', 'Need some vaccine', 4, '2023-05-29 14:37:40', 0);
-
 -- --------------------------------------------------------
 
 --
@@ -230,7 +231,20 @@ INSERT INTO `tblusers` (`id`, `username`, `password`, `firstName`, `lastName`, `
 (6, 'dqapS', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'RONALYN TAN', 'RIVERA', '', '', 15, '09754898638', 'HOMESTEAD - I, TALAVERA, NUEVA ECIJA', 1, '', 1, 0, 'VCLNC', 0, '2023-05-26 12:59:15', '2023-05-26 12:59:15'),
 (7, 'UraVy', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'KELLY', 'MAG ISA', '', '', 15, '09770279387', 'HOMESTEAD - II, TALAVERA, NUEVA ECIJA', 1, '', 1, 0, 'VCLNC', 0, '2023-05-26 13:26:32', '2023-05-26 13:26:32'),
 (8, 'nsXLS', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'LORENZ ANNE', 'VALEROSO', '', '', 15, '09056065763', 'HOMESTEAD - II, TALAVERA, NUEVA ECIJA', 1, '', 1, 0, 'MIS', 0, '2023-05-26 13:30:33', '2023-05-26 13:30:33'),
-(9, 'WhxNE', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'JENNIFER', 'LINSANGAN', '', '', 15, '097541779904', 'BALUGA, TALAVERA, NUEVA ECIJA', 1, '', 1, 0, 'MIS', 0, '2023-05-26 13:36:06', '2023-05-26 13:36:06');
+(9, 'WhxNE', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'JENNIFER', 'LINSANGAN', '', '', 15, '097541779904', 'BALUGA, TALAVERA, NUEVA ECIJA', 1, '', 1, 0, 'MIS', 0, '2023-05-26 13:36:06', '2023-05-26 13:36:06'),
+(10, '32qjF', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'RICHELLE', 'MAG - ISA', '', '', 15, '09666885164', 'HOMESTEAD - II, TALAVERA, NUEVA ECIJA', 1, '', 1, 0, 'MIS', 0, '2023-05-30 14:48:58', '2023-05-30 14:48:58'),
+(11, 'yPHlW', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'MARINA', 'PACSON', '', '', 15, '09758809389', 'SAN RICARDO, TALAVERA, NUEVA ECIJA', 1, '', 1, 0, 'MIS', 0, '2023-05-30 14:50:20', '2023-05-30 14:50:20'),
+(12, 'ASvIU', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'MARICAR', 'DELA ROSA', '', '', 15, '09369269406', 'PULA, TALAVERA, NUEVA ECIJA', 1, '', 1, 0, 'MIS', 0, '2023-05-30 15:02:07', '2023-05-30 15:02:07'),
+(13, '6ckkd', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'LORENZ', 'VALEROSO', 'R.', '', 15, '+639056065763', 'HOMESTEAD II, TALAVERA', 1, '', 1, 0, 'MIS', 0, '2023-05-30 15:05:54', '2023-05-30 15:05:54'),
+(14, 'IyFjO', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'ANTHONY', 'VICENTE', '', '', 15, '+639976718289', '', 1, '', 1, 0, 'MIS', 0, '2023-05-30 15:11:25', '2023-05-30 15:11:25'),
+(15, 'jnY8j', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'AIMEE', 'CELIS', '', '', 15, '+639655628261', '', 1, '', 1, 0, 'MIS', 0, '2023-05-30 15:14:16', '2023-05-30 15:14:16'),
+(16, 'SFIUi', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'ARRIS', 'MARANAN', '', '', 15, '+639978197193', 'BALUGA, TALAVERA', 1, '', 1, 0, 'MIS', 0, '2023-05-30 15:16:04', '2023-05-30 15:16:04'),
+(17, 'aCHpp', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'RACQUEL', 'SAN PEDRO', '', '', 15, '+639979223250', '', 1, '', 1, 0, 'MIS', 0, '2023-05-30 15:16:53', '2023-05-30 15:16:53'),
+(18, 'PBlsP', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'ARVIN', 'CASTILLO', '', '', 15, '', '', 1, '', 1, 0, 'MIS', 0, '2023-05-30 15:17:09', '2023-05-30 15:17:09'),
+(19, 'cCnsT', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'RONALD', 'FRANCISCO', '', '', 15, '+639556592013', '', 1, '', 1, 0, 'MIS', 0, '2023-05-30 15:17:32', '2023-05-30 15:17:32'),
+(20, 'UAOsj', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'JOVITO', 'VALDEZ', '', '', 15, '+639659009764', '', 1, '', 1, 0, 'MIS', 0, '2023-05-30 15:17:49', '2023-05-30 15:17:49'),
+(21, 'X5sjm', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'WESLEY', 'FRANCISCO', '', '', 15, '+639690065546', '', 1, '', 1, 0, 'MIS', 0, '2023-05-30 15:18:07', '2023-05-30 15:18:07'),
+(22, 'FVzIA', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'MARCELINO', 'GUINOO', '', '', 15, '', '', 1, '', 1, 0, 'MIS', 0, '2023-05-30 15:18:21', '2023-05-30 15:18:21');
 
 -- --------------------------------------------------------
 
@@ -360,7 +374,7 @@ ALTER TABLE `tblbranches`
 -- AUTO_INCREMENT for table `tblcheckups`
 --
 ALTER TABLE `tblcheckups`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tbldistribution`
@@ -372,7 +386,7 @@ ALTER TABLE `tbldistribution`
 -- AUTO_INCREMENT for table `tblpatient_info`
 --
 ALTER TABLE `tblpatient_info`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `tblprocessflow`
@@ -384,13 +398,13 @@ ALTER TABLE `tblprocessflow`
 -- AUTO_INCREMENT for table `tblschedule`
 --
 ALTER TABLE `tblschedule`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tblusers`
 --
 ALTER TABLE `tblusers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `tblusertypes`

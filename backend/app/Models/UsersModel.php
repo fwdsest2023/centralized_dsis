@@ -77,7 +77,15 @@ class UsersModel extends Model
         $query = $this->db->table($this->patientTable)->where($where)->get();
         $results = $query->getResult('array');
 
-        return $results;
+        $all = array_map(function($el){
+            foreach($el as $key => $val){
+                $owner = $this->db->table($this->table)->where('id', $el['clientId'])->get()->getRow();
+                $el['patientOwner'] = $owner;
+            }
+            return $el;
+        }, $results);
+
+        return $all;
     }
     public function insertPetDetails($data){
         $query = $this->db->table($this->patientTable)->insert($data);

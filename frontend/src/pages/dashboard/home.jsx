@@ -51,30 +51,6 @@ export function Home() {
                 }
               },
                 events: [
-                  {
-                    id: 1,
-                    // base properties
-                    title: 'Product planning',
-                    color: '#56ca70',
-                    start: '2023-05-28T13:00',
-                    end: '2023-05-28T14:00',
-                    // add any property you'd like
-                    busy: true,
-                    description: 'Weekly meeting with team',
-                    location: 'Office'
-                  },
-                  {
-                    id: 2,
-                    // base properties
-                    title: 'Product planning',
-                    color: '#56ca70',
-                    start: '2023-06-02T10:00',
-                    end: '2023-06-02T11:00',
-                    // add any property you'd like
-                    busy: true,
-                    description: 'Weekly meeting with team',
-                    location: 'Office'
-                  },
                 ]
             }
         }

@@ -15,7 +15,7 @@ import {
     setOpenPatientForm
 } from '@/context'
 
-export function AddPatient({clientDetails}) {
+export function AddPatient(props) {
     const [controller, dispatch] = useMaterialTailwindController();
     const { openPatientForm } = controller;
     // Pet Details
@@ -28,7 +28,7 @@ export function AddPatient({clientDetails}) {
     async function addPatientData () {
 
         let payload = {
-            clientId: clientDetails.id,
+            clientId: props.clientDetails.id,
             petName: petName,
             birthDate: birthDate,
             sex: gender,
@@ -45,6 +45,7 @@ export function AddPatient({clientDetails}) {
             setSpecies("")
             setBreed("")
             setOpenPatientForm(dispatch, !openPatientForm)
+            props.handleChange(props.clientDetails.id, props.clientDetails)
         }
     };
 
@@ -97,16 +98,6 @@ export function AddPatient({clientDetails}) {
         </Dialog>
     );
 }
-
-AddPatient.defaultProps = {
-    clientDetails: {
-        id: 1
-    }
-};
-  
-AddPatient.propTypes = {
-    clientDetails: PropTypes.object.isRequired,
-};
 
 AddPatient.displayName = "/src/widgets/dialogs/add-patient.jsx";
 

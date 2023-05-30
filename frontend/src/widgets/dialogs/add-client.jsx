@@ -17,7 +17,7 @@ import {
     setOpenClientForm
 } from '@/context'
 
-export function AddClient() {
+export function AddClient(props) {
     const [controller, dispatch] = useMaterialTailwindController();
     const { openClientForm } = controller;
     const [firstName, setFirstName] = useState("");
@@ -44,6 +44,7 @@ export function AddClient() {
             setContact("")
             setAddress("")
             setOpenClientForm(dispatch, !openClientForm)
+            props.handleChange()
         }
     };
 
