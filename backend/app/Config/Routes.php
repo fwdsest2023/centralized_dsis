@@ -47,12 +47,17 @@ $routes->group('mlrs/api/v1', function($routes){
 		$routes->get('clientList', 'Client::getAllClientList');
 		$routes->post('get/patient/list', 'Client::getClientPatientList');
 	});
+
+	// Patient Group
 	$routes->group('patient', function($routes){
 		$routes->post('add/new', 'Client::registerPet');
 		$routes->post('add/schedule', 'Client::addSchedule');
 		$routes->post('add/checkup', 'Client::addCheckup');
 		$routes->post('update', 'Client::updatePet');
 		$routes->post('details', 'Client::getPatientDetails');
+		$routes->post('get/schedule', 'Client::getPatientSchedule');
+		$routes->post('get/checkups', 'Client::getPatientCheckups');
+		$routes->post('get/wellness', 'Client::getPatientWellnes');
 	});
 
 
@@ -73,6 +78,12 @@ $routes->group('mlrs/api/v1', function($routes){
 		$routes->post('updateStatusMultiple', 'ProcessFlow::updateProcessStatusMultiple');
 	});
 	
+	// Dashboard
+	$routes->group('dashboard', function($routes){
+		$routes->get('getScheduleList', 'DashboardController::fetchScheduleList');
+	});
+
+
 });
 
 

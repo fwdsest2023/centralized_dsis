@@ -301,6 +301,95 @@ class Client extends BaseController
     }
 
 
+    public function getPatientSchedule(){
+        
+        $payload = $this->request->getJSON();
+        $where = [
+            "patientId" => $payload->pid
+        ];
+       
+        $list = [];
+        $list['list'] = $this->userModel->getPatientsSchedule($where);
+
+        if($list){
+            $list['message'] = "successfully fetch client patient list";
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($list));
+        } else {
+            $response = [
+                'title' => 'Error',
+                'message' => 'No Data Found'
+            ];
+
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
+
+    public function getPatientCheckups(){
+        
+        $payload = $this->request->getJSON();
+        $where = [
+            "patientId" => $payload->pid
+        ];
+       
+        $list = [];
+        $list['list'] = $this->userModel->getPatientCheckups($where);
+
+        if($list){
+            $list['message'] = "successfully fetch client patient list";
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($list));
+        } else {
+            $response = [
+                'title' => 'Error',
+                'message' => 'No Data Found'
+            ];
+
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
+
+    public function getPatientWellnes(){
+        
+        $payload = $this->request->getJSON();
+        $where = [
+            "patientId" => $payload->pid
+        ];
+       
+        $list = [];
+        $list['list'] = $this->userModel->getPatientWelness($where);
+
+        if($list){
+            $list['message'] = "successfully fetch client patient list";
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($list));
+        } else {
+            $response = [
+                'title' => 'Error',
+                'message' => 'No Data Found'
+            ];
+
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
 
     function getUserName($n) {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -313,5 +402,6 @@ class Client extends BaseController
      
         return $randomString;
     }
+
 
 }

@@ -12,6 +12,7 @@ class UsersModel extends Model
     protected $patientTable= 'tblpatient_info';
     protected $checkupTable= 'tblcheckups';
     protected $scheduleTable= 'tblschedule';
+    protected $wellnessTable= 'tblwellness';
     protected $primaryKey = 'id';
 
     protected $useAutoIncrement = true;
@@ -100,5 +101,80 @@ class UsersModel extends Model
         return $query ? true : false;
     }
 
+    // Get Patients Schedules
+    public function getAllSchedules() {
 
+        $query = $this->db->table($this->scheduleTable)->get();
+        $results = $query->getResult('array');
+
+        $all = array_map(function($el){
+            foreach($el as $key => $val){
+                $owner = $this->db->table($this->table)->where('id', $el['clientId'])->get()->getRow();
+                $el['patientOwner'] = $owner;
+
+                $pet = $this->db->table($this->patientTable)->where('id', $el['patientId'])->get()->getRow();
+                $el['patientDetails'] = $pet;
+            }
+            return $el;
+        }, $results);
+
+        return $all;
+    }
+
+    public function getPatientsSchedule($where) {
+
+        $query = $this->db->table($this->scheduleTable)->where($where)->get();
+        $results = $query->getResult('array');
+
+        $all = array_map(function($el){
+            foreach($el as $key => $val){
+                $owner = $this->db->table($this->table)->where('id', $el['clientId'])->get()->getRow();
+                $el['patientOwner'] = $owner;
+
+                $pet = $this->db->table($this->patientTable)->where('id', $el['patientId'])->get()->getRow();
+                $el['patientDetails'] = $pet;
+            }
+            return $el;
+        }, $results);
+
+        return $all;
+    }
+
+    public function getPatientCheckups($where) {
+
+        $query = $this->db->table($this->checkupTable)->where($where)->get();
+        $results = $query->getResult('array');
+
+        $all = array_map(function($el){
+            foreach($el as $key => $val){
+                $owner = $this->db->table($this->table)->where('id', $el['clientId'])->get()->getRow();
+                $el['patientOwner'] = $owner;
+
+                $pet = $this->db->table($this->patientTable)->where('id', $el['patientId'])->get()->getRow();
+                $el['patientDetails'] = $pet;
+            }
+            return $el;
+        }, $results);
+
+        return $all;
+    }
+
+    public function getPatientWelness($where) {
+
+        $query = $this->db->table($this->wellnessTable)->where($where)->get();
+        $results = $query->getResult('array');
+
+        $all = array_map(function($el){
+            foreach($el as $key => $val){
+                $owner = $this->db->table($this->table)->where('id', $el['clientId'])->get()->getRow();
+                $el['patientOwner'] = $owner;
+
+                $pet = $this->db->table($this->patientTable)->where('id', $el['patientId'])->get()->getRow();
+                $el['patientDetails'] = $pet;
+            }
+            return $el;
+        }, $results);
+
+        return $all;
+    }
 }
