@@ -1,60 +1,31 @@
-import React from "react";
-import Calendar from '@event-calendar/core';
-import TimeGrid from '@event-calendar/time-grid';
+import React, {useState} from "react";
 import {
   Typography,
   Card,
   CardHeader,
   CardBody,
-  IconButton,
-  Menu,
-  MenuHandler,
-  MenuList,
-  MenuItem,
-  Avatar,
-  Tooltip,
-  Progress,
+  Chip
 } from "@material-tailwind/react";
 import {
-  ClockIcon,
-  CheckIcon,
-  EllipsisVerticalIcon,
   ArrowUpIcon,
 } from "@heroicons/react/24/outline";
 import { StatisticsCard } from "@/widgets/cards";
-import { StatisticsChart } from "@/widgets/charts";
 import {
   statisticsCardsData,
-  statisticsChartsData,
-  projectsTableData,
   ordersOverviewData,
 } from "@/data";
-
+import Dashboard from '@/api/Dashboard'
+import FullCalendar from '@fullcalendar/react'
+import dayGridPlugin from '@fullcalendar/daygrid'
 
 export function Home() {
-  const getSchedules = React.useCallback(() => {
-    let id = document.getElementById('calendar');
-    console.log()
-    if(id.children.length === 0){
-      let ec = new Calendar({
-        target: document.getElementById('calendar'),
-        props: {
-            plugins: [TimeGrid],
-            initialView: 'timeGridWeek',
-           
-            options: {
-              views: {
-                timeGridWeek: {
-                  type: 'timeGrid',
-                  slotMinTime: '07:00:00',
-                  slotMaxTime: '19:00:00',
-                }
-              },
-                events: [
-                ]
-            }
-        }
-      })
+  const [dashList, setDashList] = useState([])
+
+  const getSchedules = React.useCallback( async () => {
+    const {status, data} = await Dashboard.getScheduleList();
+    // Action Scenario
+    if(status <= 200){
+      setDashList(data.list)
     }
   })
 
@@ -83,23 +54,6 @@ export function Home() {
           />
         ))}
       </div>
-      {/* <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
-        {statisticsChartsData.map((props) => (
-          <StatisticsChart
-            key={props.title}
-            {...props}
-            footer={
-              <Typography
-                variant="small"
-                className="flex items-center font-normal text-blue-gray-600"
-              >
-                <ClockIcon strokeWidth={2} className="h-4 w-4 text-inherit" />
-                &nbsp;{props.footer}
-              </Typography>
-            }
-          />
-        ))}
-      </div> */}
       <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-3">
         <Card className="overflow-hidden xl:col-span-2">
           <CardHeader
@@ -121,7 +75,14 @@ export function Home() {
             </div>
           </CardHeader>
           <CardBody className="ml-4 mr-4 px-0 pt-0 pb-2">
-            <div id="calendar"></div>
+            <FullCalendar
+              plugins={[dayGridPlugin]}
+              initialView='dayGridMonth'
+              weekends={false}
+              dayMaxEvents={true}
+              events={dashList}
+              eventContent={renderEventContent}
+            />
           </CardBody>
         </Card>
         <Card>
@@ -185,6 +146,54 @@ export function Home() {
     </div>
     </React.Fragment>
   );
+}
+
+function renderEventContent(eventInfo) {
+  const details = eventInfo.event.extendedProps.details;
+  let petName = details.patientDetails.petName;
+  let ownerName = `${details.patientOwner.firstName} ${details.patientOwner.lastName}`;
+  let contactNumber = `${details.patientOwner.contact}`;
+
+  return (
+    <>
+      <Chip 
+        color="blue" 
+        value={
+          <div>
+            <Typography
+              variant="medium"
+              color="white"
+              className="font-medium capitalize leading-none"
+            >
+              <b>{petName}</b>
+            </Typography>
+            <Typography
+              variant="small"
+              color="white"
+              className="font-medium capitalize leading-none"
+            >
+            <i>Owner: {ownerName}</i>
+            </Typography>
+            <Typography
+              variant="small"
+              color="white"
+              className="font-medium capitalize leading-none"
+            >
+            <i>Contact: {contactNumber}</i>
+            </Typography>
+            <Typography
+              variant="small"
+              color="white"
+              className="font-medium capitalize leading-none"
+            >
+            <i>Purpose: <br></br>{eventInfo.event.title}</i>
+            </Typography>
+          </div>
+        }
+      />
+        
+    </>
+  )
 }
 
 export default Home;

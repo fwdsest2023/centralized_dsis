@@ -134,7 +134,7 @@ class Client extends BaseController
 
         // conversion of dateTime
         $payload->scheduleDate = date('c', strtotime($payload->scheduleDate));
-        $payload->scheduleEnd = date('c', strtotime($payload->scheduleEnd));
+        $payload->chckupForm = json_encode($payload->chckupForm);
         $payload = json_decode(json_encode($payload), true);
         
         // Insert the data

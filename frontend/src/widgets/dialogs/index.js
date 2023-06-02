@@ -1,2 +1,3 @@
 export * from '@/widgets/dialogs/add-client'
 export * from '@/widgets/dialogs/add-patient'
+export * from '@/widgets/dialogs/add-schedule'

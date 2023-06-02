@@ -15,7 +15,17 @@ class DashboardController extends BaseController
 
     public function fetchScheduleList(){
         $list = [];
-        $list['list'] = $this->userModel->getAllSchedules();
+
+        $query = $this->userModel->getAllSchedules();
+
+        foreach ($query as $key => $value) {
+            $list['list'][$key] = [
+                "id" => $value['id'],
+                "title" => $value['remarks'],
+                "start" =>  $value['scheduleDate'],
+                "details" => $value
+            ];
+        }
 
         if($list){
             $list['message'] = "successfully fetch client list";

@@ -30,6 +30,9 @@ export function reducer(state, action) {
     case "OPEN_PATIENT_ADD_MODAL": {
       return { ...state, openPatientForm: action.value };
     }
+    case "OPEN_ADD_SCHEDULE_MODAL": {
+      return { ...state, openScheduleForm: action.value };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -46,6 +49,7 @@ export function MaterialTailwindControllerProvider({ children }) {
     openConfigurator: false,
     openClientForm: false,
     openPatientForm: false,
+    openScheduleForm: false,
   };
 
   const [controller, dispatch] = React.useReducer(reducer, initialState);
@@ -95,3 +99,5 @@ export const setOpenClientForm = (dispatch, value) =>
   dispatch({ type: "OPEN_CLIENT_ADD_MODAL", value });
 export const setOpenPatientForm = (dispatch, value) =>
   dispatch({ type: "OPEN_PATIENT_ADD_MODAL", value });
+export const setOpenScheduleForm = (dispatch, value) =>
+  dispatch({ type: "OPEN_ADD_SCHEDULE_MODAL", value });

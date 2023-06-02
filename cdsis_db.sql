@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 30, 2023 at 07:34 PM
+-- Generation Time: Jun 02, 2023 at 06:37 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -58,7 +58,7 @@ CREATE TABLE `tblcheckups` (
   `treatment` text NOT NULL,
   `diagnosis` text NOT NULL,
   `remarks` text NOT NULL,
-  `createdDate` timestamp NOT NULL DEFAULT current_timestamp(),
+  `createdDate` timestamp NOT NULL DEFAULT 0,
   `createdBy` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -77,7 +77,7 @@ CREATE TABLE `tbldistribution` (
   `remarks` text NOT NULL,
   `status` varchar(255) NOT NULL,
   `orderStatus` text NOT NULL,
-  `createdDate` timestamp NOT NULL DEFAULT current_timestamp()
+  `createdDate` timestamp NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -96,7 +96,7 @@ CREATE TABLE `tblpatient_info` (
   `breed` varchar(255) NOT NULL,
   `species` text NOT NULL,
   `remarks` longtext NOT NULL,
-  `createdDate` timestamp NOT NULL DEFAULT current_timestamp(),
+  `createdDate` timestamp NOT NULL DEFAULT 0,
   `createdBy` int(11) NOT NULL,
   `isDeceased` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -125,7 +125,8 @@ INSERT INTO `tblpatient_info` (`id`, `clientId`, `petName`, `birthDate`, `age`, 
 (18, 21, 'HERSHEY', '', 0, 'FEMALE', 'BM', 'CANINE', '', '2023-05-30 15:21:17', 0, 0),
 (19, 22, 'BABLE', '2022-02-14', 0, 'FEMALE', 'SHIH-TZU', 'CANINE', '', '2023-05-30 15:22:31', 0, 0),
 (20, 22, 'SASI', '2021-05-15', 0, 'FEMALE', '', 'CANINE', '', '2023-05-30 15:25:01', 0, 0),
-(21, 5, 'Kurimaw', '2023-05-09', 0, 'MALE', 'BM', 'CANINE', '', '2023-05-30 16:57:36', 0, 0);
+(21, 5, 'Kurimaw', '2023-05-09', 0, 'MALE', 'BM', 'CANINE', '', '2023-05-30 16:57:36', 0, 0),
+(22, 5, 'Gatsby', '2020-06-09', 35, 'MALE', 'GS', 'CANINE', '', '2023-05-31 15:31:44', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -184,10 +185,10 @@ CREATE TABLE `tblschedule` (
   `patientId` int(11) NOT NULL,
   `clientId` int(11) NOT NULL,
   `scheduleDate` timestamp NULL DEFAULT NULL,
-  `scheduleEnd` timestamp NULL DEFAULT NULL,
+  `chckupForm` longtext NOT NULL,
   `remarks` text NOT NULL,
   `createdBy` int(11) NOT NULL,
-  `createdDate` timestamp NOT NULL DEFAULT current_timestamp(),
+  `createdDate` timestamp NOT NULL DEFAULT 0,
   `status` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -214,8 +215,8 @@ CREATE TABLE `tblusers` (
   `isFirstLogin` int(11) NOT NULL DEFAULT 0,
   `userInterface` varchar(25) NOT NULL DEFAULT 'MIS',
   `isDeleted` int(11) NOT NULL,
-  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updatedAt` timestamp NOT NULL DEFAULT current_timestamp()
+  `createdAt` timestamp NOT NULL DEFAULT 0,
+  `updatedAt` timestamp NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -281,7 +282,7 @@ CREATE TABLE `tblwellness` (
   `vaxName` text NOT NULL,
   `vaxClassification` text NOT NULL,
   `vaxRemarks` text NOT NULL,
-  `vaxDate` timestamp NOT NULL DEFAULT current_timestamp()
+  `vaxDate` timestamp NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -386,7 +387,7 @@ ALTER TABLE `tbldistribution`
 -- AUTO_INCREMENT for table `tblpatient_info`
 --
 ALTER TABLE `tblpatient_info`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `tblprocessflow`
