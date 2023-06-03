@@ -20,10 +20,10 @@ import {
 } from '@/context'
 import jwtDecode from "jwt-decode";
 
-const token = localStorage.getItem('token');
-const usrData = jwtDecode(token);
-
 export function AddSchedule(props) {
+    const token = localStorage.getItem('token');
+    const usrData = jwtDecode(token);
+
     const [controller, dispatch] = useMaterialTailwindController();
     const { openScheduleForm } = controller;
     // Pet Details
