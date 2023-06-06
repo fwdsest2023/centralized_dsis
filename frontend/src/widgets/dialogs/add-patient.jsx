@@ -8,7 +8,8 @@ import {
   DialogBody,
   DialogFooter,
   Select, 
-  Option
+  Option,
+  Typography
 } from "@material-tailwind/react";
 import Client from '@/api/Client'
 import {
@@ -64,7 +65,7 @@ export function AddPatient(props) {
     }
 
     return (
-        <Dialog open={openPatientForm}>
+        <Dialog open={openPatientForm} size="sm">
             <DialogHeader>
                 <div className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
                     <div>
@@ -72,9 +73,41 @@ export function AddPatient(props) {
                     </div>
                 </div>
             </DialogHeader>
-            <DialogBody divider>
+            <DialogBody divider className="overflow-scroll">
+                <form className="flex flex-col w-full gap-4">
+                    <div className="my-6">
+                            <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="mb-4 font-medium"
+                            >
+                                Patient Details
+                            </Typography>
+                            <div className="mb-4 flex flex-col gap-4">
+                                <Input size="lg" onChange={e => setPetName(e.target.value)} value={petName} label="Pet Name" />
+                                <Input type="date" size="lg" onChange={e => setBirthDate(e.target.value)} value={birthDate} label="Birthdate" />
+                                <Select 
+                                    label="Select Gender"
+                                    onChange={e => setGender(e)}
+                                >
+                                    <Option value="MALE">MALE</Option>
+                                    <Option value="FEMALE">FEMALE</Option>
+                                </Select>
+                            </div>
+                            <div className=" flex flex-col gap-4">
+                                <Select 
+                                    label="Select Species"
+                                    onChange={e => setSpecies(e)}
+                                >
+                                    <Option value="CANINE">CANINE</Option>
+                                    <Option value="OTHERS">OTHERS</Option>
+                                </Select>
+                                <Input size="lg" onChange={e => setBreed(e.target.value)} value={breed} label="Breed" />
+                            </div>
+                        </div>
+                </form>
                 
-                <Card color="transparent" shadow={false}>
+                {/* <Card color="transparent" shadow={false}>
                     <form className="mt-8 mr-3 mb-2 w-80 max-w-screen-lg sm:w-90">
                         <div className="mb-4 flex flex-col gap-4">
                             <Input size="lg" onChange={e => setPetName(e.target.value)} value={petName} label="Pet Name" />
@@ -102,7 +135,7 @@ export function AddPatient(props) {
                             <Input size="lg" onChange={e => setBreed(e.target.value)} value={breed} label="Breed" />
                         </div>
                     </form>
-                </Card>
+                </Card> */}
             </DialogBody>
             <DialogFooter>
                 <Button

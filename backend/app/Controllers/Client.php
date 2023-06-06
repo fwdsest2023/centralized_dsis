@@ -183,13 +183,17 @@ class Client extends BaseController
 
         //Get API Request Data from Frontend
         $payload = $this->request->getJSON();
+        $where = ['id' => $payload->schedId];
+        $updateData = ['status' => 1];
+        unset($payload->schedId);
         $payload = json_decode(json_encode($payload), true);
         
         // Insert the data
         $query = $this->userModel->insertCheckupDetails($payload);
 
         if($query){
-
+            // Update Schedule
+            $this->userModel->updateScheduleStatus($updateData, $where);
             $response = [
                 'title' => 'Checkup information',
                 'message' => 'Pet checkup has been successfully save.',
@@ -329,6 +333,32 @@ class Client extends BaseController
                     ->setBody(json_encode($response));
         }
 
+    }
+
+    public function getPatientScheduleDetail($id){
+        
+        $where = [
+            "id" => $id
+        ];
+        
+        $query = $this->userModel->getScheduleDetails($where);
+        
+        if($query){
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($query));
+        } else {
+            $response = [
+                'title' => 'Error',
+                'message' => $query
+            ];
+
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
     }
 
     public function getPatientCheckups(){

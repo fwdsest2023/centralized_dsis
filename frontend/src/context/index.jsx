@@ -6,6 +6,12 @@ MaterialTailwind.displayName = "MaterialTailwindContext";
 
 export function reducer(state, action) {
   switch (action.type) {
+    case "OPEN_GLOBAL_NOTIF": {
+      return { ...state, openNotif: action.value };
+    }
+    case "GLOBAL_NOTIF_CONTENT": {
+      return { ...state, notifContent: action.value };
+    }
     case "OPEN_SIDENAV": {
       return { ...state, openSidenav: action.value };
     }
@@ -33,6 +39,9 @@ export function reducer(state, action) {
     case "OPEN_ADD_SCHEDULE_MODAL": {
       return { ...state, openScheduleForm: action.value };
     }
+    case "OPEN_UPDATE_SCHEDULE_MODAL": {
+      return { ...state, openUpdateScheduleForm: action.value };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -50,6 +59,14 @@ export function MaterialTailwindControllerProvider({ children }) {
     openClientForm: false,
     openPatientForm: false,
     openScheduleForm: false,
+    openUpdateScheduleForm: false,
+    openNotif: false,
+    notifContent: {
+      type: "error", //error or success
+      color: "red",
+      title: "Title",
+      message: "Error Message",
+    },
   };
 
   const [controller, dispatch] = React.useReducer(reducer, initialState);
@@ -101,3 +118,9 @@ export const setOpenPatientForm = (dispatch, value) =>
   dispatch({ type: "OPEN_PATIENT_ADD_MODAL", value });
 export const setOpenScheduleForm = (dispatch, value) =>
   dispatch({ type: "OPEN_ADD_SCHEDULE_MODAL", value });
+export const setOpenUpdateScheduleForm = (dispatch, value) =>
+  dispatch({ type: "OPEN_UPDATE_SCHEDULE_MODAL", value });
+export const setOpenNotif = (dispatch, value) =>
+  dispatch({ type: "OPEN_GLOBAL_NOTIF", value });
+export const setNotifContent = (dispatch, value) =>
+  dispatch({ type: "GLOBAL_NOTIF_CONTENT", value });

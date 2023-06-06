@@ -40,4 +40,14 @@ export default {
         )
         return serialize(err ? err.response : data);
     },
+    patientActionDetailTab: async (payload) => {
+        const routeAction = payload.action;
+        const tab = payload.tabSelected;
+        const params = payload.params;
+
+        const [err, data] = await to(
+            api.get(`${basePatient}/${routeAction}/${tab}/${params.id}`)
+        )
+        return serialize(err ? err.response : data);
+    },
 }

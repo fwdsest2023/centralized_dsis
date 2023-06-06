@@ -100,6 +100,12 @@ class UsersModel extends Model
         $query = $this->db->table($this->checkupTable)->insert($data);
         return $query ? true : false;
     }
+    
+    public function updateScheduleStatus($setData, $where){
+        $query = $this->db->table($this->scheduleTable)->set($setData)->where($where)->update();
+        return $query ? true : false;
+    }
+
 
     // Get Patients Schedules
     public function getAllSchedules() {
@@ -140,6 +146,16 @@ class UsersModel extends Model
         return $all;
     }
 
+    public function getScheduleDetails() {
+
+        $query = $this->db->table($this->scheduleTable)->get();
+        $results = $query->getRow();
+        $results->patientOwner = $this->db->table($this->table)->where('id', $results->clientId)->get()->getRow();
+        $results->patientDetails = $this->db->table($this->table)->where('id', $results->patientId)->get()->getRow();
+
+        return $results;
+    }
+
     public function getPatientCheckups($where) {
 
         $query = $this->db->table($this->checkupTable)->where($where)->get();
@@ -147,9 +163,11 @@ class UsersModel extends Model
 
         $all = array_map(function($el){
             foreach($el as $key => $val){
-                $owner = $this->db->table($this->table)->where('id', $el['clientId'])->get()->getRow();
-                $el['patientOwner'] = $owner;
-
+                if(isset($el['clientId'])){
+                    $owner = $this->db->table($this->table)->where('id', $el['clientId'])->get()->getRow();
+                    $el['patientOwner'] = $owner;
+                }
+                
                 $pet = $this->db->table($this->patientTable)->where('id', $el['patientId'])->get()->getRow();
                 $el['patientDetails'] = $pet;
             }

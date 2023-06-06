@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { MagnifyingGlassIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
-import { UserPlusIcon } from "@heroicons/react/24/solid";
+import { UserPlusIcon, EyeIcon } from "@heroicons/react/24/solid";
 import {
   Card,
   CardHeader,
@@ -13,27 +13,41 @@ import {
 } from "@material-tailwind/react";
 import {
     useMaterialTailwindController,
-    setOpenScheduleForm
+    setOpenScheduleForm,
+    setOpenUpdateScheduleForm
 } from '@/context'
+import {UpdateSchedule} from "@/widgets/dialogs";
+import Client from '@/api/Client'
    
-const TABLE_HEAD = ["Schedule Date", "Description", "Status"];
+const TABLE_HEAD = ["Schedule Date", "Description", "Status", "Action"];
  
-const TABLE_ROWS = [
-  {
-      scheduleDate: "06/02/2023",
-      remarks: "DASDASDA",
-      status: 0,
-  },
-  {
-      scheduleDate: "06/09/2023",
-      remarks: "fdsfsdfdsfds",
-      status: 0,
-  },
-];
-
 export function PetSchedule(props){
     const [controller, dispatch] = useMaterialTailwindController();
-    const { openScheduleForm } = controller;
+    const { 
+        openScheduleForm, 
+        openUpdateScheduleForm 
+    } = controller;
+    // set States
+    const [schedDetails, setSchedDetails] = useState({})
+
+    // Methods
+    const openScheduleDetails = async (scheduleId) => {
+        let payload = {
+            params: {
+                id: scheduleId,
+            },
+            action: "details",
+            tabSelected: "schedule"
+        }
+        const {status, data} = await Client.patientActionDetailTab(payload);
+        if(status <= 200){
+            setSchedDetails(data)
+            setOpenUpdateScheduleForm(dispatch, !openUpdateScheduleForm)
+        }
+
+    }
+
+
 
     return(
         <>
@@ -89,8 +103,8 @@ export function PetSchedule(props){
                         </tr>
                     </thead>
                     <tbody>
-                        {props.listData.map(({ scheduleDate, remarks,status }, index) => {
-                        const isLast = index === TABLE_ROWS.length - 1;
+                        {props.listData.map(({ id, scheduleDate, remarks,status }, index) => {
+                        const isLast = index === props.listData.length - 1;
                         const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
             
                         return (
@@ -107,13 +121,23 @@ export function PetSchedule(props){
                                 </td>
                                 <td className={classes}>
                                     <div className="w-max">
-                                    <Chip
-                                        variant="ghost"
-                                        size="sm"
-                                        value={status !== 0 ? "Done" : "Pending"}
-                                        color={status !== 0 ? "green" : "blue-gray"}
-                                    />
+                                        <Chip
+                                            variant="ghost"
+                                            size="sm"
+                                            value={status === "1" ? "Done" : "Pending"}
+                                            color={status === "1" ? "green" : "blue-gray"}
+                                        />
                                     </div>
+                                </td>
+                                <td className={classes}>
+                                    <Button
+                                        onClick={() => openScheduleDetails(id)}
+                                        color="blue"
+                                        disabled={status === "1"}
+                                        size="sm"
+                                    >
+                                        <EyeIcon strokeWidth={2} className="h-4 w-4" />
+                                    </Button>
                                 </td>
                             </tr>
                         );
@@ -135,6 +159,11 @@ export function PetSchedule(props){
                     </div> */}
                 </CardFooter>
             </Card>
+            <UpdateSchedule 
+                detail={props.detail} 
+                schedData={schedDetails} 
+            />
+            
         </>
     )
 }

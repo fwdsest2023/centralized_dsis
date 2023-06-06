@@ -1,52 +1,16 @@
 import React from "react";
 import { MagnifyingGlassIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
-import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
 import {
   Card,
   CardHeader,
   Input,
   Typography,
-  Button,
   CardBody,
-  Chip,
   CardFooter,
-  Tabs,
-  TabsHeader,
-  Tab,
-  IconButton,
-  Tooltip,
 } from "@material-tailwind/react";
 
-
-const TABS = [
-    {
-      label: "All",
-      value: "all",
-    },
-    {
-      label: "Monitored",
-      value: "monitored",
-    },
-    {
-      label: "Unmonitored",
-      value: "unmonitored",
-    },
-  ];
    
-  const TABLE_HEAD = ["Schedule Date", "Description", "Status"];
-   
-  const TABLE_ROWS = [
-    {
-        scheduleDate: "06/02/2023",
-        remarks: "DASDASDA",
-        status: 0,
-    },
-    {
-        scheduleDate: "06/09/2023",
-        remarks: "fdsfsdfdsfds",
-        status: 0,
-    },
-  ];
+const TABLE_HEAD = ["Scheduled Date", "Complain", "Weight", "Diagnosis",  "Treatment", "Remarks"];
 
 export function PetCheckup(props){
 
@@ -64,21 +28,11 @@ export function PetCheckup(props){
                         </Typography>
                     </div>
                     <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-                        <Button className="flex items-center gap-3" color="blue" size="sm">
-                            <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Create Checkup Record
-                        </Button>
+                        
                     </div>
                     </div>
                     <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-                    <Tabs value="all" className="w-full md:w-max">
-                        <TabsHeader>
-                        {TABS.map(({ label, value }) => (
-                            <Tab key={value} value={value}>
-                            &nbsp;&nbsp;{label}&nbsp;&nbsp;
-                            </Tab>
-                        ))}
-                        </TabsHeader>
-                    </Tabs>
+                    
                     <div className="w-full md:w-72">
                         <Input label="Search" icon={<MagnifyingGlassIcon className="h-5 w-5" />} />
                     </div>
@@ -108,31 +62,42 @@ export function PetCheckup(props){
                         </tr>
                     </thead>
                     <tbody>
-                        {TABLE_ROWS.map(({ scheduleDate, remarks,status }, index) => {
-                        const isLast = index === TABLE_ROWS.length - 1;
+                    {/* ["Scheduled Date", "Complain", "Weight", "Diagnosis",  "Treatment", "Remarks"]; */}
+                        {props.listData.map(({ createdDate, complain, weight, treatment, remarks, diagnosis }, index) => {
+                        const isLast = index === props.listData.length - 1;
                         const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
             
                         return (
                             <tr key={index}>
                                 <td className={classes}>
                                     <Typography variant="small" color="blue-gray" className="font-normal">
-                                        {scheduleDate}
+                                        {createdDate}
+                                    </Typography>
+                                </td>
+                                <td className={classes}>
+                                    <Typography variant="small" color="blue-gray" className="font-normal">
+                                        {complain}
+                                    </Typography>
+                                </td>
+                                <td className={classes}>
+                                    <Typography variant="small" color="blue-gray" className="font-normal">
+                                        {weight}
+                                    </Typography>
+                                </td>
+                                <td className={classes}>
+                                    <Typography variant="small" color="blue-gray" className="font-normal">
+                                        {treatment}
+                                    </Typography>
+                                </td>
+                                <td className={classes}>
+                                    <Typography variant="small" color="blue-gray" className="font-normal">
+                                        {diagnosis}
                                     </Typography>
                                 </td>
                                 <td className={classes}>
                                     <Typography variant="small" color="blue-gray" className="font-normal">
                                         {remarks}
                                     </Typography>
-                                </td>
-                                <td className={classes}>
-                                    <div className="w-max">
-                                    <Chip
-                                        variant="ghost"
-                                        size="sm"
-                                        value={status !== 0 ? "Done" : "Pending"}
-                                        color={status !== 0 ? "green" : "blue-gray"}
-                                    />
-                                    </div>
                                 </td>
                             </tr>
                         );
@@ -141,7 +106,7 @@ export function PetCheckup(props){
                     </table>
                 </CardBody>
                 <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-                    <Typography variant="small" color="blue-gray" className="font-normal">
+                    {/* <Typography variant="small" color="blue-gray" className="font-normal">
                     Page 1 of 10
                     </Typography>
                     <div className="flex gap-2">
@@ -151,7 +116,7 @@ export function PetCheckup(props){
                     <Button variant="outlined" color="blue-gray" size="sm">
                         Next
                     </Button>
-                    </div>
+                    </div> */}
                 </CardFooter>
                 </Card>
         </>

@@ -57,6 +57,7 @@ $routes->group('mlrs/api/v1', function($routes){
 		$routes->post('get/schedule', 'Client::getPatientSchedule');
 		$routes->post('get/checkup', 'Client::getPatientCheckups');
 		$routes->post('get/wellness', 'Client::getPatientWellnes');
+		$routes->get('details/schedule/(:num)', 'Client::getPatientScheduleDetail/$1');
 	});
 
 

@@ -49,7 +49,7 @@ export function AddClient(props) {
     };
 
     return (
-        <Dialog open={openClientForm}>
+        <Dialog open={openClientForm} size="sm">
             <DialogHeader>
                 <div className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
                     <div>
@@ -57,9 +57,32 @@ export function AddClient(props) {
                     </div>
                 </div>
             </DialogHeader>
-            <DialogBody divider>
+            <DialogBody divider className="overflow-scroll">
+                <form className="flex flex-col w-full gap-4">
+                    <div className="my-6">
+                        <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="mb-4 font-medium"
+                        >
+                            Client Details
+                        </Typography>
+                        <div className="mb-4 flex flex-col gap-4">
+                            <Input size="lg" onChange={e => setFirstName(e.target.value)} value={firstName} label="Fist Name" />
+                            <Input size="lg" onChange={e => setLastName(e.target.value)} value={lastName} label="Last Name" />
+                            <Input size="lg" onChange={e => setMiddleName(e.target.value)} value={middleName} label="Middle Initial" />
+                        </div>
+                        <div className="mb-4 flex flex-col gap-4">
+                            <Input size="lg" onChange={e => setContact(e.target.value)} value={contact} label="Contact Number" />
+                            <Input size="lg" onChange={e => setAddress(e.target.value)} value={address} label="Address" />
+                            <Card color="transparent" shadow={false}>
+                                <i>Note: default password always <strong>dvspet123</strong></i>
+                            </Card>
+                        </div>
+                    </div>
+                </form>
                 
-                <Card color="transparent" shadow={false}>
+                {/* <Card color="transparent" shadow={false}>
                     <form className="mt-8 mr-3 mb-2 w-80 max-w-screen-lg sm:w-90">
                         <div className="mb-4 flex flex-col gap-4">
                             <Input size="lg" onChange={e => setFirstName(e.target.value)} value={firstName} label="Fist Name" />
@@ -78,7 +101,7 @@ export function AddClient(props) {
                             </Card>
                         </div>
                     </form>
-                </Card>
+                </Card> */}
 
             </DialogBody>
             <DialogFooter>
