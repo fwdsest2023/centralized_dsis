@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import {
-  Card,
   Button,
   Input,
   Dialog,
@@ -8,14 +7,14 @@ import {
   DialogBody,
   DialogFooter,
   Typography,
-  Alert, 
   Textarea 
 } from "@material-tailwind/react";
-import {BellIcon} from "@heroicons/react/24/solid"
 import Client from '@/api/Client'
 import {
     useMaterialTailwindController,
-    setOpenScheduleForm
+    setOpenScheduleForm,
+    setOpenNotif,
+    setNotifContent
 } from '@/context'
 import jwtDecode from "jwt-decode";
 
@@ -24,10 +23,8 @@ export function AddSchedule(props) {
     const usrData = jwtDecode(token);
 
     const [controller, dispatch] = useMaterialTailwindController();
-    const { openScheduleForm } = controller;
+    const { openScheduleForm, openNotif } = controller;
     // Pet Details
-    const [hasError, setHasError] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
     const [scheduleDate, setScheduleDate] = useState("");
     const [remarks, setRemarks] = useState("");
     const [complain, setComplain] = useState("");
@@ -36,8 +33,14 @@ export function AddSchedule(props) {
     async function addPatientSchedule () {
 
         if(scheduleDate === ""){
-            setHasError(!hasError)
-            setErrorMessage("Missing Schedule Date!")
+            setOpenNotif(dispatch, !openNotif)
+            setNotifContent(dispatch, {
+                type: "error", //error or success
+                color: "red",
+                header: "Validation Error",
+                title: "Failed to Submit",
+                message: "Schedule date must be filled!",
+            })
             return
         }
 
@@ -138,30 +141,6 @@ export function AddSchedule(props) {
                         onClick={() => addPatientSchedule()}
                     >
                         <span>Submit</span>
-                    </Button>
-                </DialogFooter>
-            </Dialog>
-
-
-            {/* Error Message */}
-            <Dialog open={hasError} size="sm">
-                <DialogHeader>
-                    <Typography variant="h5" color="blue-gray">
-                        Notification
-                    </Typography>
-                </DialogHeader>
-                <DialogBody divider className="grid place-items-center gap-4">
-                    <BellIcon className="h-16 w-16 text-red-500" />
-                    <Typography color="red" variant="h4">
-                        Submit Failed
-                    </Typography>
-                    <Typography className="text-center font-normal">
-                        {errorMessage}
-                    </Typography>
-                </DialogBody>
-                <DialogFooter className="space-x-2">
-                    <Button variant="text" color="blue-gray" onClick={() => setHasError(!hasError)}>
-                        close
                     </Button>
                 </DialogFooter>
             </Dialog>

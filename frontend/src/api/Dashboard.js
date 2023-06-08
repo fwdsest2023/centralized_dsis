@@ -11,4 +11,10 @@ export default {
         )
         return serialize(err ? err.response : data);
     },
+    getDashbaordList: async () => {
+        const [err, data] = await to(
+            api.get(`${base}/getDashboard`)
+        )
+        return serialize(err ? err.response : data);
+    },
 }

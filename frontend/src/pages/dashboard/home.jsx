@@ -20,6 +20,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 
 export function Home() {
   const [dashList, setDashList] = useState([])
+  const [dashCards, setDashCards] = useState([])
 
   const getSchedules = React.useCallback( async () => {
     const {status, data} = await Dashboard.getScheduleList();
@@ -28,9 +29,30 @@ export function Home() {
       setDashList(data.list)
     }
   })
+  const getDashboard = React.useCallback( async () => {
+    const {status, data} = await Dashboard.getDashbaordList();
+    // Action Scenario
+    if(status <= 200){
+      statisticsCardsData.map((el, index) => {
+        if(index === 1){
+          el.value = data.data.clientCount
+        } else if(index === 2) {
+          el.value = data.data.patientCount
+        } else if(index === 3) {
+          el.value = data.data.totalSales
+        } else {
+          el.value = data.data.todaysSale
+        }
+
+        return el
+      })
+      setDashCards(data.data)
+    }
+  })
 
   React.useEffect(() => {
     getSchedules()
+    getDashboard()
   }, [])
 
   return (
@@ -45,12 +67,12 @@ export function Home() {
             icon={React.createElement(icon, {
               className: "w-6 h-6 text-white",
             })}
-            footer={
-              <Typography className="font-normal text-blue-gray-600">
-                <strong className={footer.color}>{footer.value}</strong>
-                &nbsp;{footer.label}
-              </Typography>
-            }
+            // footer={
+            //   <Typography className="font-normal text-blue-gray-600">
+            //     <strong className={footer.color}>{footer.value}</strong>
+            //     &nbsp;{footer.label}
+            //   </Typography>
+            // }
           />
         ))}
       </div>
@@ -85,7 +107,7 @@ export function Home() {
             />
           </CardBody>
         </Card>
-        <Card>
+        {/* <Card>
           <CardHeader
             floated={false}
             shadow={false}
@@ -141,7 +163,7 @@ export function Home() {
               )
             )}
           </CardBody>
-        </Card>
+        </Card> */}
       </div>
     </div>
     </React.Fragment>

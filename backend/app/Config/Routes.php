@@ -81,6 +81,7 @@ $routes->group('mlrs/api/v1', function($routes){
 	// Dashboard
 	$routes->group('dashboard', function($routes){
 		$routes->get('getScheduleList', 'DashboardController::fetchScheduleList');
+		$routes->get('getDashboard', 'DashboardController::fetchDashboard');
 	});
 
 

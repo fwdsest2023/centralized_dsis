@@ -5,8 +5,7 @@ import { IconButton } from "@material-tailwind/react";
 import {
   Sidenav,
   DashboardNavbar,
-  Configurator,
-  Footer,
+  ErrorNotification
 } from "@/widgets/layout";
 import routes from "@/routes";
 import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
@@ -41,6 +40,7 @@ export function Dashboard() {
       />
       <div className="p-4 xl:ml-80">
         <DashboardNavbar />
+        <ErrorNotification />
         {/* <Configurator /> */}
         {/* <IconButton
           size="lg"

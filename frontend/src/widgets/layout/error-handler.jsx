@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {
   Button,
   Dialog,
@@ -7,7 +7,7 @@ import {
   DialogFooter,
   Typography,
 } from "@material-tailwind/react";
-import {BellIcon} from "@heroicons/react/24/solid"
+import {BellIcon, CheckCircleIcon} from "@heroicons/react/24/solid"
 import {
     useMaterialTailwindController,
     setOpenNotif
@@ -20,23 +20,24 @@ export function ErrorNotification() {
 
     return (
         <>
-            <Dialog open={openNotif} size="sm">
+            <Dialog open={openNotif} size="sm" handler={() => setOpenNotif(dispatch, !openNotif)}>
                 <DialogHeader>
                     <Typography variant="h5" color="blue-gray">
-                        Notification
+                        {notifContent.header}
                     </Typography>
                 </DialogHeader>
                 <DialogBody divider className="grid place-items-center gap-4">
                     <BellIcon className="h-16 w-16 text-red-500" />
+                    {/* return type === 'error' ? <BellIcon className="h-16 w-16 text-red-500" /> : <CheckCircleIcon className="h-16 w-16 text-green-500" />; */}
                     <Typography color={notifContent.color} variant="h4">
                         {notifContent.title}
                     </Typography>
                     <Typography className="text-center font-normal">
-                    {notifContent.message}
+                        {notifContent.message}
                     </Typography>
                 </DialogBody>
                 <DialogFooter className="space-x-2">
-                    <Button variant="text" color="blue-gray" onClick={() => setOpenNotif(!openNotif)}>
+                    <Button variant="text" color="blue-gray" onClick={() => setOpenNotif(dispatch, !openNotif)}>
                         close
                     </Button>
                 </DialogFooter>
@@ -46,6 +47,6 @@ export function ErrorNotification() {
     );
 }
 
-ErrorNotification.displayName = "/src/widgets/dialogs/error-handler.jsx";
+ErrorNotification.displayName = "/src/widgets/layout/error-handler.jsx";
 
 export default ErrorNotification;

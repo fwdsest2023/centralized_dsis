@@ -64,6 +64,7 @@ export function MaterialTailwindControllerProvider({ children }) {
     notifContent: {
       type: "error", //error or success
       color: "red",
+      header: "Error",
       title: "Title",
       message: "Error Message",
     },

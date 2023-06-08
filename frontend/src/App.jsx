@@ -8,9 +8,9 @@ function App() {
     let appData = localStorage.getItem('token');
     const token = appData;
     if (token) {
-      navigate('/dashboard/home',  { replace: true })
+      navigate('/dashboard/home',  { replace: false })
     } else {
-      navigate('/auth/sign-in',  { replace: true })
+      navigate('/auth/sign-in',  { replace: false })
     }
   }
 

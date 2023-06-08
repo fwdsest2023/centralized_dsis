@@ -56,6 +56,12 @@ class UsersModel extends Model
 
         return $all;
     }
+    public function getAllPtientInfo($where){
+
+        $query = $this->db->table($this->patientTable)->where($where)->get();
+        $results = $query->getResult('array');
+        return $results;
+    }
 
     public function updateTenantInfo($where, $setData){
 
