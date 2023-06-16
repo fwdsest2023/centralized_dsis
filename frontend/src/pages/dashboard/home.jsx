@@ -100,7 +100,7 @@ export function Home() {
             <FullCalendar
               plugins={[dayGridPlugin]}
               initialView='dayGridMonth'
-              weekends={false}
+              weekends={true}
               dayMaxEvents={true}
               events={dashList}
               eventContent={renderEventContent}

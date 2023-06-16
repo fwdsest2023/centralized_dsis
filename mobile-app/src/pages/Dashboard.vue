@@ -1,0 +1,78 @@
+<template>
+  <q-page >
+    <q-card flat class="my-card">
+      <q-img src="imgs/home_background.jpg" fit="fill">
+        <div class="absolute-bottom">
+          <div class="text-h6">{{userProfile.fullName}}</div>
+          <div class="text-subtitle2">AGENT</div>
+        </div>
+      </q-img>
+
+      <q-card-actions>
+        <q-tabs
+          v-model="tab"
+          dense
+          align="justify"
+          class="text-primary full-width"
+        >
+          <q-tab :ripple="false" name="client" icon="store" label="Clients" />
+          <q-tab :ripple="false" name="meeting" icon="groups_2" label="Meeting" />
+          <q-tab :ripple="false" name="taining" icon="tips_and_updates" label="Taining" />
+        </q-tabs>
+      </q-card-actions>
+    </q-card>
+    <q-tab-panels
+      v-model="tab"
+      animated
+      vertical
+      transition-prev="jump-up"
+      transition-next="jump-up"
+    >
+      <q-tab-panel name="client">
+        <clientWidget />
+      </q-tab-panel>
+
+      <q-tab-panel name="meeting">
+        <div class="text-h4 q-mb-md">Alarms</div>
+      </q-tab-panel>
+
+      <q-tab-panel name="taining">
+        <div class="text-h4 q-mb-md">Movies</div>
+      </q-tab-panel>
+    </q-tab-panels>
+  </q-page>
+</template>
+
+<script>
+import { SessionStorage } from 'quasar'
+import jwt_decode from 'jwt-decode'
+import clientWidget from '../components/Dashboard/client-widget.vue'
+
+
+export default {
+  name: 'PageIndex',
+  data(){
+    return {
+      userProfile: {},
+      tab: 'client'
+    }
+  },
+  components: {
+    clientWidget
+  },
+  computed: {
+    getUserProfile: function(){
+      let profile = SessionStorage.getItem('userDataLogin');
+      this.userProfile = jwt_decode(profile);
+    }
+  },
+  created(){
+    this.getUserProfile
+  }
+}
+</script>
+<style scoped>
+.my-card{
+  margin-top: -20px;
+}
+</style>

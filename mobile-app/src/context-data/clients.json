@@ -1,0 +1,94 @@
+{
+    "list": [
+        {
+            "id": 1,
+            "storeName": "Client Store 1",
+            "address": "Talavera,Nueva Ecija",
+            "branch": "Nueva Ecija",
+            "loading": false,
+            "icon": "play_circle",
+            "color": "green",
+            "status": "pending"
+        },
+        {
+            "id": 2,
+            "storeName": "Client Store 2",
+            "address": "Cabanatuan, Nueva Ecija",
+            "branch": "Nueva Ecija",
+            "loading": false,
+            "icon": "play_circle",
+            "color": "green",
+            "status": "pending"
+        },
+        {
+            "id": 3,
+            "storeName": "Client Store 3",
+            "address": "Rizal, Nueva Ecija",
+            "branch": "Nueva Ecija",
+            "loading": false,
+            "icon": "play_circle",
+            "color": "green",
+            "status": "pending"
+        },
+        {
+            "id": 4,
+            "storeName": "Client Store 4",
+            "address": "Pantabangan, Nueva Ecija",
+            "branch": "Nueva Ecija",
+            "loading": false,
+            "icon": "play_circle",
+            "color": "green",
+            "status": "pending"
+        },
+        {
+            "id": 5,
+            "storeName": "Client Store 5",
+            "address": "Llanera, Nueva Ecija",
+            "branch": "Nueva Ecija",
+            "loading": false,
+            "icon": "play_circle",
+            "color": "green",
+            "status": "pending"
+        },
+        {
+            "id": 6,
+            "storeName": "Client Store 6",
+            "address": "Palayan, Nueva Ecija",
+            "branch": "Nueva Ecija",
+            "loading": false,
+            "icon": "play_circle",
+            "color": "green",
+            "status": "pending"
+        },
+        {
+            "id": 7,
+            "storeName": "Client Store 7",
+            "address": "Gapan, Nueva Ecija",
+            "branch": "Nueva Ecija",
+            "loading": false,
+            "icon": "play_circle",
+            "color": "green",
+            "status": "pending"
+        },
+        {
+            "id": 8,
+            "storeName": "Client Store 8",
+            "address": "San Jose, Nueva Ecija",
+            "branch": "Nueva Ecija",
+            "loading": false,
+            "icon": "play_circle",
+            "color": "green",
+            "status": "pending"
+        },
+        {
+            "id": 9,
+            "storeName": "Client Store 9",
+            "address": "Laur, Nueva Ecija",
+            "branch": "Nueva Ecija",
+            "loading": false,
+            "icon": "play_circle",
+            "color": "green",
+            "status": "pending"
+        }
+    ]
+}
