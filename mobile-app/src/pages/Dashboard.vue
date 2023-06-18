@@ -16,8 +16,8 @@
           class="text-primary full-width"
         >
           <q-tab :ripple="false" name="client" icon="store" label="Clients" />
-          <q-tab :ripple="false" name="meeting" icon="groups_2" label="Meeting" />
-          <q-tab :ripple="false" name="taining" icon="tips_and_updates" label="Taining" />
+          <q-tab :ripple="false" name="activities" icon="home_repair_service" label="Activities" />
+          <q-tab :ripple="false" name="adminWorks" icon="admin_panel_settings" label="Admin" />
         </q-tabs>
       </q-card-actions>
     </q-card>
@@ -32,12 +32,12 @@
         <clientWidget />
       </q-tab-panel>
 
-      <q-tab-panel name="meeting">
-        <div class="text-h4 q-mb-md">Alarms</div>
+      <q-tab-panel name="activities">
+        <div class="text-h4 q-mb-md">Activities</div>
       </q-tab-panel>
 
-      <q-tab-panel name="taining">
-        <div class="text-h4 q-mb-md">Movies</div>
+      <q-tab-panel name="adminWorks">
+        <div class="text-h4 q-mb-md">Admins</div>
       </q-tab-panel>
     </q-tab-panels>
   </q-page>

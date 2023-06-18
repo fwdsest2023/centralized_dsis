@@ -1,0 +1,14 @@
+{
+    "category": [
+        {
+            "id":1,
+            "catName": "Farm",
+            "catDesc": "All farm establishment or business"
+        },
+        {
+            "id":2,
+            "catName": "Vet",
+            "catDesc": "Vet clinics that supplied of the products"
+        }
+    ]
+}
