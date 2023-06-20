@@ -37,7 +37,12 @@ export function SignIn() {
       localStorage.setItem('token', data.jwt)
       localStorage.setItem('interface', data.uui)
       localStorage.setItem('userData', JSON.stringify(userData))
-      navigate('/dashboard/home', { replace: true })
+      console.log(data.uui === 'DSIS')
+      console.log(data.uui)
+      if(data.uui === 'DSIS'){ navigate('/dsis/dashboard', { replace: true })}
+      else {
+        navigate('/dashboard/home',  { replace: true })
+        }
     }
   }
 
@@ -45,7 +50,11 @@ export function SignIn() {
     let appData = localStorage.getItem('token');
     const token = appData;
     if (token) {
-      navigate('/dashboard/home',  { replace: true })
+      let uui = localStorage.getItem('interface')
+      if(uui === 'DSIS'){ navigate('/dsis/dashboard', { replace: true })}
+      else {
+        navigate('/dashboard/home',  { replace: true })
+        }
     } else {
       navigate('/auth/sign-in',  { replace: true })
     }

@@ -6,8 +6,10 @@ import {
   BuildingStorefrontIcon,
   CalendarDaysIcon
 } from "@heroicons/react/24/solid";
-import { Home, Patients } from "@/pages/dashboard";
+import { Home, Patients, Inventory } from "@/pages/dashboard";
 import { SignIn, SignUp } from "@/pages/auth";
+import { Dsishome } from "@/pages/dsis";
+
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -38,8 +40,8 @@ export const routes = [
       {
         icon: <BuildingStorefrontIcon {...icon} />,
         name: "Inventory Management",
-        path: "/inventory-management",
-        element: <Patients />,
+        path: "/inventory",
+        element: <Inventory />,
       },
     ],
   },
@@ -61,6 +63,19 @@ export const routes = [
       },
     ],
   },
+  {
+    title: "dsis pages",
+    layout: "dsis",
+    pages: [
+      {
+        icon: <ArrowRightOnRectangleIcon {...icon} />,
+        name: "Dashboard",
+        path: "/dashboard",
+        element: <Dsishome />,
+      },
+    ],
+  },
+  
 ];
 
 export default routes
