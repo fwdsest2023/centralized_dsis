@@ -69,8 +69,8 @@ export const routes = [
     pages: [
       {
         icon: <ArrowRightOnRectangleIcon {...icon} />,
-        name: "Dashboard",
-        path: "/dashboard",
+        name: "DSIS",
+        path: "/dsishome",
         element: <Dsishome />,
       },
     ],

@@ -10,7 +10,7 @@ import {
 import routes from "@/routes";
 import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
 
-export function dsis() {
+export function Dsis() {
   const [controller, dispatch] = useMaterialTailwindController();
   const { sidenavType } = controller;
   const [brndName, setBrndName] = useState("DVS Distribution")
@@ -54,7 +54,7 @@ export function dsis() {
         <Routes>
           {routes.map(
             ({ layout, pages }) =>
-              layout === "dashboard" &&
+              layout === "dsis" &&
               pages.map(({ path, element }) => (
                 <Route exact path={path} element={element} />
               ))
@@ -68,6 +68,6 @@ export function dsis() {
   );
 }
 
-dsis.displayName = "/src/layout/dsis.jsx";
+Dsis.displayName = "/src/layout/dsis.jsx";
 
-export default dsis;
+export default Dsis;
