@@ -11,6 +11,22 @@
         {
           "regionId": 1,
           "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
         }
       ]
     },
@@ -20,7 +36,29 @@
       "productForm": "PELLET",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1910"
+      "productCost": "1910",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "3",
@@ -28,7 +66,29 @@
       "productForm": "PELLET",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1445"
+      "productCost": "1445",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "4",
@@ -36,7 +96,29 @@
       "productForm": "PELLET",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "2020"
+      "productCost": "2020",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "5",
@@ -44,7 +126,29 @@
       "productForm": "PELLET",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1895"
+      "productCost": "1895",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "6",
@@ -52,7 +156,29 @@
       "productForm": "PELLET",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1875"
+      "productCost": "1875",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "7",
@@ -60,7 +186,29 @@
       "productForm": "PELLET",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1765"
+      "productCost": "1765",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "8",
@@ -68,7 +216,29 @@
       "productForm": "PELLET",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1940"
+      "productCost": "1940",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "9",
@@ -76,7 +246,29 @@
       "productForm": "PELLET",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1955"
+      "productCost": "1955",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "10",
@@ -84,7 +276,29 @@
       "productForm": "PELLET",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1820"
+      "productCost": "1820",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "11",
@@ -92,7 +306,29 @@
       "productForm": "PELLET",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1800"
+      "productCost": "1800",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "12",
@@ -100,7 +336,29 @@
       "productForm": "PELLET",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1735"
+      "productCost": "1735",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "13",
@@ -108,7 +366,29 @@
       "productForm": "PELLET",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1910"
+      "productCost": "1910",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "14",
@@ -116,7 +396,29 @@
       "productForm": "MASH",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1415"
+      "productCost": "1415",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "15",
@@ -124,7 +426,29 @@
       "productForm": "PELLET",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1730"
+      "productCost": "1730",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "16",
@@ -132,7 +456,29 @@
       "productForm": "CRUMBLE",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1750"
+      "productCost": "1750",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "17",
@@ -140,7 +486,29 @@
       "productForm": "MASH",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1865"
+      "productCost": "1865",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "18",
@@ -148,7 +516,29 @@
       "productForm": "PELLET",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1865"
+      "productCost": "1865",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "19",
@@ -156,7 +546,29 @@
       "productForm": "MASH",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1900"
+      "productCost": "1900",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "20",
@@ -164,7 +576,29 @@
       "productForm": "CRUMBLE",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1930"
+      "productCost": "1930",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "21",
@@ -172,7 +606,29 @@
       "productForm": "PELLET",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1485"
+      "productCost": "1485",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "22",
@@ -180,7 +636,29 @@
       "productForm": "PELLET",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1315"
+      "productCost": "1315",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "23",
@@ -188,7 +666,29 @@
       "productForm": "CRUMBLE",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "2025"
+      "productCost": "2025",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "24",
@@ -196,7 +696,29 @@
       "productForm": "CRUMBLE",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1975"
+      "productCost": "1975",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "25",
@@ -204,7 +726,29 @@
       "productForm": "MINI PELLET",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1975"
+      "productCost": "1975",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "26",
@@ -212,7 +756,29 @@
       "productForm": "PELLET",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1825"
+      "productCost": "1825",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "27",
@@ -220,7 +786,29 @@
       "productForm": "MIX PELLET",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1895"
+      "productCost": "1895",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     },
     {
       "id": "28",
@@ -228,7 +816,29 @@
       "productForm": "PELLET",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1905"
+      "productCost": "1905",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        },
+        {
+          "regionId": 2,
+          "price": 1505
+        },
+        {
+          "regionId": 3,
+          "price": 1305
+        },
+        {
+          "regionId": 4,
+          "price": 1205
+        },
+        {
+          "regionId": 5,
+          "price": 1455
+        }
+      ]
     }
   ]
 }

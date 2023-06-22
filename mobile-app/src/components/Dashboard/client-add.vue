@@ -16,6 +16,7 @@
                             ref="formDetails"
                             class="row"
                         >
+                            
                             <q-input 
                                 class="col col-xs-12 col-md-6 q-pa-sm" 
                                 bottom-slots
@@ -35,7 +36,20 @@
                             <div class="col col-xs-12 col-sm-12 col-md-12 q-mt-lg">
                                 <span class="text-h6">STORE DETAILS</span>
                             </div>
-                            
+                            <q-input
+                                class="col col-xs-12 col-md-12 col-sm-12  q-pa-sm q-mt-sm"
+                                dense
+                                v-model="form.client.contactPerson.name"
+                                label="Store Owner/Representantive"
+                                :rules="[ val => val && val.length > 0 || 'This field is required']"
+                            />
+                            <q-input
+                                class="col col-xs-12 col-md-12 col-sm-12  q-pa-sm q-mt-sm"
+                                dense
+                                v-model="form.client.contactPerson.contactNum"
+                                label="Contact Number"
+                                :rules="[ val => val && val.length > 0 || 'This field is required']"
+                            />
                             <q-input
                                 class="col col-xs-12 col-md-12 col-sm-12  q-pa-sm q-mt-sm"
                                 dense
@@ -65,6 +79,21 @@
                                 :options-dense="true"
                             >
                             </q-select>
+
+                            <div class="col col-xs-12 col-sm-12 col-md-12 q-mt-lg">
+                                <span class="text-h6">STORE MAP</span>
+                            </div>
+                            <div id="map" v-if="map" style="width:100%;">
+                                <iframe
+                                    width="100%"
+                                    height="250"
+                                    frameborder="0" 
+                                    style="border:0"
+                                    referrerpolicy="no-referrer-when-downgrade"
+                                    :src="`https://www.google.com/maps/embed/v1/view?key=${apiKey}&center=${form.client.geoLocation.latitude},${form.client.geoLocation.longitude}&zoom=18&maptype=satellite`"
+                                >
+                                </iframe>
+                            </div>
                         </q-form>
                     </div>
                 </q-card-section>
@@ -79,15 +108,23 @@
         </q-dialog>
     </div>
 </template>
+<style scoped> 
+    .mapouter{position:relative;text-align:right;width:600px;height:400px;}
+    .gmap_canvas {overflow:hidden;background:none!important;width:600px;height:400px;}
+    .gmap_iframe {width:600px!important;height:400px!important;}
+</style>
 <script>
-import jsonClient from '../../context-data/clients.json'
 import jsonMisc from '../../context-data/misc.json'
 import jsonBranch from '../../context-data/branches.json'
+import { Geolocation } from '@capacitor/geolocation'
 
+// GOOGLE API KEY: AIzaSyCrQ2gSBwhbFsnj8JSYxCnTkXrb1ZJbmjw
 export default {
     name: "ClientAdd",
     data() {
         return {
+            map: false,
+            apiKey: 'AIzaSyCrQ2gSBwhbFsnj8JSYxCnTkXrb1ZJbmjw',
             openModal: false,
             loadProductList: [],
             loadClientData: {
@@ -141,8 +178,9 @@ export default {
             let res = list.map((el) => {
                 let opt = {
                     value: el.id,
-                    label: el.regionName,
-                    branch: el.branchName
+                    label: el.branchName,
+                    branch: el.branchName,
+                    code: el.branchCode
                 }
 
                 return opt
@@ -172,8 +210,17 @@ export default {
     },
     created(){
         this.clientList
+        this.initMap()
     },
     methods: {
+        async initMap(){
+            const vm = this;
+            Geolocation.getCurrentPosition().then(newPosition => {
+                let coordinates = newPosition.coords
+                vm.form.client.geoLocation  = coordinates
+                vm.map = true
+            })
+        },
         async closeModal(){
             this.$emit('updateStatus', false);
         },

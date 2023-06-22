@@ -9,7 +9,7 @@
                             @click="addProductView = true"
                             round 
                             color="primary" 
-                            icon="add_shopping_cart" 
+                            icon="add_comment" 
                         />
                         
                     </q-toolbar>

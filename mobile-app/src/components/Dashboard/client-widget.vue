@@ -91,7 +91,6 @@
 </template>
 <script>
 import moment from 'moment'
-import json from '../../context-data/clients.json'
 import {LocalStorage} from 'quasar'
 import { Geolocation } from '@capacitor/geolocation'
 import { Camera, CameraResultType } from '@capacitor/camera'
@@ -134,6 +133,7 @@ export default {
         },
     },
     created(){
+        // LocalStorage.set("clientList", [])
         this.clientList
     },
     methods: {
@@ -154,6 +154,7 @@ export default {
                 // Adding the component back in
                 this.loadClientList.push(data)
                 LocalStorage.set("clientList", this.loadClientList)
+                this.clientList
             });
             
         },
@@ -168,6 +169,7 @@ export default {
             this.openRemarks = true
         },
         playCall(index){
+            const vm = this;
             let timeIn = moment(new Date).format("lll")
             // check if there is still playing
             let filterCall = this.loadClientList.filter(el => el.client.status === "in-progress")
@@ -178,19 +180,17 @@ export default {
                 this.loadClientList[index].client.status = "in-progress";
                 this.inProgress = index
 
-                setTimeout(() => {
-                    this.loadClientList[index].client.loading = false;
-                    this.loadClientList[index].client.icon = 'fiber_manual_record';
-                    this.loadClientList[index].client.color = 'red';
-                    // Saving the Time In
-                    Geolocation.getCurrentPosition().then(newPosition => {
-                        this.loadClientList[index].attendance.startCall = timeIn;
-                        this.loadClientList[index].attendance.geoLocation.timeIn = newPosition.timestamp;
-                        this.loadClientList[index].attendance.geoLocation.coorIn = newPosition.coords;
-                    })
-                    this.openBooking = true;
-                    LocalStorage.set("clientList", this.loadClientList)
-                }, 500)
+                this.loadClientList[index].client.loading = false;
+                this.loadClientList[index].client.icon = 'fiber_manual_record';
+                this.loadClientList[index].client.color = 'red';
+                // Saving the Time In
+                Geolocation.getCurrentPosition().then(newPosition => {
+                    vm.loadClientList[index].attendance.startCall = timeIn;
+                    vm.loadClientList[index].attendance.geoLocation.timeIn = newPosition.timestamp;
+                    vm.loadClientList[index].attendance.geoLocation.coorIn = newPosition.coords;
+                })
+                this.openBooking = true;
+                LocalStorage.set("clientList", this.loadClientList)
             } else {
                 this.$q.dialog({
                     title: 'Error Playing Call',
@@ -202,22 +202,22 @@ export default {
             
         },
         stopCall(index){
+            const vm = this;
             let timeOut = moment(new Date).format("lll")
             this.loadClientList[index].client.loading = true;
             this.loadClientList[index].client.status = "finish";
 
-            setTimeout(() => {
-                this.loadClientList[index].client.loading = false;
-                this.loadClientList[index].client.icon = 'check_circle';
-                this.loadClientList[index].client.color = 'blue';
-                Geolocation.getCurrentPosition().then(newPosition => {
-                    this.loadClientList[index].attendance.endCall = timeOut;
-                    this.loadClientList[index].attendance.geoLocation.timeOut = newPosition.timestamp;
-                    this.loadClientList[index].attendance.geoLocation.coorOut = newPosition.coords;
-                })
+            this.loadClientList[index].client.loading = false;
+            this.loadClientList[index].client.icon = 'check_circle';
+            this.loadClientList[index].client.color = 'blue';
+            Geolocation.getCurrentPosition().then(newPosition => {
+                vm.loadClientList[index].attendance.endCall = timeOut;
+                vm.loadClientList[index].attendance.geoLocation.timeOut = newPosition.timestamp;
+                vm.loadClientList[index].attendance.geoLocation.coorOut = newPosition.coords;
+            })
 
-                LocalStorage.set("clientList", this.loadClientList)
-            }, 500)
+            console.log(this.loadClientList)
+            LocalStorage.set("clientList", this.loadClientList)
         },
         closeBooking(val){
             this.loadClientList[this.inProgress].client.icon = 'play_circle';
@@ -227,15 +227,15 @@ export default {
             this.loadClientList[this.inProgress].attendance.startCall = '';
             this.loadClientList[this.inProgress].attendance.geoLocation.timeIn = '';
             this.loadClientList[this.inProgress].attendance.geoLocation.coorIn = {};
+            this.loadClientList[this.inProgress].remarks = [];
+            this.loadClientList[this.inProgress].booking = [];
 
             this.clientList
             LocalStorage.set("clientList", this.loadClientList)
             this.openBooking = false
         },
         updateData(val){
-            
             LocalStorage.set("clientList", val)
-
             this.clientList
         },
         async playCamera(index){

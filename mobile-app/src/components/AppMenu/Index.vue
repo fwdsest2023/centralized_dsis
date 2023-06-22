@@ -121,7 +121,6 @@ export default {
             
             // Call Sync API
             api.post('mobile/sync/data', payload).then((response) => {
-                console.log(response)
                 if(response.status <= 200){
                     this.$q.dialog({
                         title: response.data.title,

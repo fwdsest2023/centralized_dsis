@@ -115,7 +115,6 @@
 <script>
 import {LocalStorage} from 'quasar'
 import json from '../../context-data/products.json'
-import jsonClient from '../../context-data/clients.json'
 
 export default {
     name: "ClientBooking",
@@ -150,6 +149,14 @@ export default {
             this.loadClientData = data
         },
         filterList(){
+            let dataClient = this.loadClientData[this.clientId]
+            this.loadProductList.map((item) => {
+                let setPrice = item.costGroup.filter(el => {
+                    return el.regionId === dataClient.client.regionId
+                })
+                item.productCost = setPrice[0].price
+                return item
+            })
             return  this.loadProductList.filter(search => {
                 return search.productName.toLowerCase().includes(this.searchClient.toLowerCase())
             })
