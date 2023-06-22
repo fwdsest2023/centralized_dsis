@@ -37,8 +37,7 @@ export function SignIn() {
       localStorage.setItem('token', data.jwt)
       localStorage.setItem('interface', data.uui)
       localStorage.setItem('userData', JSON.stringify(userData))
-      console.log(data.uui === 'DSIS')
-      console.log(data.uui)
+
       if(data.uui === 'DSIS'){ navigate('/dsis/dashboard', { replace: true })}
       else {
         navigate('/dashboard/home',  { replace: true })

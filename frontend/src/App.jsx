@@ -1,14 +1,20 @@
 import React from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import { Dashboard, Auth } from "@/layouts";
+import { Dashboard, Auth, Dsis } from "@/layouts";
+import jwtDecode from "jwt-decode";
 
 function App() {
   const navigate = useNavigate();
   const tokenCheck = () => {
     let appData = localStorage.getItem('token');
     const token = appData;
+    const usrData = jwtDecode(token);
     if (token) {
-      navigate('/dashboard/home',  { replace: false })
+      // navigate('/dashboard/home',  { replace: false })
+    if(usrData.uui === 'DSIS'){ navigate('/dsis/dashboard', { replace: true })}
+      else {
+        navigate('/dashboard/home',  { replace: true })
+        }
     } else {
       navigate('/auth/sign-in',  { replace: false })
     }
@@ -22,6 +28,7 @@ function App() {
     <Routes>
       <Route path="/dashboard/*" element={<Dashboard />} />
       <Route path="/auth/*" element={<Auth />} />
+      <Route path="/dsis/*" element={<Dsis />} />
       <Route path="*" element={<Navigate to="/dashboard/home" replace />} />
     </Routes>
   );
