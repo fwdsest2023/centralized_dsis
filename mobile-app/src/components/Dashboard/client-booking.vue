@@ -19,7 +19,7 @@
 
                 <q-card-section style="height:60vh;max-height: 60vh" class="scroll">
                     <q-list>
-                        <div v-for="(item, index) in loadClientData.booking" :key="index">
+                        <div v-for="(item, index) in loadClientData[clientId].booking" :key="index">
                             <q-item>
                                 <q-item-section>
                                     <q-item-label>{{item.itemName}}</q-item-label>
@@ -30,9 +30,12 @@
                                 </q-item-section>
                             </q-item>
                         </div>
-                        <q-item v-if="loadClientData.booking.length === 0" >
-                            <q-item-section>
-                                No Booked Product
+                        <q-item v-if="loadClientData[clientId].booking.length === 0" >
+                            <q-item-section class="text-center">
+                                <q-item-label>
+                                    <q-icon name="report" color="grey-3" size="7rem" /><br>
+                                    <strong>No Product Added!</strong>
+                                </q-item-label>
                             </q-item-section>
                         </q-item>
                     </q-list>
@@ -110,6 +113,7 @@
     </div>
 </template>
 <script>
+import {LocalStorage} from 'quasar'
 import json from '../../context-data/products.json'
 import jsonClient from '../../context-data/clients.json'
 
@@ -119,9 +123,7 @@ export default {
         return {
             openModal: false,
             loadProductList: [],
-            loadClientData: {
-                booking: []
-            },
+            loadClientData: [],
             addProductView: false,
             searchClient: '',
             imageSrc: ''
@@ -143,10 +145,9 @@ export default {
     },
     computed: {
         clientList: function(){
+            let data = LocalStorage.getItem('clientList')
             this.loadProductList = json.products
-            this.loadClientData = this.clientId !== null ? jsonClient.list[this.clientId] : {
-                booking:[]
-            }
+            this.loadClientData = data
         },
         filterList(){
             return  this.loadProductList.filter(search => {
@@ -162,7 +163,8 @@ export default {
             this.$emit('updateStatus', false);
         },
         async submitOrder(){
-            this.$emit('orderSubmit', false);
+            this.$emit('orderSubmit', this.loadClientData);
+            this.$emit('moveStep', false);
         },
         addProduct(item){
             let list = {
@@ -173,7 +175,9 @@ export default {
                 total: 0
             }
             
-            this.loadClientData.booking.push(list)
+            this.loadClientData[this.clientId]
+            .booking
+            .push(list)
         }
     }
 }

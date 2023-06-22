@@ -21,12 +21,12 @@
       <!-- drawer content -->
       <Profile v-bind="userProfile" />
       <q-separator dark />
-      <SideNav 
+      <!-- <SideNav 
         v-for="link in filteredMenus"
         :key="link.title"
         v-bind="link"
         @linkCrumbs="setCrumbsItem"
-      />
+      /> -->
     </q-drawer>
 
     <q-page-container>
@@ -35,9 +35,9 @@
 
     <q-footer reveal class="text-weight-thin text-blue-white-9 footer-custom-style text-center q-pt-xs q-pb-xs">
       <q-btn-group flat dense spread>
-        <q-btn flat rounded icon="dashboard" />
-        <q-btn flat rounded icon="account_circle" />
-        <q-btn flat rounded icon="tune" />
+        <q-btn flat rounded icon="dashboard" @click="goToMenuPages('/dashboard')"/>
+        <q-btn flat rounded icon="account_circle" @click="goToMenuPages('/dashboard')" />
+        <q-btn flat rounded icon="tune" @click="goToMenuPages('/settings')" />
       </q-btn-group>
     </q-footer>
   </q-layout>
@@ -61,66 +61,67 @@ const linksList = [
       {label: 'Dashboard', icon: 'dashboard', link: 'dashboard'}
     ]
   },
-  {
-    title: 'OR Forms',
-    icon: 'history_edu',
-    link: 'forms',
-    code: 102,
-    crumbs: [
-      {label: '', icon: 'home', link: '/'},
-      {label: 'OR Forms', icon: 'history_edu', link: 'forms'}
-    ]
-  },
-  {
-    title: 'Print OR',
-    icon: 'print',
-    link: 'print',
-    code: 103,
-    crumbs: [
-      {label: '', icon: 'home', link: '/'},
-      {label: 'Print Form', icon: 'print', link: 'print'}
-    ]
-  },
-  {
-    title: 'Patient List',
-    icon: 'view_list',
-    link: 'mylist',
-    code: 104,
-    crumbs: [
-      {label: '', icon: 'home', link: '/'},
-      {label: 'Patient List', icon: 'view_list', link: 'mylist'}
-    ]
-  },
-  {
-    title: 'Save List',
-    icon: 'save',
-    link: 'mysavelist',
-    code: 105,
-    crumbs: [
-      {label: '', icon: 'home', link: '/'},
-      {label: 'Saved Data List', icon: 'save', link: 'mysavelist'}
-    ]
-  },
-  {
-    title: 'Manage Users',
-    icon: 'manage_accounts',
-    link: 'usermanagement',
-    code: 106,
-    crumbs: [
-      {label: '', icon: 'home', link: '/'},
-      {label: 'Manage Users', icon: 'manage_accounts', link: 'usermanagement'}
-    ]
-  },
-  {
-    title: 'Manage CRS',
-    icon: 'dynamic_form',
-    link: 'crsmanagement',
-    code: 107,
-    crumbs: [
-      {label: '', icon: 'home', link: '/'},
-      {label: 'Manage CRS', icon: 'dynamic_form', link: 'crsmanagement'}
-    ]
-  },
+
+  // {
+  //   title: 'OR Forms',
+  //   icon: 'history_edu',
+  //   link: 'forms',
+  //   code: 102,
+  //   crumbs: [
+  //     {label: '', icon: 'home', link: '/'},
+  //     {label: 'OR Forms', icon: 'history_edu', link: 'forms'}
+  //   ]
+  // },
+  // {
+  //   title: 'Print OR',
+  //   icon: 'print',
+  //   link: 'print',
+  //   code: 103,
+  //   crumbs: [
+  //     {label: '', icon: 'home', link: '/'},
+  //     {label: 'Print Form', icon: 'print', link: 'print'}
+  //   ]
+  // },
+  // {
+  //   title: 'Patient List',
+  //   icon: 'view_list',
+  //   link: 'mylist',
+  //   code: 104,
+  //   crumbs: [
+  //     {label: '', icon: 'home', link: '/'},
+  //     {label: 'Patient List', icon: 'view_list', link: 'mylist'}
+  //   ]
+  // },
+  // {
+  //   title: 'Save List',
+  //   icon: 'save',
+  //   link: 'mysavelist',
+  //   code: 105,
+  //   crumbs: [
+  //     {label: '', icon: 'home', link: '/'},
+  //     {label: 'Saved Data List', icon: 'save', link: 'mysavelist'}
+  //   ]
+  // },
+  // {
+  //   title: 'Manage Users',
+  //   icon: 'manage_accounts',
+  //   link: 'usermanagement',
+  //   code: 106,
+  //   crumbs: [
+  //     {label: '', icon: 'home', link: '/'},
+  //     {label: 'Manage Users', icon: 'manage_accounts', link: 'usermanagement'}
+  //   ]
+  // },
+  // {
+  //   title: 'Manage CRS',
+  //   icon: 'dynamic_form',
+  //   link: 'crsmanagement',
+  //   code: 107,
+  //   crumbs: [
+  //     {label: '', icon: 'home', link: '/'},
+  //     {label: 'Manage CRS', icon: 'dynamic_form', link: 'crsmanagement'}
+  //   ]
+  // },
 ];
 
 export default {
@@ -164,6 +165,9 @@ export default {
     },
     setCrumbsItem(val){
       this.menuCrumbs = val;
+    },
+    goToMenuPages(page){
+      this.$router.push(page)
     },
     logout(){
       localStorage.removeItem('userData');

@@ -6,7 +6,9 @@
   "author": "Futuristics Web Development Solutions",
   "private": true,
   "scripts": {
-    "test": "echo \"No test specified\" && exit 0"
+    "test": "echo \"No test specified\" && exit 0",
+    "dev": "quasar dev",
+    "mbuild": "quasar build -m capacitor -T android"
   },
   "dependencies": {
     "@capacitor/camera": "^5.0.4",

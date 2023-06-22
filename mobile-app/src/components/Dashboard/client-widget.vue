@@ -23,96 +23,149 @@
                 size="md"
             />
         </q-toolbar>
-        <q-list>
-          <div v-for="(item, index) in filterList" :key="index">
-            <q-item>
-              <q-item-section>
-                <q-item-label>{{item.client.storeName}}</q-item-label>
-                <q-item-label caption lines="2">{{item.client.address}}</q-item-label>
-              </q-item-section>
+        <q-list >
+            <div v-if="loadClientList.length !== 0">
+                <div v-for="(item, index) in filterList" :key="index">
+                    <q-item>
+                    <q-item-section>
+                        <q-item-label>{{item.client.storeName}}</q-item-label>
+                        <q-item-label caption lines="2">{{item.client.address}}</q-item-label>
+                    </q-item-section>
 
-              <q-item-section side top>
-                <q-item-label caption>{{item.client.branch}}</q-item-label>
-                <q-btn
-                    v-if="item.client.status !== 'finish'"
-                    @click="item.client.status === 'in-progress' ? stopCall(index) : playCall(index)"
-                    flat 
-                    round
-                    :loading="item.client.loading"
-                    :color="item.client.color" 
-                    :icon="item.client.icon" 
-                    size="md" 
-                />
-                <q-btn
-                    v-if="item.client.status === 'finish'"
-                    @click="playCamera(index)"
-                    flat 
-                    round
-                    :loading="item.client.loading"
-                    :color="item.client.color" 
-                    :icon="item.client.icon" 
-                    size="md" 
-                />
-              </q-item-section>
-            </q-item>
-          </div>
+                    <q-item-section side top>
+                        <q-item-label caption>{{item.client.branch}}</q-item-label>
+                        <q-btn
+                            v-if="item.client.status !== 'finish'"
+                            @click="item.client.status === 'in-progress' ? stopCall(index) : playCall(index)"
+                            flat 
+                            round
+                            :loading="item.client.loading"
+                            :color="item.client.color" 
+                            :icon="item.client.icon" 
+                            size="md" 
+                        />
+                        <q-btn
+                            v-if="item.client.status === 'finish'"
+                            flat 
+                            round
+                            :loading="item.client.loading"
+                            :color="item.client.color" 
+                            :icon="item.client.icon" 
+                            size="md" 
+                        />
+                    </q-item-section>
+                    </q-item>
+                </div>
+            </div>
+            <div v-if="loadClientList.length === 0">
+                <q-item>
+                    <q-item-section class="text-center">
+                        <q-item-label>
+                            <q-icon name="report" color="grey-3" size="7rem" /><br>
+                            <strong>No Store Found!</strong>
+                        </q-item-label>
+                    </q-item-section>
+                </q-item>
+            </div>
         </q-list>
         
-        <clientBookingModal 
+        <clientBookingModal
             :modalStatus="openBooking"
             :clientId="inProgress"
             @updateStatus="closeBooking"
-            @orderSubmit="submitOrders"
+            @moveStep="nextStep"
+            @orderSubmit="updateData"
          />
-        <clientAddModal 
+        <clientRemarksModal 
+            :modalStatus="openRemarks"
+            :clientId="inProgress"
+            @updateStatus="closeRemarks"
+            @addClientRemarks="updateData"
+         />
+        <clientAddModal
             :modalStatus="openAdd"
             @updateStatus="closeAddClient"
+            @addClientData="addData"
          />
     </div>
 </template>
 <script>
 import moment from 'moment'
 import json from '../../context-data/clients.json'
+import {LocalStorage} from 'quasar'
 import { Geolocation } from '@capacitor/geolocation'
 import { Camera, CameraResultType } from '@capacitor/camera'
 import clientBookingModal from './client-booking.vue'
+import clientRemarksModal from './client-remarks.vue'
 import clientAddModal from './client-add.vue'
 
 export default {
     name: "ClientWidget",
     data() {
         return {
+            renderComponent: true,
             loadClientList: [],
             searchClient: '',
             imageSrc: '',
             openBooking: false,
+            openRemarks: false,
             openAdd: false,
             inProgress: null
         }
     },
     components:{
         clientBookingModal,
+        clientRemarksModal,
         clientAddModal
     },
     computed: {
-        clientList: function(){
-            this.loadClientList = json.list
+        clientList(){
+            let list = LocalStorage.getItem('clientList');
+            this.loadClientList = list.length !== 0 ? list : [];
         },
         filterList(){
-            return  this.loadClientList.filter(search => {
-                return search.client.storeName.toLowerCase().includes(this.searchClient.toLowerCase())
-            })
+            if(this.loadClientList.length !== 0){
+                return this.loadClientList.filter(search => {
+                    return search.client.storeName.toLowerCase().includes(this.searchClient.toLowerCase())
+                })
+            }
+
+            return []
         },
     },
     created(){
         this.clientList
     },
     methods: {
+        forceRerender() {
+            // Removing my-component from the DOM
+            this.renderComponent = false;
+
+            this.$nextTick(() => {
+            // Adding the component back in
+                this.renderComponent = true;
+            });
+        },
         addClient(){
             this.openAdd = true
         },
+        addData(data){
+            this.$nextTick(() => {
+                // Adding the component back in
+                this.loadClientList.push(data)
+                LocalStorage.set("clientList", this.loadClientList)
+            });
+            
+        },
+        closeRemarks(){
+            this.openRemarks = false
+        },
         closeAddClient(){
             this.openAdd = false
+        },
+        nextStep(val){
+            this.openBooking = false
+            this.openRemarks = true
         },
         playCall(index){
             let timeIn = moment(new Date).format("lll")
@@ -131,14 +184,13 @@ export default {
                     this.loadClientList[index].client.color = 'red';
                     // Saving the Time In
                     Geolocation.getCurrentPosition().then(newPosition => {
-                        json.list[index].attendance.startCall = timeIn;
-                        json.list[index].attendance.geoLocation.timeIn = newPosition.timestamp;
-                        json.list[index].attendance.geoLocation.coorIn = newPosition.coords;
+                        this.loadClientList[index].attendance.startCall = timeIn;
+                        this.loadClientList[index].attendance.geoLocation.timeIn = newPosition.timestamp;
+                        this.loadClientList[index].attendance.geoLocation.coorIn = newPosition.coords;
                     })
-
-                    console.log(this.loadClientList[index])
                     this.openBooking = true;
-                }, 2000)
+                    LocalStorage.set("clientList", this.loadClientList)
+                }, 500)
             } else {
                 this.$q.dialog({
                     title: 'Error Playing Call',
@@ -159,11 +211,13 @@ export default {
                 this.loadClientList[index].client.icon = 'check_circle';
                 this.loadClientList[index].client.color = 'blue';
                 Geolocation.getCurrentPosition().then(newPosition => {
-                    json.list[index].attendance.endCall = timeOut;
-                    json.list[index].attendance.geoLocation.timeOut = newPosition.timestamp;
-                    json.list[index].attendance.geoLocation.coorOut = newPosition.coords;
+                    this.loadClientList[index].attendance.endCall = timeOut;
+                    this.loadClientList[index].attendance.geoLocation.timeOut = newPosition.timestamp;
+                    this.loadClientList[index].attendance.geoLocation.coorOut = newPosition.coords;
                 })
-            }, 2000)
+
+                LocalStorage.set("clientList", this.loadClientList)
+            }, 500)
         },
         closeBooking(val){
             this.loadClientList[this.inProgress].client.icon = 'play_circle';
@@ -175,16 +229,19 @@ export default {
             this.loadClientList[this.inProgress].attendance.geoLocation.coorIn = {};
 
             this.clientList
+            LocalStorage.set("clientList", this.loadClientList)
             this.openBooking = false
         },
-        submitOrders(val){
+        updateData(val){
+            
+            LocalStorage.set("clientList", val)
+
             this.clientList
-            this.openBooking = false
         },
         async playCamera(index){
             const image = await Camera.getPhoto({
                 quality: 90,
-                allowEditing: true,
+                allowEditing: false,
                 resultType: CameraResultType.Uri
             })
             console.log(image.webPath)

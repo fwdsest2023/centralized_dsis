@@ -1,38 +1,5 @@
 {
-    "list": [
-        {
-            "client": {
-                "id": 1,
-                "storeName": "Client Store 1",
-                "address": "Talavera,Nueva Ecija",
-                "branch": "Nueva Ecija",
-                "regionId": 1,
-                "categoryId": 1,
-                "type": "client",
-                "loading": false,
-                "icon": "play_circle",
-                "color": "green",
-                "status": "pending",
-                "geoLocation":{
-                    "longtitude": 0,
-                    "latitude": 0
-                }
-            },
-            "attendance": {
-                "startCall": "",
-                "endCall": "",
-                "geoLocation": {
-                    "timeIn":"",
-                    "timeOut":"",
-                    "coorIn": {},
-                    "coorOut": {}
-                }
-            },
-            "booking":[],
-            "remarks": [],
-            "files": ""
-        }
-    ],
+    "list": [],
     "adminWorks": [
         {
             "id": 1,

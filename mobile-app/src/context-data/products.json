@@ -6,7 +6,13 @@
       "productForm": "MASH",
       "description": "N/A",
       "stock": "999999",
-      "productCost": "1605"
+      "productCost": "1605",
+      "costGroup": [
+        {
+          "regionId": 1,
+          "price": 1405
+        }
+      ]
     },
     {
       "id": "2",

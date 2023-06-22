@@ -3,7 +3,14 @@
         {
             "id": 1,
             "regionName": "Region III",
-            "branchName": "Nueva Ecija"
+            "branchName": "Nueva Ecija",
+            "branchCode": "NE"
+        },
+        {
+            "id": 2,
+            "regionName": "Region III",
+            "branchName": "Aurora",
+            "branchCode": "AU"
         }
     ]
 }
