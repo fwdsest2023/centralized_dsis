@@ -4,11 +4,13 @@ import {
   ArrowRightOnRectangleIcon,
   UserPlusIcon,
   BuildingStorefrontIcon,
-  CalendarDaysIcon
+  CalendarDaysIcon,
+  DevicePhoneMobileIcon,
+  QrCodeIcon
 } from "@heroicons/react/24/solid";
 import { Home, Patients, Inventory } from "@/pages/dashboard";
 import { SignIn, SignUp } from "@/pages/auth";
-import { Dsishome } from "@/pages/dsis";
+import { Dsishome, DSISDashboard, AgentSync } from "@/pages/dsis";
 
 
 const icon = {
@@ -64,14 +66,25 @@ export const routes = [
     ],
   },
   {
-    title: "dsis pages",
     layout: "dsis",
     pages: [
       {
-        icon: <ArrowRightOnRectangleIcon {...icon} />,
-        name: "DSIS",
-        path: "/dsishome",
+        icon: <HomeIcon {...icon} />,
+        name: "Dashboard",
+        path: "/home",
+        element: <DSISDashboard />,
+      },
+      {
+        icon: <QrCodeIcon {...icon} />,
+        name: "Inventory Management",
+        path: "/inventory",
         element: <Dsishome />,
+      },
+      {
+        icon: <DevicePhoneMobileIcon {...icon} />,
+        name: "Mobile Sync Management",
+        path: "/mobile_sync",
+        element: <AgentSync />,
       },
     ],
   },

@@ -8,13 +8,13 @@ function App() {
   const tokenCheck = () => {
     let appData = localStorage.getItem('token');
     const token = appData;
-    const usrData = jwtDecode(token);
     if (token) {
-      // navigate('/dashboard/home',  { replace: false })
-    if(usrData.uui === 'DSIS'){ navigate('/dsis/dashboard', { replace: true })}
-      else {
+      const usrData = jwtDecode(token);
+      if(usrData.uui === 'DSIS'){ 
+        navigate('/dsis/home', { replace: true })
+      } else {
         navigate('/dashboard/home',  { replace: true })
-        }
+      }
     } else {
       navigate('/auth/sign-in',  { replace: false })
     }
