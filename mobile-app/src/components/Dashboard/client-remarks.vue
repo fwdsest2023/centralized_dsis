@@ -43,7 +43,7 @@
                 <q-separator />
 
                 <q-card-actions align="right">
-                     <q-btn flat label="Cancel" :loading="btnLoading" color="negative" @click="closeModal" />
+                     <q-btn flat label="Previous" :loading="btnLoading" color="negative" @click="closeModal" />
                     <q-btn flat label="Next" :loading="btnLoading" color="positive" @click="submitOrder" />
                 </q-card-actions>
             </q-card>
@@ -121,10 +121,11 @@ export default {
     methods: {
         async closeModal(){
             this.$emit('updateStatus', false);
+            this.$emit('backStep', {nextTo: 'booking'});
         },
         async submitOrder(){
             this.$emit('addClientRemarks', this.loadClientData);
-            this.$emit('updateStatus', false);
+            this.$emit('moveStep', {nextTo: 'selfie'});
         },
         addRemarks(){
             this.loadClientData[this.clientId]
@@ -133,6 +134,7 @@ export default {
             
             this.$nextTick(() => {
                 this.remark = ""
+                LocalStorage.set("clientList", this.loadClientData)
             })
         }
     }

@@ -1,0 +1,126 @@
+<template>
+    <div>
+        <q-dialog v-if="showPicture" persistent seamless v-model="openModal" position="top">
+            <q-card>
+                <q-card-section>
+                    <q-toolbar>
+                        <q-toolbar-title>Selfie Evidence</q-toolbar-title>
+                        <q-btn
+                            @click="reTake"
+                            round 
+                            color="red" 
+                            icon="cameraswitch" 
+                        />
+                    </q-toolbar>
+                </q-card-section>
+
+                <q-separator />
+
+                <q-card-section class="scroll">
+                    <q-img
+                        :src="imgSrc"
+                        spinner-color="white"
+                    />
+                </q-card-section>
+
+                <q-separator />
+
+                <q-card-actions align="right">
+                    <q-btn flat label="Previous" :loading="btnLoading" color="negative" @click="closeModal" />
+                    <q-btn flat label="Done" :loading="btnLoading" color="positive" @click="submitOrder" />
+                </q-card-actions>
+            </q-card>
+        </q-dialog>
+        
+    </div>
+</template>
+<script>
+import { defineCustomElements } from '@ionic/pwa-elements/loader';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'
+import {LocalStorage} from 'quasar'
+
+export default {
+    name: "ClientRemarks",
+    data() {
+        return {
+            openModal: false,
+            showPicture: false,
+            loadClientData: [],
+            imgSrc: ''
+        }
+    },
+    props: {
+        clientId: {
+            type: Number,
+            default: 0
+        },
+        modalStatus: {
+            type: Boolean
+        }
+    },
+    watch:{
+        modalStatus: function(newVal){
+            let vm = this
+            this.openModal = newVal
+            if(newVal === true){
+                defineCustomElements(window).then(()=>{
+                    vm.playCamera()
+                })
+            }
+        }
+    },
+    computed: {
+        clientList: function(){
+            let data = LocalStorage.getItem('clientList')
+            this.loadClientData = data
+        }
+    },
+    created(){
+        this.clientList
+    },
+    methods: {
+        async closeModal(){
+            this.$emit('updateStatus', false);
+            this.$emit('backStep', {nextTo: 'remarks'});
+        },
+        async submitOrder(){
+            this.$emit('addClientVisit', this.loadClientData);
+            this.$emit('updateStatus', false);
+        },
+        reTake(){
+            this.imgSrc = ''
+            this.showPicture = false
+            this.playCamera()
+        },
+        async playCamera(){
+            let vm = this;
+            const image = await Camera.getPhoto({
+                quality: 100,
+                source: CameraSource.Camera,
+                allowEditing: false,
+                resultType: CameraResultType.DataUrl,
+                presentationStyle:'popover'
+            }).catch((err) => { 
+                alert(err)
+                console.log('dsdsd')
+                vm.closeModal()
+            })
+            console.log(image)
+            this.imgSrc = image.dataUrl
+            this.loadClientData[this.clientId].files = image.dataUrl
+            this.showPicture = true
+
+            LocalStorage.set("clientList", this.loadClientData)
+        }
+    }
+}
+</script>
+
+<style>
+.hydrated{
+    z-index: 9999999;
+}
+.camera-footer > .pick-image{
+    display: none!important;
+} 
+</style>

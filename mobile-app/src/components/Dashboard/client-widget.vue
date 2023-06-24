@@ -46,6 +46,7 @@
                         />
                         <q-btn
                             v-if="item.client.status === 'finish'"
+                            @click="playCamera(index)"
                             flat 
                             round
                             :loading="item.client.loading"
@@ -80,7 +81,16 @@
             :modalStatus="openRemarks"
             :clientId="inProgress"
             @updateStatus="closeRemarks"
+            @moveStep="nextStep"
             @addClientRemarks="updateData"
+            @backStep="prevStep"
+         />
+        <clientSelfieModal 
+            :modalStatus="openSelfie"
+            :clientId="inProgress"
+            @updateStatus="closeSelfie"
+            @addClientVisit="updateData"
+            @backStep="prevStep"
          />
         <clientAddModal
             :modalStatus="openAdd"
@@ -93,9 +103,9 @@
 import moment from 'moment'
 import {LocalStorage} from 'quasar'
 import { Geolocation } from '@capacitor/geolocation'
-import { Camera, CameraResultType } from '@capacitor/camera'
 import clientBookingModal from './client-booking.vue'
 import clientRemarksModal from './client-remarks.vue'
+import clientSelfieModal from './client-selfie.vue'
 import clientAddModal from './client-add.vue'
 
 export default {
@@ -108,6 +118,7 @@ export default {
             imageSrc: '',
             openBooking: false,
             openRemarks: false,
+            openSelfie: false,
             openAdd: false,
             inProgress: null
         }
@@ -115,6 +126,7 @@ export default {
     components:{
         clientBookingModal,
         clientRemarksModal,
+        clientSelfieModal,
         clientAddModal
     },
     computed: {
@@ -142,7 +154,6 @@ export default {
             this.renderComponent = false;
 
             this.$nextTick(() => {
-            // Adding the component back in
                 this.renderComponent = true;
             });
         },
@@ -154,7 +165,6 @@ export default {
                 // Adding the component back in
                 this.loadClientList.push(data)
                 LocalStorage.set("clientList", this.loadClientList)
-                this.clientList
             });
             
         },
@@ -164,9 +174,40 @@ export default {
         closeAddClient(){
             this.openAdd = false
         },
+        closeSelfie(){
+            this.openSelfie = false
+        },
         nextStep(val){
-            this.openBooking = false
-            this.openRemarks = true
+            if(val.nextTo === 'remarks') {
+                this.openBooking = false
+                this.openSelfie = false
+                this.openRemarks = true
+            } else if(val.nextTo === 'selfie') {
+                this.openBooking = false
+                this.openSelfie = true
+                this.openRemarks = false
+            } else {
+                this.openBooking = false
+                this.openSelfie = false
+                this.openRemarks = false
+            }
+            
+        },
+        prevStep(val){
+            if(val.nextTo === 'booking') {
+                this.openBooking = true
+                this.openSelfie = false
+                this.openRemarks = false
+            } else if(val.nextTo === 'remarks') {
+                this.openBooking = false
+                this.openSelfie = false
+                this.openRemarks = true
+            } else {
+                this.openBooking = false
+                this.openSelfie = false
+                this.openRemarks = false
+            }
+            
         },
         playCall(index){
             const vm = this;
@@ -215,8 +256,6 @@ export default {
                 vm.loadClientList[index].attendance.geoLocation.timeOut = newPosition.timestamp;
                 vm.loadClientList[index].attendance.geoLocation.coorOut = newPosition.coords;
             })
-
-            console.log(this.loadClientList)
             LocalStorage.set("clientList", this.loadClientList)
         },
         closeBooking(val){
@@ -229,23 +268,12 @@ export default {
             this.loadClientList[this.inProgress].attendance.geoLocation.coorIn = {};
             this.loadClientList[this.inProgress].remarks = [];
             this.loadClientList[this.inProgress].booking = [];
-
-            this.clientList
             LocalStorage.set("clientList", this.loadClientList)
             this.openBooking = false
         },
         updateData(val){
-            LocalStorage.set("clientList", val)
             this.clientList
-        },
-        async playCamera(index){
-            const image = await Camera.getPhoto({
-                quality: 90,
-                allowEditing: false,
-                resultType: CameraResultType.Uri
-            })
-            console.log(image.webPath)
-            imageSrc.value = image.webPath
+            console.log(this.loadClientList)
         }
     }
 }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 02, 2023 at 06:37 PM
+-- Generation Time: Jun 24, 2023 at 03:06 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -58,9 +58,16 @@ CREATE TABLE `tblcheckups` (
   `treatment` text NOT NULL,
   `diagnosis` text NOT NULL,
   `remarks` text NOT NULL,
-  `createdDate` timestamp NOT NULL DEFAULT 0,
+  `createdDate` timestamp NOT NULL DEFAULT current_timestamp(),
   `createdBy` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tblcheckups`
+--
+
+INSERT INTO `tblcheckups` (`id`, `patientId`, `weight`, `temperature`, `complain`, `history`, `laboratories`, `treatment`, `diagnosis`, `remarks`, `createdDate`, `createdBy`) VALUES
+(1, 22, 3.5, 39.6, 'dsadasdsa', 'sadasdasd', 'gfghghgfjgfh', 'asdasdasd', 'klklkjljkljklj', 'dsadasdsadasd', '2023-06-05 16:36:02', 4);
 
 -- --------------------------------------------------------
 
@@ -77,8 +84,35 @@ CREATE TABLE `tbldistribution` (
   `remarks` text NOT NULL,
   `status` varchar(255) NOT NULL,
   `orderStatus` text NOT NULL,
-  `createdDate` timestamp NOT NULL DEFAULT 0
+  `createdDate` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tblmobile_sync`
+--
+
+CREATE TABLE `tblmobile_sync` (
+  `id` int(11) NOT NULL,
+  `status` varchar(255) NOT NULL DEFAULT 'DSIS001',
+  `agentId` int(11) NOT NULL,
+  `category` varchar(255) NOT NULL,
+  `client` text NOT NULL,
+  `attendance` text NOT NULL,
+  `booking` longtext NOT NULL,
+  `remarks` text NOT NULL,
+  `files` longtext NOT NULL,
+  `syncDate` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tblmobile_sync`
+--
+
+INSERT INTO `tblmobile_sync` (`id`, `status`, `agentId`, `category`, `client`, `attendance`, `booking`, `remarks`, `files`, `syncDate`) VALUES
+(1, 'DSIS001', 2, 'CLIENT', '[{\"storeName\":\"My Store\",\"address\":\"cabucbucan\",\"branch\":\"Nueva Ecija\",\"regionId\":1,\"categoryId\":1,\"geoLocation\":{},\"type\":\"client\",\"contactPerson\":{\"name\":\"Jommel Cabiles\",\"contactNum\":\"09123456789\"},\"attendance\":{\"startCall\":\"Jun 22, 2023 11:21 PM\",\"endCall\":\"\",\"geoLocation\":{\"timeIn\":1687447265508,\"timeOut\":\"\",\"coorIn\":{},\"coorOut\":{}}},\"remarks\":[\"ewqewqe\"],\"files\":\"\"},{\"storeName\":\"sadasdasd\",\"address\":\"ghfghfhfg\",\"branch\":\"Region I\",\"regionId\":4,\"categoryId\":2,\"geoLocation\":{},\"type\":\"client\",\"contactPerson\":{\"name\":\"ggggg\",\"contactNum\":\"44234242\"},\"attendance\":{\"startCall\":\"Jun 23, 2023 11:07 PM\",\"endCall\":\"\",\"geoLocation\":{\"timeIn\":1687532840495,\"timeOut\":\"\",\"coorIn\":{},\"coorOut\":{}}},\"remarks\":[],\"files\":\"\"}]', '', '[{\"client\":{\"storeName\":\"My Store\",\"address\":\"cabucbucan\",\"branch\":\"Nueva Ecija\",\"regionId\":1,\"categoryId\":1,\"geoLocation\":{},\"type\":\"client\",\"contactPerson\":{\"name\":\"Jommel Cabiles\",\"contactNum\":\"09123456789\"},\"attendance\":{\"startCall\":\"Jun 22, 2023 11:21 PM\",\"endCall\":\"\",\"geoLocation\":{\"timeIn\":1687447265508,\"timeOut\":\"\",\"coorIn\":{},\"coorOut\":{}}},\"remarks\":[\"ewqewqe\"],\"files\":\"\"},\"booking\":[]},{\"client\":{\"storeName\":\"sadasdasd\",\"address\":\"ghfghfhfg\",\"branch\":\"Region I\",\"regionId\":4,\"categoryId\":2,\"geoLocation\":{},\"type\":\"client\",\"contactPerson\":{\"name\":\"ggggg\",\"contactNum\":\"44234242\"},\"attendance\":{\"startCall\":\"Jun 23, 2023 11:07 PM\",\"endCall\":\"\",\"geoLocation\":{\"timeIn\":1687532840495,\"timeOut\":\"\",\"coorIn\":{},\"coorOut\":{}}},\"remarks\":[],\"files\":\"\"},\"booking\":[]}]', '', '', '2023-06-23 15:09:38'),
+(2, 'DSIS001', 2, 'CLIENT', '[{\"storeName\":\"My Store\",\"address\":\"cabucbucan\",\"branch\":\"Nueva Ecija\",\"regionId\":1,\"categoryId\":1,\"geoLocation\":{},\"type\":\"client\",\"contactPerson\":{\"name\":\"Jommel Cabiles\",\"contactNum\":\"09123456789\"},\"attendance\":{\"startCall\":\"Jun 23, 2023 11:10 PM\",\"endCall\":\"\",\"geoLocation\":{\"timeIn\":1687533045284,\"timeOut\":\"\",\"coorIn\":{},\"coorOut\":{}}},\"remarks\":[],\"files\":\"\"}]', '', '[{\"client\":{\"storeName\":\"My Store\",\"address\":\"cabucbucan\",\"branch\":\"Nueva Ecija\",\"regionId\":1,\"categoryId\":1,\"geoLocation\":{},\"type\":\"client\",\"contactPerson\":{\"name\":\"Jommel Cabiles\",\"contactNum\":\"09123456789\"},\"attendance\":{\"startCall\":\"Jun 23, 2023 11:10 PM\",\"endCall\":\"\",\"geoLocation\":{\"timeIn\":1687533045284,\"timeOut\":\"\",\"coorIn\":{},\"coorOut\":{}}},\"remarks\":[],\"files\":\"\"},\"booking\":[]}]', '', '', '2023-06-23 15:40:33');
 
 -- --------------------------------------------------------
 
@@ -96,7 +130,7 @@ CREATE TABLE `tblpatient_info` (
   `breed` varchar(255) NOT NULL,
   `species` text NOT NULL,
   `remarks` longtext NOT NULL,
-  `createdDate` timestamp NOT NULL DEFAULT 0,
+  `createdDate` timestamp NOT NULL DEFAULT current_timestamp(),
   `createdBy` int(11) NOT NULL,
   `isDeceased` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -188,9 +222,17 @@ CREATE TABLE `tblschedule` (
   `chckupForm` longtext NOT NULL,
   `remarks` text NOT NULL,
   `createdBy` int(11) NOT NULL,
-  `createdDate` timestamp NOT NULL DEFAULT 0,
+  `createdDate` timestamp NOT NULL DEFAULT current_timestamp(),
   `status` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tblschedule`
+--
+
+INSERT INTO `tblschedule` (`id`, `patientId`, `clientId`, `scheduleDate`, `chckupForm`, `remarks`, `createdBy`, `createdDate`, `status`) VALUES
+(1, 22, 5, '2023-06-08 16:00:00', '{\"complain\":\"dsadasdsa\",\"treatment\":\"asdasdasd\"}', 'new test -total:500 pesos', 4, '2023-06-05 15:00:10', 1),
+(2, 22, 5, '2023-06-15 16:00:00', '{\"complain\":\"qwerttyuyiuoio\",\"treatment\":\"zxcbvbnbnmnm\"}', 'sadasdasdas', 4, '2023-06-05 16:38:44', 0);
 
 -- --------------------------------------------------------
 
@@ -215,8 +257,8 @@ CREATE TABLE `tblusers` (
   `isFirstLogin` int(11) NOT NULL DEFAULT 0,
   `userInterface` varchar(25) NOT NULL DEFAULT 'MIS',
   `isDeleted` int(11) NOT NULL,
-  `createdAt` timestamp NOT NULL DEFAULT 0,
-  `updatedAt` timestamp NOT NULL DEFAULT 0
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -245,7 +287,9 @@ INSERT INTO `tblusers` (`id`, `username`, `password`, `firstName`, `lastName`, `
 (19, 'cCnsT', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'RONALD', 'FRANCISCO', '', '', 15, '+639556592013', '', 1, '', 1, 0, 'MIS', 0, '2023-05-30 15:17:32', '2023-05-30 15:17:32'),
 (20, 'UAOsj', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'JOVITO', 'VALDEZ', '', '', 15, '+639659009764', '', 1, '', 1, 0, 'MIS', 0, '2023-05-30 15:17:49', '2023-05-30 15:17:49'),
 (21, 'X5sjm', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'WESLEY', 'FRANCISCO', '', '', 15, '+639690065546', '', 1, '', 1, 0, 'MIS', 0, '2023-05-30 15:18:07', '2023-05-30 15:18:07'),
-(22, 'FVzIA', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'MARCELINO', 'GUINOO', '', '', 15, '', '', 1, '', 1, 0, 'MIS', 0, '2023-05-30 15:18:21', '2023-05-30 15:18:21');
+(22, 'FVzIA', '93c7c9ecad806a88acdc5a2f6d99a144bed6f0c6', 'MARCELINO', 'GUINOO', '', '', 15, '', '', 1, '', 1, 0, 'MIS', 0, '2023-05-30 15:18:21', '2023-05-30 15:18:21'),
+(23, 'mgnacario', '48c3663c6a68a7cc3c624ae63ab977164a57ca69', 'Mark Gil', 'Nacario', '', '', 1, 'N/A', 'Homestead II', 1, '', 1, 1, 'DSIS', 0, '2023-06-23 15:00:40', '2023-06-23 15:00:40'),
+(24, 'mgnacario', '48c3663c6a68a7cc3c624ae63ab977164a57ca69', 'Mark Gil', 'Nacario', '', '', 1, 'N/A', 'Homestead II', 1, '', 1, 1, 'DSIS', 0, '2023-06-23 15:00:57', '2023-06-23 15:00:57');
 
 -- --------------------------------------------------------
 
@@ -268,7 +312,8 @@ INSERT INTO `tblusertypes` (`id`, `description`, `modules`) VALUES
 (2, 'Vet', '101,102,103,104,105'),
 (3, 'Agent', '101,102,103,104,105'),
 (4, 'Accounting', '101,102,103,104,105'),
-(15, 'Client', '101');
+(15, 'Client', '101'),
+(16, 'Operations', '101,106,104,107');
 
 -- --------------------------------------------------------
 
@@ -282,7 +327,7 @@ CREATE TABLE `tblwellness` (
   `vaxName` text NOT NULL,
   `vaxClassification` text NOT NULL,
   `vaxRemarks` text NOT NULL,
-  `vaxDate` timestamp NOT NULL DEFAULT 0
+  `vaxDate` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -317,6 +362,12 @@ ALTER TABLE `tblcheckups`
 -- Indexes for table `tbldistribution`
 --
 ALTER TABLE `tbldistribution`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `tblmobile_sync`
+--
+ALTER TABLE `tblmobile_sync`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -375,13 +426,19 @@ ALTER TABLE `tblbranches`
 -- AUTO_INCREMENT for table `tblcheckups`
 --
 ALTER TABLE `tblcheckups`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbldistribution`
 --
 ALTER TABLE `tbldistribution`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `tblmobile_sync`
+--
+ALTER TABLE `tblmobile_sync`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tblpatient_info`
@@ -399,19 +456,19 @@ ALTER TABLE `tblprocessflow`
 -- AUTO_INCREMENT for table `tblschedule`
 --
 ALTER TABLE `tblschedule`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tblusers`
 --
 ALTER TABLE `tblusers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `tblusertypes`
 --
 ALTER TABLE `tblusertypes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `tblwellness`

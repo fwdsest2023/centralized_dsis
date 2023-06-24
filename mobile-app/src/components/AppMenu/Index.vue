@@ -114,11 +114,12 @@ export default {
                 category: "CLIENT",
                 listData: this.clData
             }
-
+            console.log(payload)
             // return
             // Loading part
             this.settingList[0].loading = true
-            
+            this.clearFinishData()
+            return
             // Call Sync API
             api.post('mobile/sync/data', payload).then((response) => {
                 if(response.status <= 200){

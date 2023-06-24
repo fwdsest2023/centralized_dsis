@@ -171,7 +171,7 @@ export default {
         },
         async submitOrder(){
             this.$emit('orderSubmit', this.loadClientData);
-            this.$emit('moveStep', false);
+            this.$emit('moveStep', {nextTo: 'remarks'});
         },
         addProduct(item){
             let list = {
@@ -185,6 +185,9 @@ export default {
             this.loadClientData[this.clientId]
             .booking
             .push(list)
+
+            LocalStorage.set("clientList", this.loadClientData)
+            this.addProductView = false
         }
     }
 }
