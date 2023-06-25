@@ -34,7 +34,7 @@ class MobileController extends BaseController
                 ];
 
                 $bookingList[$key] = [
-                    "client" => $clientList[$key],
+                    "clientId" => $key,
                     "booking" => $value->booking
                 ];
             }
