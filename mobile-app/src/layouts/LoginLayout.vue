@@ -36,7 +36,7 @@
     <q-footer reveal class="text-weight-thin text-blue-white-9 footer-custom-style text-center q-pt-xs q-pb-xs">
       <q-btn-group flat dense spread>
         <q-btn flat rounded icon="dashboard" @click="goToMenuPages('/dashboard')"/>
-        <q-btn flat rounded icon="account_circle" @click="goToMenuPages('/dashboard')" />
+        <q-btn flat rounded icon="account_circle" @click="goToMenuPages('/profile')" />
         <q-btn flat rounded icon="tune" @click="goToMenuPages('/settings')" />
       </q-btn-group>
     </q-footer>

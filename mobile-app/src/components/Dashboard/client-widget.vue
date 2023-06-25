@@ -46,7 +46,6 @@
                         />
                         <q-btn
                             v-if="item.client.status === 'finish'"
-                            @click="playCamera(index)"
                             flat 
                             round
                             :loading="item.client.loading"
@@ -120,7 +119,18 @@ export default {
             openRemarks: false,
             openSelfie: false,
             openAdd: false,
-            inProgress: null
+            inProgress: null,
+            geoLoc: {},
+            attendance: {
+                startCall: "",
+                endCall: "",
+                geoLocation: {
+                    timeIn: "",
+                    timeOut: "",
+                    coorIn: {},
+                    coorOut: {}
+                }
+            }
         }
     },
     components:{
@@ -129,11 +139,13 @@ export default {
         clientSelfieModal,
         clientAddModal
     },
+    watch:{
+        loadClientList(newVal){
+            console.log(newVal)
+            LocalStorage.set("clientList", newVal)
+        }
+    },
     computed: {
-        clientList(){
-            let list = LocalStorage.getItem('clientList');
-            this.loadClientList = list.length !== 0 ? list : [];
-        },
         filterList(){
             if(this.loadClientList.length !== 0){
                 return this.loadClientList.filter(search => {
@@ -144,18 +156,14 @@ export default {
             return []
         },
     },
-    created(){
+    mounted(){
         // LocalStorage.set("clientList", [])
-        this.clientList
+        this.clientList()
     },
     methods: {
-        forceRerender() {
-            // Removing my-component from the DOM
-            this.renderComponent = false;
-
-            this.$nextTick(() => {
-                this.renderComponent = true;
-            });
+        clientList(){
+            let list = LocalStorage.getItem('clientList');
+            this.loadClientList = list.length !== 0 ? list : [];
         },
         addClient(){
             this.openAdd = true
@@ -209,29 +217,53 @@ export default {
             }
             
         },
-        playCall(index){
+        async playCall(index){
             const vm = this;
-            let timeIn = moment(new Date).format("lll")
+            
             // check if there is still playing
             let filterCall = this.loadClientList.filter(el => el.client.status === "in-progress")
 
             if(filterCall.length === 0){
-                // Executes the play call
-                this.loadClientList[index].client.loading = true;
-                this.loadClientList[index].client.status = "in-progress";
-                this.inProgress = index
+                try {
+                    let timeIn = moment(new Date).format("lll")
+                    vm.loadClientList[index].client.loading = true;
+                    
+                    // Check if the Location is granted
+                    const perm = await Geolocation.checkPermissions()
+                    
+                    if(perm.location !== 'granted' || perm.coarseLocation !== 'granted'){
+                        const reqPerm = await Geolocation.requestPermissions();
+                        alert(JSON.stringify(reqPerm))
+                        if(reqPerm.location === 'granted' || reqPerm.coarseLocation === 'granted'){
+                            loc = await this.getGeoLoc();
+                        } else {
+                            return false
+                        }
+                    } else {
+                        const coordinates = await Geolocation.getCurrentPosition()
+                        vm.loadClientList[index].attendance.geoLocation.timeIn = coordinates.timestamp;
+                        vm.loadClientList[index].attendance.geoLocation.coorIn = {
+                            lat: coordinates.coords.latitude,
+                            lng: coordinates.coords.longitude,
+                        };
+                    }
 
-                this.loadClientList[index].client.loading = false;
-                this.loadClientList[index].client.icon = 'fiber_manual_record';
-                this.loadClientList[index].client.color = 'red';
-                // Saving the Time In
-                Geolocation.getCurrentPosition().then(newPosition => {
-                    vm.loadClientList[index].attendance.startCall = timeIn;
-                    vm.loadClientList[index].attendance.geoLocation.timeIn = newPosition.timestamp;
-                    vm.loadClientList[index].attendance.geoLocation.coorIn = newPosition.coords;
-                })
-                this.openBooking = true;
-                LocalStorage.set("clientList", this.loadClientList)
+                    this.$nextTick(() => {
+                        vm.loadClientList[index].client.status = "in-progress";
+                        vm.inProgress = index
+                        vm.loadClientList[index].client.icon = 'fiber_manual_record';
+                        vm.loadClientList[index].client.color = 'red';
+                        vm.loadClientList[index].client.loading = false;
+                        vm.loadClientList[index].attendance.startCall = timeIn;
+                        
+
+                        LocalStorage.set('clientList', vm.loadClientList)
+                        this.openBooking = true;
+                    })
+                } catch (error) {
+                  alert(JSON.stringify(error))
+                }
+                
             } else {
                 this.$q.dialog({
                     title: 'Error Playing Call',
@@ -239,24 +271,58 @@ export default {
                     position: 'bottom',
                     color: 'red'
                 })
+
+                return false
             }
             
         },
-        stopCall(index){
-            const vm = this;
-            let timeOut = moment(new Date).format("lll")
-            this.loadClientList[index].client.loading = true;
-            this.loadClientList[index].client.status = "finish";
+        async stopCall(index){
+            try {
+                const vm = this;
+                let timeOut = moment(new Date).format("lll")
 
-            this.loadClientList[index].client.loading = false;
-            this.loadClientList[index].client.icon = 'check_circle';
-            this.loadClientList[index].client.color = 'blue';
-            Geolocation.getCurrentPosition().then(newPosition => {
-                vm.loadClientList[index].attendance.endCall = timeOut;
-                vm.loadClientList[index].attendance.geoLocation.timeOut = newPosition.timestamp;
-                vm.loadClientList[index].attendance.geoLocation.coorOut = newPosition.coords;
-            })
-            LocalStorage.set("clientList", this.loadClientList)
+                vm.loadClientList[index].client.loading = true;
+                
+
+                // Check if the Location is granted
+                const perm = await Geolocation.checkPermissions()
+                
+                if(perm.location !== 'granted' || perm.coarseLocation !== 'granted'){
+                    const reqPerm = await Geolocation.requestPermissions();
+                    if(reqPerm.location === 'granted' || reqPerm.coarseLocation === 'granted'){
+                        const coordinates = await Geolocation.getCurrentPosition()
+                        vm.loadClientList[index].attendance.endCall = timeOut;
+                        vm.loadClientList[index].attendance.geoLocation.timeOut = coordinates.timestamp;
+                        vm.loadClientList[index].attendance.geoLocation.coorOut = {
+                            lat: coordinates.coords.latitude,
+                            lng: coordinates.coords.longitude,
+                        };
+                    } else {
+                        return false
+                    }
+                } else {
+                    const coordinates = await Geolocation.getCurrentPosition()
+                    vm.loadClientList[index].attendance.endCall = timeOut;
+                    vm.loadClientList[index].attendance.geoLocation.timeOut = coordinates.timestamp;
+                    vm.loadClientList[index].attendance.geoLocation.coorOut = {
+                        lat: coordinates.coords.latitude,
+                        lng: coordinates.coords.longitude,
+                    };
+                }
+
+
+                this.$nextTick(() => {
+                    vm.loadClientList[index].client.status = "finish";
+                    vm.loadClientList[index].client.loading = false;
+                    vm.loadClientList[index].client.icon = 'check_circle';
+                    vm.loadClientList[index].client.color = 'blue';
+                    
+                    LocalStorage.set('clientList', vm.loadClientList)
+                })
+            } catch (error) {
+                alert(JSON.stringify(error))
+            }
+            
         },
         closeBooking(val){
             this.loadClientList[this.inProgress].client.icon = 'play_circle';
@@ -268,12 +334,12 @@ export default {
             this.loadClientList[this.inProgress].attendance.geoLocation.coorIn = {};
             this.loadClientList[this.inProgress].remarks = [];
             this.loadClientList[this.inProgress].booking = [];
+            this.loadClientList[this.inProgress].files = '';
             LocalStorage.set("clientList", this.loadClientList)
             this.openBooking = false
         },
         updateData(val){
-            this.clientList
-            console.log(this.loadClientList)
+            this.loadClientList = val
         }
     }
 }

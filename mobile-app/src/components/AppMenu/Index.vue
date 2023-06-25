@@ -91,6 +91,7 @@ export default {
     },
     created(){
         this.checkUnsyncData()
+        // this.clearFinishData()
     },
     methods: {
         moment,
@@ -118,8 +119,8 @@ export default {
             // return
             // Loading part
             this.settingList[0].loading = true
-            this.clearFinishData()
-            return
+            // this.clearFinishData()
+            // return
             // Call Sync API
             api.post('mobile/sync/data', payload).then((response) => {
                 if(response.status <= 200){
@@ -147,6 +148,7 @@ export default {
                 el.client.status = 'pending'
                 el.client.icon = 'play_circle'
                 el.client.color = 'green'
+                el.client.loading = false
                 el.files = ''
                 el.booking = []
                 el.remarks = []

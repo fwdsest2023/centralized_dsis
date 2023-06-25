@@ -90,7 +90,7 @@
                                     frameborder="0" 
                                     style="border:0"
                                     referrerpolicy="no-referrer-when-downgrade"
-                                    :src="`https://www.google.com/maps/embed/v1/view?key=${apiKey}&center=${form.client.geoLocation.latitude},${form.client.geoLocation.longitude}&zoom=18&maptype=satellite`"
+                                    :src="`https://www.google.com/maps/embed/v1/view?key=${apiKey}&center=${form.client.geoLocation.lat},${form.client.geoLocation.lng}&zoom=18&maptype=satellite`"
                                 >
                                 </iframe>
                             </div>
@@ -217,7 +217,10 @@ export default {
             const vm = this;
             Geolocation.getCurrentPosition().then(newPosition => {
                 let coordinates = newPosition.coords
-                vm.form.client.geoLocation  = coordinates
+                vm.form.client.geoLocation  = {
+                    lat: coordinates.latitude,
+                    lng: coordinates.longitude
+                }
                 vm.map = true
             })
         },

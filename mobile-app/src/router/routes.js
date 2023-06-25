@@ -14,6 +14,7 @@ const routes = [
     children: [
       { name: 'Home', path: 'dashboard', component: () => import('pages/Dashboard.vue') },
       { name: 'HomeSettings', path: 'settings', component: () => import('pages/Settings.vue') },
+      { name: 'Profile', path: 'profile', component: () => import('pages/Profile.vue') },
       // { path: 'forms', component: () => import('pages/ORForm.vue') },
       // { path: 'print', component: () => import('pages/Print.vue') },
       // { path: 'mylist', component: () => import('pages/PatientList.vue') },

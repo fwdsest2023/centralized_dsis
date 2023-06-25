@@ -102,23 +102,23 @@ export default {
     watch:{
         modalStatus: function(newVal){
             this.openModal = newVal
+            if(newVal === true){
+                this.clientList()
+            }
         }
     },
     computed: {
-        clientList: function(){
-            let data = LocalStorage.getItem('clientList')
-            this.loadClientData = data
-        },
         filterList(){
             return  this.loadProductList.filter(search => {
                 return search.productName.toLowerCase().includes(this.searchClient.toLowerCase())
             })
         },
     },
-    created(){
-        this.clientList
-    },
     methods: {
+        clientList(){
+            let data = LocalStorage.getItem('clientList')
+            this.loadClientData = data
+        },
         async closeModal(){
             this.$emit('updateStatus', false);
             this.$emit('backStep', {nextTo: 'booking'});
@@ -131,7 +131,6 @@ export default {
             this.loadClientData[this.clientId]
             .remarks
             .push(this.remark)
-            
             this.$nextTick(() => {
                 this.remark = ""
                 LocalStorage.set("clientList", this.loadClientData)

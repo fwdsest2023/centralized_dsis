@@ -63,6 +63,7 @@ export default {
             let vm = this
             this.openModal = newVal
             if(newVal === true){
+                this.clientList
                 defineCustomElements(window).then(()=>{
                     vm.playCamera()
                 })
@@ -74,9 +75,6 @@ export default {
             let data = LocalStorage.getItem('clientList')
             this.loadClientData = data
         }
-    },
-    created(){
-        this.clientList
     },
     methods: {
         async closeModal(){
@@ -102,14 +100,11 @@ export default {
                 presentationStyle:'popover'
             }).catch((err) => { 
                 alert(err)
-                console.log('dsdsd')
                 vm.closeModal()
             })
-            console.log(image)
             this.imgSrc = image.dataUrl
             this.loadClientData[this.clientId].files = image.dataUrl
             this.showPicture = true
-
             LocalStorage.set("clientList", this.loadClientData)
         }
     }

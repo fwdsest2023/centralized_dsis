@@ -19,16 +19,18 @@
 
                 <q-card-section style="height:60vh;max-height: 60vh" class="scroll">
                     <q-list>
-                        <div v-for="(item, index) in loadClientData[clientId].booking" :key="index">
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label>{{item.itemName}}</q-item-label>
-                                    <q-item-label caption lines="2">{{item.price}}</q-item-label>
-                                </q-item-section>
-                                <q-item-section side top>
-                                    <q-input type="number" outlined v-model="item.qty" style="width: 70px;" label="QTY" />
-                                </q-item-section>
-                            </q-item>
+                        <div v-if="loadClientData[clientId].booking.length !== 0">
+                            <div v-for="(item, index) in loadClientData[clientId].booking" :key="index">
+                                <q-item>
+                                    <q-item-section>
+                                        <q-item-label>{{item.itemName}}</q-item-label>
+                                        <q-item-label caption lines="2">{{item.price}}</q-item-label>
+                                    </q-item-section>
+                                    <q-item-section side top>
+                                        <q-input type="number" outlined v-model="item.qty" style="width: 70px;" label="QTY" />
+                                    </q-item-section>
+                                </q-item>
+                            </div>
                         </div>
                         <q-item v-if="loadClientData[clientId].booking.length === 0" >
                             <q-item-section class="text-center">
@@ -140,14 +142,12 @@ export default {
     watch:{
         modalStatus: function(newVal){
             this.openModal = newVal
+            if(newVal === true){
+                this.clientList()
+            }
         }
     },
     computed: {
-        clientList: function(){
-            let data = LocalStorage.getItem('clientList')
-            this.loadProductList = json.products
-            this.loadClientData = data
-        },
         filterList(){
             let dataClient = this.loadClientData[this.clientId]
             this.loadProductList.map((item) => {
@@ -162,14 +162,29 @@ export default {
             })
         },
     },
-    created(){
-        this.clientList
-    },
     methods: {
+        clientList(){
+            let data = LocalStorage.getItem('clientList')
+            console.log(data)
+            this.loadProductList = json.products
+            this.loadClientData = data
+        },
         async closeModal(){
             this.$emit('updateStatus', false);
         },
         async submitOrder(){
+            let checkBooking = this.loadClientData[this.clientId].booking;
+            if(checkBooking.length === 0){
+                this.$q.notify({
+                    color: 'negative',
+                    position: 'top',
+                    title: 'Invalid to proceed',
+                    message: 'Please add product before moving to the next step',
+                    icon: 'report_problem'
+                })
+                return false;
+            }
+        
             this.$emit('orderSubmit', this.loadClientData);
             this.$emit('moveStep', {nextTo: 'remarks'});
         },
@@ -178,15 +193,13 @@ export default {
                 itemId: item.id,
                 itemName: item.productName,
                 price: item.productCost,
-                qty: 0,
-                total: 0
+                qty: 0
             }
             
             this.loadClientData[this.clientId]
             .booking
             .push(list)
 
-            LocalStorage.set("clientList", this.loadClientData)
             this.addProductView = false
         }
     }
