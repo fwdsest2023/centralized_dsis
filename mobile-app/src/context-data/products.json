@@ -1,6 +1,16 @@
 {
     "products":[
         {
+            "id": "0",
+            "productName": "Client Visit",
+            "prodForm": "N/A",
+            "description": "N/A",
+            "stock": "0",
+            "productCost": "0",
+            "hasPriceGroup": true,
+            "costGroup": ""
+        },
+        {
           "id": "1",
           "productName": "WEANWIN HOG BOOSTER (MASH) 25KG",
           "unit": "BG",
