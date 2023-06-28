@@ -19,8 +19,8 @@
 
                 <q-card-section style="height:60vh;max-height: 60vh" class="scroll">
                     <q-list>
-                        <div v-if="loadClientData[clientId].booking.length !== 0">
-                            <div v-for="(item, index) in loadClientData[clientId].booking" :key="index">
+                        <div v-if="bookingList.length !== 0">
+                            <div v-for="(item, index) in bookingList" :key="index">
                                 <q-item>
                                     <q-item-section>
                                         <q-item-label>{{item.itemName}}</q-item-label>
@@ -32,7 +32,7 @@
                                 </q-item>
                             </div>
                         </div>
-                        <q-item v-if="loadClientData[clientId].booking.length === 0" >
+                        <q-item v-if="bookingList.length === 0" >
                             <q-item-section class="text-center">
                                 <q-item-label>
                                     <q-icon name="report" color="grey-3" size="7rem" /><br>
@@ -89,7 +89,7 @@
                             <q-item>
                                 <q-item-section>
                                     <q-item-label>{{item.productName}}</q-item-label>
-                                    <q-item-label caption lines="2">{{item.productCost}}</q-item-label>
+                                    <q-item-label caption lines="2">{{`P - ${item.productCost}`}}</q-item-label>
                                 </q-item-section>
                                 <q-item-section side top>
                                     <q-btn
@@ -115,8 +115,8 @@
     </div>
 </template>
 <script>
-import {LocalStorage} from 'quasar'
 import json from '../../context-data/products.json'
+import { Preferences } from '@capacitor/preferences';
 
 export default {
     name: "ClientBooking",
@@ -125,6 +125,7 @@ export default {
             openModal: false,
             loadProductList: [],
             loadClientData: [],
+            bookingList: [],
             addProductView: false,
             searchClient: '',
             imageSrc: ''
@@ -151,30 +152,35 @@ export default {
         filterList(){
             let dataClient = this.loadClientData[this.clientId]
             this.loadProductList.map((item) => {
-                let setPrice = item.costGroup.filter(el => {
-                    return el.regionId === dataClient.client.regionId
-                })
-                item.productCost = setPrice[0].price
+                if(item.hasPriceGroup){
+                    let setPrice = item.costGroup.filter(el => {
+                        return el.regionId === dataClient.client.regionId
+                    })
+                    item.productCost = setPrice[0].price
+                }
+
+                item.productCost = Number(item.productCost).toFixed(2)
                 return item
             })
-            return  this.loadProductList.filter(search => {
+
+            return this.loadProductList.filter(search => {
                 return search.productName.toLowerCase().includes(this.searchClient.toLowerCase())
             })
         },
     },
     methods: {
-        clientList(){
-            let data = LocalStorage.getItem('clientList')
-            console.log(data)
+        async clientList(){
+            const { value } = await Preferences.get({ key: 'clientList' });
+            let data = value !== null ? JSON.parse(value) : [];
+   
             this.loadProductList = json.products
-            this.loadClientData = data
+            this.loadClientData = data;
         },
         async closeModal(){
             this.$emit('updateStatus', false);
         },
         async submitOrder(){
-            let checkBooking = this.loadClientData[this.clientId].booking;
-            if(checkBooking.length === 0){
+            if(this.bookingList.length === 0){
                 this.$q.notify({
                     color: 'negative',
                     position: 'top',
@@ -184,11 +190,18 @@ export default {
                 })
                 return false;
             }
-        
-            this.$emit('orderSubmit', this.loadClientData);
-            this.$emit('moveStep', {nextTo: 'remarks'});
+            
+            // set the booking value
+            this.loadClientData[this.clientId].booking = this.bookingList
+
+            await Preferences.set({
+                key: 'clientList',
+                value: JSON.stringify(this.loadClientData)
+            }).then(() => {
+                this.$emit('moveStep', {nextTo: 'remarks'});
+            })
         },
-        addProduct(item){
+        async addProduct(item){
             let list = {
                 itemId: item.id,
                 itemName: item.productName,
@@ -196,11 +209,9 @@ export default {
                 qty: 0
             }
             
-            this.loadClientData[this.clientId]
-            .booking
-            .push(list)
+            this.bookingList.push(list)
+            this.addProductView = false;
 
-            this.addProductView = false
         }
     }
 }

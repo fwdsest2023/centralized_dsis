@@ -37,6 +37,7 @@
 <script>
 import { defineCustomElements } from '@ionic/pwa-elements/loader';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'
+import { Preferences } from '@capacitor/preferences';
 import {LocalStorage} from 'quasar'
 
 export default {
@@ -63,27 +64,35 @@ export default {
             let vm = this
             this.openModal = newVal
             if(newVal === true){
-                this.clientList
+                this.clientList()
                 defineCustomElements(window).then(()=>{
                     vm.playCamera()
                 })
             }
         }
     },
-    computed: {
-        clientList: function(){
-            let data = LocalStorage.getItem('clientList')
-            this.loadClientData = data
-        }
-    },
     methods: {
+        async clientList(){
+            const { value } = await Preferences.get({ key: 'clientList' });
+            let data = value !== null ? JSON.parse(value) : [];
+            this.loadClientData = data
+        },
         async closeModal(){
+            this.imgSrc = '';
             this.$emit('updateStatus', false);
             this.$emit('backStep', {nextTo: 'remarks'});
         },
         async submitOrder(){
-            this.$emit('addClientVisit', this.loadClientData);
-            this.$emit('updateStatus', false);
+            this.loadClientData[this.clientId].files = this.imgSrc
+            // console.log(this.loadClientData)
+            await Preferences.set({
+                key: 'clientList',
+                value: JSON.stringify(this.loadClientData)
+            }).then(() => {
+                this.$emit('updateStatus', false);
+            })
+            // this.$emit('addClientVisit', this.loadClientData);
+            // this.$emit('updateStatus', false);
         },
         reTake(){
             this.imgSrc = ''
@@ -103,9 +112,10 @@ export default {
                 vm.closeModal()
             })
             this.imgSrc = image.dataUrl
-            this.loadClientData[this.clientId].files = image.dataUrl
+
+            // this.loadClientData[this.clientId].files = image.dataUrl
             this.showPicture = true
-            LocalStorage.set("clientList", this.loadClientData)
+            // LocalStorage.set("clientList", this.loadClientData)
         }
     }
 }

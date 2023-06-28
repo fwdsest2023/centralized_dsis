@@ -89,6 +89,8 @@ $routes->group('mlrs/api/v1', function($routes){
 	$routes->group('mobile', function($routes){
 		$routes->post('startCall', 'MobileController::startCallFunction');
 		$routes->post('endCall', 'MobileController::endCallFunction');
+
+		
 		$routes->post('sync/data', 'MobileController::syncAgentData');
 		$routes->post('client/list', 'MobileController::agentClientList');
 		$routes->post('booking/list', 'MobileController::agentBookingList');

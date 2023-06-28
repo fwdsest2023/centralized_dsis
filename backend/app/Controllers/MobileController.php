@@ -14,7 +14,7 @@ class MobileController extends BaseController
         try {
             // get the data
             $payload = $this->request->getJSON();
-            $dataList = $payload->listData;
+            $dataList = json_decode($payload->listData);
             $clientList = [];
             $bookingList = [];
 

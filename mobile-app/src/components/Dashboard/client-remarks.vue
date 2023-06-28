@@ -19,7 +19,7 @@
 
                 <q-card-section style="height:60vh;max-height: 60vh" class="scroll">
                     <q-list>
-                        <div v-for="(item, index) in loadClientData[clientId].remarks" :key="index">
+                        <div v-for="(item, index) in remarkList" :key="index">
                             <q-item>
                                 <q-item-section avatar>
                                     <q-icon name="radio_button_checked" size="sm" />
@@ -29,7 +29,7 @@
                                 </q-item-section>
                             </q-item>
                         </div>
-                        <q-item v-if="loadClientData[clientId].remarks.length === 0" >
+                        <q-item v-if="remarkList.length === 0" >
                             <q-item-section class="text-center">
                                 <q-item-label>
                                     <q-icon name="report" color="grey-3" size="7rem" /><br>
@@ -76,7 +76,7 @@
     </div>
 </template>
 <script>
-import {LocalStorage} from 'quasar'
+import { Preferences } from '@capacitor/preferences';
 
 export default {
     name: "ClientRemarks",
@@ -84,6 +84,7 @@ export default {
         return {
             openModal: false,
             loadClientData: [],
+            remarkList: [],
             addProductView: false,
             searchClient: '',
             imageSrc: '',
@@ -115,25 +116,30 @@ export default {
         },
     },
     methods: {
-        clientList(){
-            let data = LocalStorage.getItem('clientList')
+        async clientList(){
+            const { value } = await Preferences.get({ key: 'clientList' });
+            let data = value !== null ? JSON.parse(value) : [];
             this.loadClientData = data
         },
         async closeModal(){
+            this.remarkList = [];
             this.$emit('updateStatus', false);
             this.$emit('backStep', {nextTo: 'booking'});
         },
         async submitOrder(){
-            this.$emit('addClientRemarks', this.loadClientData);
-            this.$emit('moveStep', {nextTo: 'selfie'});
+            this.loadClientData[this.clientId].remarks = this.remarkList
+            
+            await Preferences.set({
+                key: 'clientList',
+                value: JSON.stringify(this.loadClientData)
+            }).then(() => {
+                this.$emit('moveStep', {nextTo: 'selfie'});
+            })
         },
         addRemarks(){
-            this.loadClientData[this.clientId]
-            .remarks
-            .push(this.remark)
+            this.remarkList.push(this.remark)
             this.$nextTick(() => {
                 this.remark = ""
-                LocalStorage.set("clientList", this.loadClientData)
             })
         }
     }

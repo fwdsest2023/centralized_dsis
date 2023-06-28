@@ -32,6 +32,7 @@ import moment from 'moment'
 import {LocalStorage} from 'quasar'
 import jwt_decode from 'jwt-decode'
 import { api } from 'boot/axios'
+import { Preferences } from '@capacitor/preferences';
 
 export default {
     name: "SettingPAge",
@@ -66,27 +67,16 @@ export default {
                 return search.label.toLowerCase().includes(this.settingSearch.toLowerCase())
             })
         },
-        // checkUnsyncData: function(){
-        //     let data = LocalStorage.getItem('clientList');
-        //     let filtered = data.filter(el => el.client.status === 'finish')
-        //     let check = filtered.length === 0;
-        //     this.settingList[0].notSync = !check
-        //     this.settingList[0].sides = !check ? {
-        //         icon: 'cloud_sync',
-        //         color: 'blue'
-        //     } : {
-        //         icon: 'cloud_sync',
-        //         color: 'grey'
-        //     }
-        // },
         user: function(){
             let profile = LocalStorage.getItem('userData');
             return jwt_decode(profile);
         },
-        clData: function(){
-            let list = LocalStorage.getItem('clientList');
+        clData: async function(){
+            const { value } = await Preferences.get({ key: 'clientList' });
+            let data = value !== null ? JSON.parse(value) : []
+            let list = data.length !== 0 ? data : [];
             let filtered = list.filter(el => el.client.status === 'finish')
-            return filtered;
+            return data.length !== 0 ? filtered : [];
         }
     },
     created(){
@@ -95,9 +85,8 @@ export default {
     },
     methods: {
         moment,
-        checkUnsyncData(){
-            let data = LocalStorage.getItem('clientList');
-            let filtered = data.filter(el => el.client.status === 'finish')
+        async checkUnsyncData(){
+            let filtered = await this.clData
             let check = filtered.length === 0;
             this.settingList[0].notSync = !check
             this.settingList[0].sides = !check ? {
@@ -108,21 +97,25 @@ export default {
                 color: 'grey'
             }
         },
-        syndDataToDev(){
+        async syndDataToDev(){
+            const listData = await this.clData
             // Collection of data
             let payload = {
                 agentId: Number(this.user.userId),
                 category: "CLIENT",
-                listData: this.clData
+                listData: JSON.stringify(listData)
             }
-            console.log(payload)
+            // alert(JSON.stringify(payload))
             // return
+
             // Loading part
             this.settingList[0].loading = true
             // this.clearFinishData()
             // return
+
             // Call Sync API
-            api.post('mobile/sync/data', payload).then((response) => {
+            api.post('mobile/sync/data', payload)
+            .then((response) => {
                 if(response.status <= 200){
                     this.$q.dialog({
                         title: response.data.title,
@@ -134,16 +127,28 @@ export default {
                 } else {
                     this.$q.dialog({
                         title: 'Sync Failed',
-                        message: 'Something went wrong.',
+                        message: 'Something went wrong. Please contact your administrator',
                         position: 'top'
                     })
                 }
                 
+            }).catch((err) => {
+                alert(JSON.stringify(listData))
+                alert(JSON.stringify(err))
+                this.settingList[0].loading = false
+                // this.$q.dialog({
+                //     title: 'System Sync Failed',
+                //     message: err,
+                //     position: 'top'
+                // })
             })
         },
 
         async clearFinishData(){
-            let list = LocalStorage.getItem('clientList');
+            const { value } = await Preferences.get({ key: 'clientList' });
+            let data = value !== null ? JSON.parse(value) : []
+            const list = data.length !== 0 ? data : [];
+            let vm = this
             list.map((el) => {
                 el.client.status = 'pending'
                 el.client.icon = 'play_circle'
@@ -165,10 +170,11 @@ export default {
                 return el
             });
 
-            LocalStorage.set('clientList', list);
-
-            this.$nextTick(() => {
-                this.checkUnsyncData()
+            await Preferences.set({
+                key: 'clientList',
+                value: JSON.stringify(list)
+            }).then(() => {
+                vm.checkUnsyncData()
             })
             
         }

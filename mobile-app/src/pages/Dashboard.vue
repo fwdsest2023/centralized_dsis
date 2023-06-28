@@ -33,7 +33,7 @@
       </q-tab-panel>
 
       <q-tab-panel name="activities">
-        <div class="text-h4 q-mb-md">Activities</div>
+        <clientActivities />
       </q-tab-panel>
 
       <q-tab-panel name="adminWorks">
@@ -47,6 +47,7 @@
 import { SessionStorage } from 'quasar'
 import jwt_decode from 'jwt-decode'
 import clientWidget from '../components/Dashboard/client-widget.vue'
+import clientActivities from '../components/Dashboard/Activities/Index.vue'
 
 
 export default {
@@ -58,7 +59,8 @@ export default {
     }
   },
   components: {
-    clientWidget
+    clientWidget,
+    clientActivities
   },
   computed: {
     getUserProfile: function(){

@@ -23,7 +23,7 @@
                                 v-model="form.client.storeName"
                                 label="Store Name" 
                                 :dense="true"
-                                :rules="[ val => val && val.length > 0 || 'This field is required']"
+                                :rules="[val => val && val.length > 0 || 'This field is required']"
                             >
                                 <template v-slot:prepend>
                                     <q-icon name="store" />
@@ -83,7 +83,9 @@
                             <div class="col col-xs-12 col-sm-12 col-md-12 q-mt-lg">
                                 <span class="text-h6">STORE MAP</span>
                             </div>
-                            <div id="map" v-if="map" style="width:100%;">
+                            <capacitor-google-map ref="myMap" id="map"></capacitor-google-map>
+                            <div ref="map" id="map"></div>
+                            <!-- <div id="map" v-if="map" style="width:100%;">
                                 <iframe
                                     width="100%"
                                     height="250"
@@ -93,7 +95,7 @@
                                     :src="`https://www.google.com/maps/embed/v1/view?key=${apiKey}&center=${form.client.geoLocation.lat},${form.client.geoLocation.lng}&zoom=18&maptype=satellite`"
                                 >
                                 </iframe>
-                            </div>
+                            </div> -->
                         </q-form>
                     </div>
                 </q-card-section>
@@ -117,6 +119,7 @@
 import jsonMisc from '../../context-data/misc.json'
 import jsonBranch from '../../context-data/branches.json'
 import { Geolocation } from '@capacitor/geolocation'
+import { Preferences } from '@capacitor/preferences';
 
 // GOOGLE API KEY: AIzaSyCrQ2gSBwhbFsnj8JSYxCnTkXrb1ZJbmjw
 export default {
@@ -210,11 +213,31 @@ export default {
     },
     created(){
         this.clientList
+    },
+    mounted(){
         this.initMap()
     },
     methods: {
         async initMap(){
+            
+            
+            // const coordinates = await Geolocation.getCurrentPosition();
             const vm = this;
+            // console.log(mapRef)
+
+            // const newMap = await GoogleMap.create({
+            //     id: 'my-map', // Unique identifier for this map instance
+            //     element: mapRef, // reference to the capacitor-google-map element
+            //     apiKey: vm.apiKey, // Your Google Maps API Key
+            //     config: {
+            //         center: {
+            //         // The initial position to be rendered by the map
+            //         lat: coordinates.coords.latitude,
+            //         lng: coordinates.coords.longitude,
+            //         },
+            //         zoom: 8, // The initial zoom level to be rendered by the map
+            //     },
+            // });
             Geolocation.getCurrentPosition().then(newPosition => {
                 let coordinates = newPosition.coords
                 vm.form.client.geoLocation  = {
@@ -223,20 +246,31 @@ export default {
                 }
                 vm.map = true
             })
+
         },
         async closeModal(){
             this.$emit('updateStatus', false);
         },
-        addClient(){
+        async addClient(){
+            const { value } = await Preferences.get({ key: 'clientList' });
+            let data = value !== null && value.length !== 0 ? JSON.parse(value) : []
+
             let frm = this.form
             frm.client.branch = frm.client.regionId.branch
             frm.client.regionId = frm.client.regionId.value
             frm.client.categoryId = frm.client.categoryId.value
 
             // jsonClient.list.push(frm)
-            this.$emit('addClientData', frm);
-            this.clearForm();
-            this.$emit('updateStatus', false);
+            // this.$emit('addClientData', frm);
+            data.push(frm)
+            
+            await Preferences.set({
+                key: 'clientList',
+                value: JSON.stringify(data)
+            }).then(() => {
+                this.clearForm();
+                this.$emit('updateStatus', false);
+            })
             
         },
         clearForm(){

@@ -15,13 +15,13 @@
             </q-input>
             
             <q-space />
-           <q-btn
+           <!-- <q-btn
                 @click="addClient"
                 round 
                 color="primary" 
                 icon="add_business" 
                 size="md"
-            />
+            /> -->
         </q-toolbar>
         <q-list >
             <div v-if="loadClientList.length !== 0">
@@ -36,12 +36,12 @@
                         </q-item-section>
 
                         <q-item-section side top>
-                            <!-- <q-item-label caption>{{item.client.branch}}</q-item-label> -->
                             <q-btn
                                 v-if="item.client.status !== 'finish'"
                                 @click="item.client.status === 'in-progress' ? stopCall(index) : playCall(index)"
                                 flat 
                                 round
+                                disabled
                                 :loading="item.client.loading"
                                 :color="item.client.color" 
                                 :icon="item.client.icon" 
@@ -104,12 +104,12 @@
 import moment from 'moment'
 import {LocalStorage} from 'quasar'
 import { Geolocation } from '@capacitor/geolocation'
-import clientBookingModal from './client-booking.vue'
-import clientRemarksModal from './client-remarks.vue'
-import clientSelfieModal from './client-selfie.vue'
-import clientAddModal from './client-add.vue'
+import clientBookingModal from '../client-booking.vue'
+import clientRemarksModal from '../client-remarks.vue'
+import clientSelfieModal from '../client-selfie.vue'
+import clientAddModal from '../client-add.vue'
 import { Preferences } from '@capacitor/preferences';
-import miscJson from '../../context-data/misc.json'
+import miscJson from '../../../context-data/misc.json'
 
 export default {
     name: "ClientWidget",
@@ -154,6 +154,7 @@ export default {
     computed: {
         filterList(){
             if(this.loadClientList.length !== 0){
+                let classification = [1,3]
                 this.loadClientList.map((item) => {
                     let category = miscJson.category.filter(el => {
                         return el.id === item.client.categoryId
@@ -162,9 +163,8 @@ export default {
                     return item
                 })
 
-
                 return this.loadClientList.filter(search => {
-                    return search.client.storeName.toLowerCase().includes(this.searchClient.toLowerCase())
+                    return search.client.storeName.toLowerCase().includes(this.searchClient.toLowerCase()) && classification.includes(search.client.categoryId)
                 })
             }
 
@@ -172,11 +172,7 @@ export default {
         },
     },
     created(){
-        // LocalStorage.set("clientList", [])
-        // this.clientList()
-        // this.removePref()
         this.getClientListPref()
-
     },
     methods: {
         async getClientListPref(){
@@ -201,12 +197,7 @@ export default {
             this.openAdd = false
         },
         closeSelfie(){
-            this.getClientListPref()
-            
-            this.$nextTick(() => {
-                this.openSelfie = false
-            })
-            
+            this.openSelfie = false
         },
         nextStep(val){
             if(val.nextTo === 'remarks') {
