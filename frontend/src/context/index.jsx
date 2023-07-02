@@ -42,6 +42,15 @@ export function reducer(state, action) {
     case "OPEN_UPDATE_SCHEDULE_MODAL": {
       return { ...state, openUpdateScheduleForm: action.value };
     }
+    case "EVIDENCE_DIALOG": {
+      return { ...state, evidenceContent: action.value };
+    }
+    case "CALL_DIALOG": {
+      return { ...state, attContent: action.value };
+    }
+    case "BOOKING_DIALOG": {
+      return { ...state, bookingContent: action.value };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -67,6 +76,28 @@ export function MaterialTailwindControllerProvider({ children }) {
       header: "Error",
       title: "Title",
       message: "Error Message",
+    },
+    evidenceContent: {
+      show: false,
+      imageUrl: ''
+    },
+    attContent: {
+      show: false,
+      store: {},
+      callDetails: {
+        startCall: "",
+        endCall: "",
+        geoLocation: {
+            timeIn:"",
+            timeOut:"",
+            coorIn: {},
+            coorOut: {}
+        }
+      }
+    },
+    bookingContent: {
+      show: false,
+      list: []
     },
   };
 
@@ -125,3 +156,9 @@ export const setOpenNotif = (dispatch, value) =>
   dispatch({ type: "OPEN_GLOBAL_NOTIF", value });
 export const setNotifContent = (dispatch, value) =>
   dispatch({ type: "GLOBAL_NOTIF_CONTENT", value });
+export const setEvidenceContent = (dispatch, value) =>
+  dispatch({ type: "EVIDENCE_DIALOG", value });
+export const setCallContent = (dispatch, value) =>
+  dispatch({ type: "CALL_DIALOG", value });
+export const setBookingContent = (dispatch, value) =>
+  dispatch({ type: "BOOKING_DIALOG", value });

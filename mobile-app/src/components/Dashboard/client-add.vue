@@ -83,9 +83,7 @@
                             <div class="col col-xs-12 col-sm-12 col-md-12 q-mt-lg">
                                 <span class="text-h6">STORE MAP</span>
                             </div>
-                            <capacitor-google-map ref="myMap" id="map"></capacitor-google-map>
-                            <div ref="map" id="map"></div>
-                            <!-- <div id="map" v-if="map" style="width:100%;">
+                            <div id="map" v-if="map" style="width:100%;">
                                 <iframe
                                     width="100%"
                                     height="250"
@@ -95,7 +93,7 @@
                                     :src="`https://www.google.com/maps/embed/v1/view?key=${apiKey}&center=${form.client.geoLocation.lat},${form.client.geoLocation.lng}&zoom=18&maptype=satellite`"
                                 >
                                 </iframe>
-                            </div> -->
+                            </div>
                         </q-form>
                     </div>
                 </q-card-section>

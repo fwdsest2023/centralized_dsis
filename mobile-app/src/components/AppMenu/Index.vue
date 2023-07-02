@@ -123,6 +123,7 @@ export default {
                         position: 'top'
                     })
                     this.clearFinishData()
+                    this.checkUnsyncData()
                     this.settingList[0].loading = false
                 } else {
                     this.$q.dialog({
@@ -133,14 +134,8 @@ export default {
                 }
                 
             }).catch((err) => {
-                alert(JSON.stringify(listData))
                 alert(JSON.stringify(err))
                 this.settingList[0].loading = false
-                // this.$q.dialog({
-                //     title: 'System Sync Failed',
-                //     message: err,
-                //     position: 'top'
-                // })
             })
         },
 

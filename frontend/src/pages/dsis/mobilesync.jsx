@@ -1,6 +1,9 @@
 import React, {useState} from "react";
 import { PencilIcon } from "@heroicons/react/24/solid";
-import { ArrowDownTrayIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { 
+  UserCircleIcon,
+  AdjustmentsHorizontalIcon
+} from "@heroicons/react/24/outline";
 import {
   Card,
   CardHeader,
@@ -13,88 +16,116 @@ import {
   IconButton,
   Tooltip,
   Input,
+  Select, 
+  Option,
+  Menu,
+  MenuHandler,
+  MenuList,
+  MenuItem
 } from "@material-tailwind/react";
+import Mobile from '@/api/Mobile'
+import moment from "moment/moment";
+import {
+  useMaterialTailwindController,
+  setEvidenceContent,
+  setBookingContent,
+  setCallContent
+} from '@/context'
+import { 
+  EvidenceDialog,
+  BookingDialog,
+  CallDialog
+} from "@/widgets/mobile";
  
-const TABLE_HEAD = ["Transaction", "Amount", "Date", "Status", "Account", ""];
- 
-const TABLE_ROWS = [
-  {
-    img: "/img/logos/logo-spotify.svg",
-    name: "Spotify",
-    amount: "$2,500",
-    date: "Wed 3:00pm",
-    status: "paid",
-    account: "visa",
-    accountNumber: "1234",
-    expiry: "06/2026",
-  },
-  {
-    img: "/img/logos/logo-amazon.svg",
-    name: "Amazon",
-    amount: "$5,000",
-    date: "Wed 1:00pm",
-    status: "paid",
-    account: "master-card",
-    accountNumber: "1234",
-    expiry: "06/2026",
-  },
-  {
-    img: "/img/logos/logo-pinterest.svg",
-    name: "Pinterest",
-    amount: "$3,400",
-    date: "Mon 7:40pm",
-    status: "pending",
-    account: "master-card",
-    accountNumber: "1234",
-    expiry: "06/2026",
-  },
-  {
-    img: "/img/logos/logo-google.svg",
-    name: "Google",
-    amount: "$1,000",
-    date: "Wed 5:00pm",
-    status: "paid",
-    account: "visa",
-    accountNumber: "1234",
-    expiry: "06/2026",
-  },
-  {
-    img: "/img/logos/logo-netflix.svg",
-    name: "netflix",
-    amount: "$14,000",
-    date: "Wed 3:30am",
-    status: "cancelled",
-    account: "visa",
-    accountNumber: "1234",
-    expiry: "06/2026",
-  },
-];
+const callHeading = ["Business Name", "Address", "Category", "Call", "Remarks", "Action"];
 
 export function AgentSync() {
-  
+  const [controller, dispatch] = useMaterialTailwindController();
+  const { evidenceContent } = controller;
+
+  const [listAgent, setListAgent] = useState([]);
+  const [TABLE_HEAD, setTableHead] = useState(callHeading);
+  const [TABLE_ROWS, setTableRow] = useState([]);
+  const [syncDate, setSyncDate] = useState(moment().format('yyyy-MM-DD'))
+  const [agentId, setAgentId] = useState(0)
+
+  // Onchanges Methods
+  const dateOnchange = (e) => {
+    setSyncDate(e)
+
+    if(agentId !== 0){
+      getClientListCall()
+    }
+  }
+  const agentOnchange = (e) => {
+    setAgentId(e)
+
+    if(syncDate){
+      getClientListCall()
+    }
+  }
+
+  // Client
+  const getAgentListCall = async () => {
+    const {status, data} = await Mobile.getAgentList();
+    // Action Scenario
+    if(status <= 200){
+      setListAgent(data.list)
+      agentOnchange(data.list[0].key)
+    } else {
+      setListAgent([])
+    }
+  }
+  const getClientListCall = async () => {
+    let payload = {
+      aid: Number(agentId),
+      date: moment(syncDate).format('yyyy-MM-DD')
+    }
+    const {status, data} = await Mobile.getClientList(payload);
+    // Action Scenario
+    if(status <= 200){
+      setTableRow(data.list)
+    } else {
+      setTableRow([])
+    }
+  }
+
   React.useEffect(() => {
+    getAgentListCall()
   }, [])
 
   return (
     <React.Fragment>
     <Card className="h-full w-full">
-      <CardHeader floated={false} shadow={false} className="rounded-none">
+      <CardHeader floated={false} shadow={false} className="rounded-none overflow-visible">
         <div className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
+          
+          <div className="flex w-full shrink-0 gap-2 md:w-max">
+            <div className="w-full md:w-60">
+              {/* <Input label="Search" icon={<MagnifyingGlassIcon className="h-5 w-5" />} /> */}
+              <Input type="date" onChange={e => dateOnchange(e.target.value)} value={syncDate} label="Sync Date" />
+            </div>
+            <div className="w-full md:w-90">
+              <Select
+                onChange={e => agentOnchange(e)}
+                label="Select Agent"
+              >
+                {listAgent.map(({ key, name }) => (
+                  <Option key={key} value={key} className="flex items-center gap-2">
+                    {/* <UserCircleIcon className="h-5 w-5 text-blue-500" /> */}
+                    {name}
+                  </Option>
+                ))}
+              </Select>
+            </div>
+          </div>
           <div>
             <Typography variant="h5" color="blue-gray">
-              Recent Transactions
+              Agent Transactions
             </Typography>
             <Typography color="gray" className="mt-1 font-normal">
-              These are details about the last transactions
+              These are details about the agent synced mobile app transactions to the clients and admin
             </Typography>
-          </div>
-          <div className="flex w-full shrink-0 gap-2 md:w-max">
-            <div className="w-full md:w-72">
-              <Input label="Search" icon={<MagnifyingGlassIcon className="h-5 w-5" />} />
-            </div>
-            <Button className="flex items-center gap-3" color="blue" size="sm">
-              <ArrowDownTrayIcon strokeWidth={2} className="h-4 w-4" /> Download
-            </Button>
           </div>
         </div>
       </CardHeader>
@@ -116,97 +147,95 @@ export function AgentSync() {
             </tr>
           </thead>
           <tbody>
-            {TABLE_ROWS.map(
-              ({ img, name, amount, date, status, account, accountNumber, expiry }, index) => {
+            {
+              TABLE_ROWS.map((value, index) => {
                 const isLast = index === TABLE_ROWS.length - 1;
                 const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
- 
+
                 return (
-                  <tr key={name}>
+                  <tr key={index}>
                     <td className={classes}>
                       <div className="flex items-center gap-3">
-                        <Avatar
-                          src={img}
-                          alt={name}
-                          size="md"
-                          className="border border-blue-gray-50 bg-blue-gray-50/50 object-contain p-1"
-                        />
+                      
                         <Typography variant="small" color="blue-gray" className="font-bold">
-                          {name}
+                          {value.storeName}
                         </Typography>
                       </div>
                     </td>
                     <td className={classes}>
-                      <Typography variant="small" color="blue-gray" className="font-normal">
-                        {amount}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Typography variant="small" color="blue-gray" className="font-normal">
-                        {date}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <div className="w-max">
-                        <Chip
-                          size="sm"
-                          variant="ghost"
-                          value={status}
-                          color={
-                            status === "paid" ? "green" : status === "pending" ? "amber" : "red"
-                          }
-                        />
+                      <div className="flex items-center gap-3">
+                      
+                        <Typography variant="small" color="blue-gray" className="font-bold">
+                          {value.address}
+                        </Typography>
                       </div>
                     </td>
                     <td className={classes}>
                       <div className="flex items-center gap-3">
-                        <div className="h-9 w-12 rounded-md border border-blue-gray-50 p-1">
-                          <Avatar
-                            src={
-                              account === "visa"
-                                ? "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/logos/visa.png"
-                                : "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/logos/mastercard.png"
-                            }
-                            size="sm"
-                            alt={account}
-                            variant="square"
-                            className="h-full w-full object-contain p-1"
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal capitalize"
-                          >
-                            {account.split("-").join(" ")} {accountNumber}
-                          </Typography>
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal opacity-70"
-                          >
-                            {expiry}
-                          </Typography>
-                        </div>
+                      
+                        <Typography variant="small" color="blue-gray" className="font-bold">
+                          {value.categoryId}
+                        </Typography>
                       </div>
                     </td>
                     <td className={classes}>
-                      <Tooltip content="Edit User">
-                        <IconButton variant="text" color="blue-gray">
-                          <PencilIcon className="h-4 w-4" />
-                        </IconButton>
-                      </Tooltip>
+                      <div className="flex items-center gap-3">
+                        <Typography variant="small" color="blue-gray" className="font-bold">
+                          {/* {value.attendance} */}
+                          <Button 
+                            onClick={() => setCallContent(dispatch, {
+                              show: true,
+                              store: {
+                                name: value.storeName,
+                                address: value.address,
+                                loc: value.geoLocation,
+                              },
+                              callDetails: value.attendance
+                            })}
+                            size="sm"
+                          >
+                            Call Details
+                          </Button>
+                        </Typography>
+                      </div>
+                    </td>
+                    <td className={classes}>
+                      <div className="flex items-center gap-3">
+                      
+                        <Typography variant="small" color="blue-gray" className="font-bold">
+                          {value.remarks}
+                        </Typography>
+                      </div>
+                    </td>
+                    <td className={classes}>
+                      <div className="flex items-center gap-3">
+                      <Menu size="sm" placement="right-start">
+                        <MenuHandler>
+                          <Button variant="outlined" size="sm" className="flex items-center gap-3">
+                            <AdjustmentsHorizontalIcon strokeWidth={2} className="h-5 w-5" />
+                          </Button>
+                        </MenuHandler>
+                        <MenuList>
+                          <MenuItem
+                            onClick={() => setBookingContent(dispatch, {show: true, list: value.books})}
+                          >Booking Details</MenuItem>
+                          <MenuItem
+                            onClick={() => setEvidenceContent(dispatch, {show: true, imageUrl: value.files})}
+                          >Evidence</MenuItem>
+                        </MenuList>
+                      </Menu>
+                      
+                      </div>
                     </td>
                   </tr>
-                );
-              },
-            )}
+                )
+              })
+            }
           </tbody>
         </table>
       </CardBody>
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-        <Button variant="outlined" color="blue-gray" size="sm">
+        {/* <Button variant="outlined" color="blue-gray" size="sm">
           Previous
         </Button>
         <div className="flex items-center gap-2">
@@ -234,9 +263,13 @@ export function AgentSync() {
         </div>
         <Button variant="outlined" color="blue-gray" size="sm">
           Next
-        </Button>
+        </Button> */}
       </CardFooter>
     </Card>
+    <EvidenceDialog />
+    <BookingDialog />
+    <CallDialog />
+
     </React.Fragment>
   );
 }

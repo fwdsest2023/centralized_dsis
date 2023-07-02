@@ -175,23 +175,76 @@ class Users extends BaseController
     
     public function getAllUserList(){
         // Check Auth header bearer
-        $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
-        if(!$authorization){
-            $response = [
-                'message' => 'Unauthorized Access'
-            ];
+        // $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
+        // if(!$authorization){
+        //     $response = [
+        //         'message' => 'Unauthorized Access'
+        //     ];
 
-            return $this->response
-                    ->setStatusCode(401)
-                    ->setContentType('application/json')
-                    ->setBody(json_encode($response));
-            exit();
-        }
+        //     return $this->response
+        //             ->setStatusCode(401)
+        //             ->setContentType('application/json')
+        //             ->setBody(json_encode($response));
+        //     exit();
+        // }
 
         // $header = $this->request->getHeader("");
         
         $list = [];
         $list['list'] = $this->userModel->getAllUserInfo();
+
+        if($list){
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($list));
+        } else {
+            $response = [
+                'title' => 'Error',
+                'message' => 'No Data Found'
+            ];
+
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+    }
+
+    public function getAgentUsers(){
+        // Check Auth header bearer
+        // $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
+        // if(!$authorization){
+        //     $response = [
+        //         'message' => 'Unauthorized Access'
+        //     ];
+
+        //     return $this->response
+        //             ->setStatusCode(401)
+        //             ->setContentType('application/json')
+        //             ->setBody(json_encode($response));
+        //     exit();
+        // }
+
+        // $header = $this->request->getHeader("");
+        
+        $list = [];
+        $where = [
+            "userType" => 3,
+            "status" => 1,
+        ];
+        // $list['list'] = $this->userModel->getAllUserInfo($where);
+        $query = $this->userModel->getAllUserInfo($where);
+        foreach ($query as $key => $value) {
+            $list['list'][$key] = [
+                "key" => $value['id'],
+                "username" => $value['username'],
+                "name" => $value['firstName'] .' '. $value['middleName'] .' '. $value['lastName'] .' '. $value['suffix'],
+                "userType" =>  $value['userType'],
+                "desc" =>  $value['userTypeDescription'],
+            ];
+        }
+        
 
         if($list){
             return $this->response

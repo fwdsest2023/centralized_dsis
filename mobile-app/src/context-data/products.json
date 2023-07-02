@@ -7,7 +7,7 @@
             "description": "N/A",
             "stock": "0",
             "productCost": "0",
-            "hasPriceGroup": true,
+            "hasPriceGroup": false,
             "costGroup": ""
         },
         {

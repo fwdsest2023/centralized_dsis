@@ -81,4 +81,66 @@ class MobileController extends BaseController
         }
     } 
 
+    public function agentClientList(){
+        try {
+            // get the data
+            $payload = $this->request->getJSON();
+            $list = [];
+            $where = [
+                "agentId" => $payload->aid,
+                "syncDate" => $payload->date
+            ];
+
+            $query = $this->mobModel->getAllAgentSyncCalls($where);
+            
+            if($query){
+                $client = json_decode($query->client);
+                $bookings = json_decode($query->booking);
+                // print_r(gettype($client));
+                // print_r($bookings);
+                // exit();
+                foreach ($client as $key => $value) {
+                    // print_r($value);
+                    $booking = $bookings[$key]->booking;
+                    // print_r($booking);
+
+                    $list['list'][$key] = [
+                        "storeName" => $value->storeName,
+                        "address" => $value->address,
+                        "branch" => $value->branch,
+                        "categoryId" => $value->categoryId,
+                        "geoLocation" => $value->geoLocation,
+                        "contactPerson" => $value->contactPerson,
+                        "attendance" => $value->attendance,
+                        "remarks" => $value->remarks,
+                        "books" => $booking,
+                        "files" => $value->files
+                    ];
+                }
+            } 
+            
+
+            if($list){
+                return $this->response
+                        ->setStatusCode(200)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($list));
+            } else {
+                $response = [
+                    'title' => 'Error',
+                    'message' => 'No Data Found'
+                ];
+    
+                return $this->response
+                        ->setStatusCode(404)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($response));
+            }
+
+        } catch (\Throwable $th) {
+            print_r($th);
+            throw $th;
+        }
+    } 
+
 }

@@ -67,6 +67,9 @@ $routes->group('mlrs/api/v1', function($routes){
 		$routes->get('getUsersList', 'Users::getAllUserList');
 		$routes->post('changePassword', 'Users::ChangePassword');
 		$routes->post('getUserById', 'Users::getUserDetails');
+
+		// For the Mobile App API's
+		$routes->get('getAgents', 'Users::getAgentUsers');
 	});
 
 

@@ -24,5 +24,12 @@ class MobileModel extends Model
     protected $validationRules    = [];
     protected $validationMessages = [];
     protected $skipValidation     = true;
- 
+    
+
+    public function getAllAgentSyncCalls($where){
+
+        $query = $this->db->table($this->table)->where("agentId", $where['agentId'])->like("syncDate", $where['syncDate'])->get();
+        $results = $query->getRow();
+        return $results;
+    }
 }
