@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 24, 2023 at 03:06 AM
--- Server version: 10.4.24-MariaDB
--- PHP Version: 7.4.29
+-- Generation Time: Jul 04, 2023 at 06:51 PM
+-- Server version: 10.4.14-MariaDB
+-- PHP Version: 7.4.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -211,6 +211,35 @@ INSERT INTO `tblprocessflow` (`id`, `status`, `processedBy`, `step`, `nextStep`,
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tblproducts`
+--
+
+CREATE TABLE `tblproducts` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `sku` varchar(255) NOT NULL,
+  `barcodeType` varchar(255) NOT NULL,
+  `unit` varchar(255) NOT NULL,
+  `categoryId` tinyint(4) NOT NULL,
+  `subcategoryId` tinyint(4) NOT NULL,
+  `isSpecial` tinyint(1) NOT NULL,
+  `isSale` tinyint(1) NOT NULL,
+  `stockWarning` varchar(255) NOT NULL,
+  `status` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tblproducts`
+--
+
+INSERT INTO `tblproducts` (`id`, `name`, `sku`, `barcodeType`, `unit`, `categoryId`, `subcategoryId`, `isSpecial`, `isSale`, `stockWarning`, `status`) VALUES
+(1, 'Pedigree', '111224241', 'test', 'pc', 1, 1, 0, 0, '1', 1),
+(2, 'Thinderbird', '123456', 'test', 'pc', 1, 1, 0, 0, '1', 1),
+(3, 'Thinderbirdsszzz', '123456', 'test', 'pc', 1, 1, 0, 0, '1', 1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tblschedule`
 --
 
@@ -383,6 +412,12 @@ ALTER TABLE `tblprocessflow`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tblproducts`
+--
+ALTER TABLE `tblproducts`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tblschedule`
 --
 ALTER TABLE `tblschedule`
@@ -451,6 +486,12 @@ ALTER TABLE `tblpatient_info`
 --
 ALTER TABLE `tblprocessflow`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+
+--
+-- AUTO_INCREMENT for table `tblproducts`
+--
+ALTER TABLE `tblproducts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tblschedule`
