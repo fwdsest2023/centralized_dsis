@@ -60,6 +60,12 @@ $routes->group('mlrs/api/v1', function($routes){
 		$routes->get('details/schedule/(:num)', 'Client::getPatientScheduleDetail/$1');
 	});
 
+	// Product Group
+	$routes->group('product', function($routes){
+		$routes->post('add/new', 'ProductController::addProduct');
+		$routes->post('get/products', 'ProductController::getProductList');
+	});
+
 
 	// All Users mmodule
 	$routes->group('users', function($routes){
