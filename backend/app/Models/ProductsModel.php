@@ -15,7 +15,7 @@ class ProductsModel extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = false;
 
-    protected $allowedFields = ['name', 'sku', 'barcodeType	', 'unit', 'categoryId', 'subcategoryId','isSpecial', 'isSale', 'stockWarning', 'status'];
+    protected $allowedFields = ['productName', 'unit', 'prodForm', 'description', 'category', 'sku','barcodeType', 'stock', 'productCost', 'hasPriceGroup', 'costGroup', 'isSpecial', 'isSale'];
 
     protected $useTimestamps = false;
     protected $createdField  = 'createdDate';
