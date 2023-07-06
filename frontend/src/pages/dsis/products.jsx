@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from "react";
 import { MagnifyingGlassIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { PencilIcon, PlusCircleIcon } from "@heroicons/react/24/solid";
 import {
@@ -16,8 +16,8 @@ import {
   IconButton,
   Tooltip,
 } from "@material-tailwind/react";
-
- 
+import Modal from "../dsis/dsispages/modal"
+import Product from "@/api/Product";
 const TABS = [
   {
     label: "All",
@@ -36,19 +36,12 @@ const TABS = [
     value: "Accessories",
   },
 ];
- 
-const TABLE_HEAD = ["Products", "Brand", "Category", "Stocks", "Employed", "other added",];
- 
-const  TABLE_ROWS = [
-  {
-    name: "Pet food",
-    brand: "Pedigree",
-    Category: "dog food",
-    stocks: "120pcs",
-    date: "23/04/18",
-  },
 
-];
+
+ 
+const callHeading = ["Products", "SKU", "Barcode", "unit","Category ID","Subcategory ID","Stock Warning","Status" ];
+ 
+
 
 
 
@@ -57,47 +50,29 @@ const  TABLE_ROWS = [
 
 
 export function Products() {
-    const [controller, dispatch] = useMaterialTailwindController();
-    const { openClientForm, openPatientForm } = controller;
-
-    // Set the View of the Component Display
-    const [compView, setCompView] = useState("clientList");
-    const [listData, setListData] = useState([]);
-    const [selectedDetails, setSelectedDetails] = useState({});
+    const [ListProduct, setListProduct] = useState("");
+    const [TABLE_HEAD, setTableHead] = useState(callHeading);
+    const [TABLE_ROWS, setTableRow] = useState([]);
     const [clientDetail, setClientDetail] = useState({});
 
-    async function handleOpenClientPet (id, details) {
 
-        let payload = {
-            uid: id
-        }
 
-        const {status, data} = await Client.getClientPatients(payload);
+
+    const fetchProduct =  async () => {
+        const {status, data} = await Product.getProductList();
         // Action Scenario
         if(status <= 200){
-            setCompView("patientList")
-            setClientDetail(details)
-            setListData(data.list)
-        }
-    };
- 
-    async function handleOpenPatient (data) {
-       setSelectedDetails(data)
-       setCompView("patientDetails")
-    };
- 
-    const fetchClients =  async () => {
-        const {status, data} = await Client.getClientList();
-        // Action Scenario
-        if(status <= 200){
-            setListData(data.list)
+            setTableRow(data.list)
         } else {
-            setListData([])
+            setTableRow([])
         }
     }
-
-  
+    React.useEffect(() => {
+        fetchProduct()
+    }, [])
+ 
   return (
+    
     <div>
 
             <Card className="h-full w-full">
@@ -112,11 +87,12 @@ export function Products() {
                     </Typography>
                 </div>
                 <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-                    <Button variant="outlined" color="blue-gray" size="sm">
-                    view all
-                    </Button>
+                    {/* <Button variant="outlined" color="blue-gray" size="sm">
+                        view all
+                    </Button> */}
                     <Button className="flex items-center gap-3" color="blue" size="sm">
-                    <PlusCircleIcon strokeWidth={2} className="h-4 w-4" /> Add Product
+                        {/* <PlusCircleIcon strokeWidth={2} className="h-4 w-4" />  */}
+                        <Modal/>
                     </Button>
                 </div>
                 </div>
@@ -159,7 +135,8 @@ export function Products() {
                     </tr>
                 </thead>
                 <tbody>
-                    {TABLE_ROWS.map(({  name, Category,  brand, stocks, date }, index) => {
+                    {/* for value.name etc */}
+                    {TABLE_ROWS.map((value, index) => {
                     const isLast = index === TABLE_ROWS.length - 1;
                     const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
         
@@ -169,7 +146,8 @@ export function Products() {
                             <div className="flex items-center gap-3">
                             <div className="flex flex-col">
                                 <Typography variant="small" color="blue-gray" className="font-normal">
-                                {name}
+                                {/* value.name postman reponse */}
+                                {value.name}
                                 </Typography>
                                 {/* <Typography
                                 variant="small"
@@ -184,7 +162,7 @@ export function Products() {
                         <td className={classes}>
                             <div className="flex flex-col">
                             <Typography variant="small" color="blue-gray" className="font-normal">
-                                {brand}
+                                {value.sku}
                             </Typography>
                             {/* <Typography
                                 variant="small"
@@ -201,13 +179,18 @@ export function Products() {
                                 color="blue-gray"
                                 className="font-normal opacity-70"
                             >
-                                {Category}
+                                {value.barcodeType}
                             </Typography>
               
                         </td>
                         <td className={classes}>
                             <Typography variant="small" color="blue-gray" className="font-normal">
-                            {stocks}
+                            {value.unit}
+                            </Typography>
+                        </td>
+                        <td className={classes}>
+                            <Typography variant="small" color="blue-gray" className="font-normal">
+                            {value.categoryId}
                             </Typography>
                         </td>
                         <td className={classes}>
