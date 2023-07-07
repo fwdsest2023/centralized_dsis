@@ -30,9 +30,14 @@ export function CallDialog(props) {
         loader
         .load()
         .then((google) => {
-                let store = attContent.store
+                
                 let callLoc = attContent.callDetails
-                const mstore = new google.maps.LatLng(store.loc.lat, store.loc.lng);
+                let store = attContent.store
+                let storeLoc = Object.keys(attContent.store.loc).length !== 0 ? 
+                attContent.store.loc : 
+                callLoc.geoLocation.coorIn
+                
+                const mstore = new google.maps.LatLng(storeLoc.lat, storeLoc.lng);
                 const map = new google.maps.Map(document.getElementById("map"), {
                     center: mstore,
                     zoom: 20,

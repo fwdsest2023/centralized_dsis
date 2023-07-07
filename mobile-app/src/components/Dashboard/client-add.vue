@@ -83,8 +83,8 @@
                             <div class="col col-xs-12 col-sm-12 col-md-12 q-mt-lg">
                                 <span class="text-h6">STORE MAP</span>
                             </div>
-                            <div id="map" v-if="map" style="width:100%;">
-                                <iframe
+                            <div id="map" style="width:100%; height: 200px;">
+                                <!-- <iframe
                                     width="100%"
                                     height="250"
                                     frameborder="0" 
@@ -92,7 +92,7 @@
                                     referrerpolicy="no-referrer-when-downgrade"
                                     :src="`https://www.google.com/maps/embed/v1/view?key=${apiKey}&center=${form.client.geoLocation.lat},${form.client.geoLocation.lng}&zoom=18&maptype=satellite`"
                                 >
-                                </iframe>
+                                </iframe> -->
                             </div>
                         </q-form>
                     </div>
@@ -117,9 +117,18 @@
 import jsonMisc from '../../context-data/misc.json'
 import jsonBranch from '../../context-data/branches.json'
 import { Geolocation } from '@capacitor/geolocation'
+import { Loader } from "@googlemaps/js-api-loader"
 import { Preferences } from '@capacitor/preferences';
 
 // GOOGLE API KEY: AIzaSyCrQ2gSBwhbFsnj8JSYxCnTkXrb1ZJbmjw
+const loader = new Loader({
+    apiKey: 'AIzaSyCrQ2gSBwhbFsnj8JSYxCnTkXrb1ZJbmjw',
+    version: "weekly",
+    libraries: ["places"]
+});
+
+const TILE_SIZE = 256;
+
 export default {
     name: "ClientAdd",
     data() {
@@ -205,46 +214,76 @@ export default {
         },
     },
     watch:{
-        modalStatus: function(newVal){
+        modalStatus: async function(newVal){
             this.openModal = newVal
+            if(newVal){
+                
+                await this.$nextTick(() => {
+                    this.initMap()
+                })
+                // 
+            }
         }
     },
-    created(){
-        this.clientList
-    },
-    mounted(){
-        this.initMap()
-    },
     methods: {
-        async initMap(){
-            
-            
-            // const coordinates = await Geolocation.getCurrentPosition();
-            const vm = this;
-            // console.log(mapRef)
-
-            // const newMap = await GoogleMap.create({
-            //     id: 'my-map', // Unique identifier for this map instance
-            //     element: mapRef, // reference to the capacitor-google-map element
-            //     apiKey: vm.apiKey, // Your Google Maps API Key
-            //     config: {
-            //         center: {
-            //         // The initial position to be rendered by the map
-            //         lat: coordinates.coords.latitude,
-            //         lng: coordinates.coords.longitude,
-            //         },
-            //         zoom: 8, // The initial zoom level to be rendered by the map
-            //     },
-            // });
-            Geolocation.getCurrentPosition().then(newPosition => {
-                let coordinates = newPosition.coords
-                vm.form.client.geoLocation  = {
-                    lat: coordinates.latitude,
-                    lng: coordinates.longitude
+        initMap(){
+            loader
+            .load()
+            .then(async (google) => {
+                let coordinates = {};
+                const perm = await Geolocation.checkPermissions()
+                if(perm.location !== 'granted' || perm.coarseLocation !== 'granted'){
+                    const reqPerm = await Geolocation.requestPermissions();
+                    if(reqPerm.location === 'granted' || reqPerm.coarseLocation === 'granted'){
+                        coordinates = await Geolocation.getCurrentPosition();
+                    } else {
+                        return false
+                    }
+                } else {
+                    coordinates = await Geolocation.getCurrentPosition();
                 }
-                vm.map = true
-            })
+                // const coordinates = await Geolocation.getCurrentPosition();
 
+                await this.$nextTick(() => {
+                    const mstore = new google.maps.LatLng(coordinates.coords.latitude, coordinates.coords.longitude);
+                    const map = new google.maps.Map(document.getElementById("map"), {
+                        center: mstore,
+                        zoom: 20,
+                        mapTypeId: 'satellite'
+                    });
+                    const coordInfoWindow = new google.maps.InfoWindow();
+
+                    coordInfoWindow.setContent(this.createInfoWindowContent());
+                    coordInfoWindow.setPosition(mstore);
+                    coordInfoWindow.open(map);
+                    // map.addListener("zoom_changed", () => {
+                    //     coordInfoWindow.setContent(this.createInfoWindowContent());
+                    //     coordInfoWindow.open(map);
+                    // });
+
+                    // Store Marker
+                    const marker = new google.maps.Marker({
+                        map,
+                        position: {lat: coordinates.coords.latitude, lng: coordinates.coords.longitude},
+                    });
+                
+                    marker.addListener('click', ({domEvent, latLng}) => {
+                      coordInfoWindow.setContent(this.createInfoWindowContent());
+                    });
+                })
+            })
+            .catch((e) => {
+                // do something
+                console.log(e)
+            });
+
+        },
+
+        createInfoWindowContent() {
+            return [
+                this.form.client.storeName,
+                "Address: " + this.form.client.address
+            ].join("<br>");
         },
         async closeModal(){
             this.$emit('updateStatus', false);
@@ -271,7 +310,8 @@ export default {
             })
             
         },
-        clearForm(){
+        async clearForm(){
+            const perm = await Geolocation.clearWatch()
             this.form = {
                 client: {
                     storeName: "",

@@ -15,13 +15,17 @@ import {
   Avatar,
   IconButton,
   Tooltip,
+  Spinner,
   Input,
   Select, 
   Option,
   Menu,
   MenuHandler,
   MenuList,
-  MenuItem
+  MenuItem,
+  Dialog,
+  DialogHeader,
+  DialogBody,
 } from "@material-tailwind/react";
 import Mobile from '@/api/Mobile'
 import moment from "moment/moment";
@@ -38,6 +42,36 @@ import {
 } from "@/widgets/mobile";
  
 const callHeading = ["Business Name", "Address", "Category", "Call", "Remarks", "Action"];
+const categories = [
+  {
+      "id":1,
+      "catName": "Farm",
+      "catDesc": "All farm establishment or business",
+      "icon": "agriculture",
+      "color": "green"
+  },
+  {
+      "id":2,
+      "catName": "Vet",
+      "catDesc": "Vet clinics that supplied of the products",
+      "icon": "vaccines",
+      "color": "blue"
+  },
+  {
+      "id":3,
+      "catName": "Poultry",
+      "catDesc": "Chicken farm supplied of the products",
+      "icon": "flutter_dash",
+      "color": "orange"
+  },
+  {
+      "id":4,
+      "catName": "Pet Shop",
+      "catDesc": "Pet Shop that supplied of the products",
+      "icon": "pets",
+      "color": "red"
+  }
+]
 
 export function AgentSync() {
   const [controller, dispatch] = useMaterialTailwindController();
@@ -46,23 +80,16 @@ export function AgentSync() {
   const [listAgent, setListAgent] = useState([]);
   const [TABLE_HEAD, setTableHead] = useState(callHeading);
   const [TABLE_ROWS, setTableRow] = useState([]);
+  const [tableLoad, setTableLoad] = useState(false);
   const [syncDate, setSyncDate] = useState(moment().format('yyyy-MM-DD'))
   const [agentId, setAgentId] = useState(0)
 
   // Onchanges Methods
   const dateOnchange = (e) => {
     setSyncDate(e)
-
-    if(agentId !== 0){
-      getClientListCall()
-    }
   }
   const agentOnchange = (e) => {
     setAgentId(e)
-
-    if(syncDate){
-      getClientListCall()
-    }
   }
 
   // Client
@@ -77,6 +104,7 @@ export function AgentSync() {
     }
   }
   const getClientListCall = async () => {
+    setTableLoad(true)
     let payload = {
       aid: Number(agentId),
       date: moment(syncDate).format('yyyy-MM-DD')
@@ -84,9 +112,24 @@ export function AgentSync() {
     const {status, data} = await Mobile.getClientList(payload);
     // Action Scenario
     if(status <= 200){
-      setTableRow(data.list)
+      let setData = await setTableRow(data.list)
+      setTableLoad(false)
     } else {
       setTableRow([])
+      setTableLoad(false)
+    }
+  }
+
+  const getCategoryName = (val) => {
+    let res = categories.filter(el => el.id === val)
+    return res[0].catName
+  }
+
+  const loaderTable = () => {
+    if(tableLoad){
+      return 'Fetching Data Please Wait...'
+    } else {
+      return ''
     }
   }
 
@@ -95,7 +138,8 @@ export function AgentSync() {
   }, [])
 
   return (
-    <React.Fragment>
+    <>
+    
     <Card className="h-full w-full">
       <CardHeader floated={false} shadow={false} className="rounded-none overflow-visible">
         <div className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
@@ -118,6 +162,9 @@ export function AgentSync() {
                 ))}
               </Select>
             </div>
+            <div className="w-full md:w-90">
+              <Button onClick={() => {getClientListCall()}}>Show Record</Button>
+            </div>
           </div>
           <div>
             <Typography variant="h5" color="blue-gray">
@@ -130,6 +177,7 @@ export function AgentSync() {
         </div>
       </CardHeader>
       <CardBody className="overflow-auto px-0">
+        
         <table className="w-full min-w-max table-auto text-left">
           <thead>
             <tr>
@@ -148,7 +196,7 @@ export function AgentSync() {
           </thead>
           <tbody>
             {
-              TABLE_ROWS.map((value, index) => {
+            TABLE_ROWS.map((value, index) => {
                 const isLast = index === TABLE_ROWS.length - 1;
                 const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
@@ -174,7 +222,7 @@ export function AgentSync() {
                       <div className="flex items-center gap-3">
                       
                         <Typography variant="small" color="blue-gray" className="font-bold">
-                          {value.categoryId}
+                          {getCategoryName(value.categoryId)}
                         </Typography>
                       </div>
                     </td>
@@ -235,6 +283,7 @@ export function AgentSync() {
         </table>
       </CardBody>
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
+        {loaderTable()}
         {/* <Button variant="outlined" color="blue-gray" size="sm">
           Previous
         </Button>
@@ -270,7 +319,7 @@ export function AgentSync() {
     <BookingDialog />
     <CallDialog />
 
-    </React.Fragment>
+    </>
   );
 }
 

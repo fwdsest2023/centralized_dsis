@@ -102,7 +102,7 @@ export default {
         async playCamera(){
             let vm = this;
             const image = await Camera.getPhoto({
-                quality: 100,
+                quality: 15,
                 source: CameraSource.Camera,
                 allowEditing: false,
                 resultType: CameraResultType.DataUrl,

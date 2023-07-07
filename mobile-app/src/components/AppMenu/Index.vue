@@ -122,9 +122,13 @@ export default {
                         message: response.data.message,
                         position: 'top'
                     })
-                    this.clearFinishData()
-                    this.checkUnsyncData()
-                    this.settingList[0].loading = false
+
+                    this.$nextTick(()=>{
+                        this.clearFinishData()
+                        this.checkUnsyncData()
+                        this.settingList[0].loading = false
+                    })
+                    
                 } else {
                     this.$q.dialog({
                         title: 'Sync Failed',
