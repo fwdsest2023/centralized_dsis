@@ -8,9 +8,9 @@ import {
   DevicePhoneMobileIcon,
   QrCodeIcon
 } from "@heroicons/react/24/solid";
-import { Home, Patients, Inventory } from "@/pages/dashboard";
+import { Home, Patients, } from "@/pages/dashboard";
 import { SignIn, SignUp } from "@/pages/auth";
-import { Dsishome, DSISDashboard, AgentSync } from "@/pages/dsis";
+import { Dsishome, DSISDashboard, Products, AgentSync } from "@/pages/dsis";
 
 
 const icon = {
@@ -38,12 +38,6 @@ export const routes = [
         name: "Schedule List",
         path: "/schedule-list",
         element: <Patients />,
-      },
-      {
-        icon: <BuildingStorefrontIcon {...icon} />,
-        name: "Inventory Management",
-        path: "/inventory",
-        element: <Inventory />,
       },
     ],
   },
@@ -76,9 +70,9 @@ export const routes = [
       },
       {
         icon: <QrCodeIcon {...icon} />,
-        name: "Inventory Management",
+        name: "Products",
         path: "/inventory",
-        element: <Dsishome />,
+        element: <Products />,
       },
       {
         icon: <DevicePhoneMobileIcon {...icon} />,

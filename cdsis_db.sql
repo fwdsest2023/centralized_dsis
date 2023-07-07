@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 24, 2023 at 03:06 AM
--- Server version: 10.4.24-MariaDB
--- PHP Version: 7.4.29
+-- Generation Time: Jul 06, 2023 at 05:19 PM
+-- Server version: 10.4.14-MariaDB
+-- PHP Version: 7.4.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -211,6 +211,39 @@ INSERT INTO `tblprocessflow` (`id`, `status`, `processedBy`, `step`, `nextStep`,
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tblproducts`
+--
+
+CREATE TABLE `tblproducts` (
+  `id` int(11) NOT NULL,
+  `productName` varchar(255) DEFAULT NULL,
+  `unit` varchar(255) DEFAULT NULL,
+  `prodForm` varchar(255) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `category` tinyint(4) DEFAULT NULL,
+  `sku` int(11) DEFAULT NULL,
+  `barcodeType` varchar(255) DEFAULT NULL,
+  `stock` int(11) DEFAULT NULL,
+  `productCost` float DEFAULT NULL,
+  `hasPriceGroup` tinyint(1) DEFAULT NULL,
+  `costGroup` text DEFAULT NULL,
+  `isSpecial` tinyint(1) DEFAULT 1,
+  `isSale` tinyint(1) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tblproducts`
+--
+
+INSERT INTO `tblproducts` (`id`, `productName`, `unit`, `prodForm`, `description`, `category`, `sku`, `barcodeType`, `stock`, `productCost`, `hasPriceGroup`, `costGroup`, `isSpecial`, `isSale`) VALUES
+(4, 'WEANWIN HOG BOOSTER (MASH) 25KG', 'BG', '', 'NA', 0, 1, 'C128', 9999999, 1605, 1, '[{\"regionId\":1,\"price\":1455},{\"regionId\":2,\"price\":1505},{\"regionId\":3,\"price\":1605},{\"regionId\":4,\"price\":1605},{\"regionId\":5,\"price\":1405}]', 1, 1),
+(5, 'WEANWIN HOG BOOSTER PELLET 1KG', 'PH', '', 'NA', 0, 2, 'C128', 9999999, 77, 0, '\"\"', 1, 1),
+(6, 'NUTRIWIN HOG LACTATING PELLET 50KG', 'BG', '', 'NA', 0, 8, 'C128', 9999999, 1940, 0, '\"\"', 1, 1),
+(7, 'CA HOG LACTATING PELLET 50KG', 'BG', '', 'NA', 0, 13, 'C128', 9999999, 1910, 0, '\"\"', 1, 1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tblschedule`
 --
 
@@ -383,6 +416,12 @@ ALTER TABLE `tblprocessflow`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tblproducts`
+--
+ALTER TABLE `tblproducts`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tblschedule`
 --
 ALTER TABLE `tblschedule`
@@ -451,6 +490,12 @@ ALTER TABLE `tblpatient_info`
 --
 ALTER TABLE `tblprocessflow`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+
+--
+-- AUTO_INCREMENT for table `tblproducts`
+--
+ALTER TABLE `tblproducts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `tblschedule`

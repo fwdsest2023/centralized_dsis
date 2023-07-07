@@ -1,6 +1,6 @@
-import React from 'react'
+import React, {useState} from "react";
 import { MagnifyingGlassIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
-import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
+import { PencilIcon, PlusCircleIcon } from "@heroicons/react/24/solid";
 import {
   Card,
   CardHeader,
@@ -8,7 +8,6 @@ import {
   Typography,
   Button,
   CardBody,
-  Chip,
   CardFooter,
   Tabs,
   TabsHeader,
@@ -17,95 +16,83 @@ import {
   IconButton,
   Tooltip,
 } from "@material-tailwind/react";
- 
+import Modal from "../dsis/dsispages/modal"
+import Product from "@/api/Product";
 const TABS = [
   {
     label: "All",
     value: "all",
   },
   {
-    label: "Monitored",
-    value: "monitored",
+    label: "Pet Food",
+    value: "pet food",
   },
   {
-    label: "Unmonitored",
-    value: "unmonitored",
+    label: "Medicine",
+    value: "medicine",
   },
   {
-    label: "OTHER",
-    value: "others",
+    label: "Accessories",
+    value: "Accessories",
   },
 ];
+
+
  
-const TABLE_HEAD = ["Member", "Function", "Status", "Employed", ""];
+const callHeading = ["Products", "SKU", "Barcode", "unit","Category ID","Subcategory ID","Stock Warning","Status" ];
  
-const TABLE_ROWS = [
-  {
-    img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg",
-    name: "John Michael",
-    email: "john@creative-tim.com",
-    job: "Manager",
-    org: "Organization",
-    online: true,
-    date: "23/04/18",
-  },
-  {
-    img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-2.jpg",
-    name: "Alexa Liras",
-    email: "alexa@creative-tim.com",
-    job: "Programator",
-    org: "Developer",
-    online: false,
-    date: "23/04/18",
-  },
-  {
-    img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-1.jpg",
-    name: "Laurent Perrier",
-    email: "laurent@creative-tim.com",
-    job: "Executive",
-    org: "Projects",
-    online: false,
-    date: "19/09/17",
-  },
-  {
-    img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-4.jpg",
-    name: "Michael Levi",
-    email: "michael@creative-tim.com",
-    job: "Programator",
-    org: "Developer",
-    online: true,
-    date: "24/12/08",
-  },
-  {
-    img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-5.jpg",
-    name: "Richard Gran",
-    email: "richard@creative-tim.com",
-    job: "Manager",
-    org: "Executive",
-    online: false,
-    date: "04/10/21",
-  },
-];
-function dsisinventory() {
+
+
+
+
+
+ 
+
+
+export function Products() {
+    const [ListProduct, setListProduct] = useState("");
+    const [TABLE_HEAD, setTableHead] = useState(callHeading);
+    const [TABLE_ROWS, setTableRow] = useState([]);
+    const [clientDetail, setClientDetail] = useState({});
+
+
+
+
+    const fetchProduct =  async () => {
+        const {status, data} = await Product.getProductList();
+        // Action Scenario
+        if(status <= 200){
+            setTableRow(data.list)
+        } else {
+            setTableRow([])
+        }
+    }
+    React.useEffect(() => {
+        fetchProduct()
+    }, [])
+ 
   return (
+    
     <div>
+
             <Card className="h-full w-full">
             <CardHeader floated={false} shadow={false} className="rounded-none">
                 <div className="mb-8 flex items-center justify-between gap-8">
                 <div>
                     <Typography variant="h5" color="blue-gray">
-                    Members list
+                    Product List
                     </Typography>
                     <Typography color="gray" className="mt-1 font-normal">
-                    See information about all members
+                    Inventory of all Products
                     </Typography>
                 </div>
                 <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-                    <Button variant="outlined" color="blue-gray" size="sm">
-                    view all
-                    </Button>
+                    {/* <Button variant="outlined" color="blue-gray" size="sm">
+                        view all
+                    </Button> */}
                     <Button className="flex items-center gap-3" color="blue" size="sm">
-                    <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Add member
+                        {/* <PlusCircleIcon strokeWidth={2} className="h-4 w-4" />  */}
+                        <Modal/>
                     </Button>
                 </div>
                 </div>
@@ -148,7 +135,8 @@ function dsisinventory() {
                     </tr>
                 </thead>
                 <tbody>
-                    {TABLE_ROWS.map(({ img, name, email, job, org, online, date }, index) => {
+                    {/* for value.name etc */}
+                    {TABLE_ROWS.map((value, index) => {
                     const isLast = index === TABLE_ROWS.length - 1;
                     const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
         
@@ -156,48 +144,53 @@ function dsisinventory() {
                         <tr key={name}>
                         <td className={classes}>
                             <div className="flex items-center gap-3">
-                            <Avatar src={img} alt={name} size="sm" />
                             <div className="flex flex-col">
                                 <Typography variant="small" color="blue-gray" className="font-normal">
-                                {name}
+                                {/* value.name postman reponse */}
+                                {value.name}
                                 </Typography>
-                                <Typography
+                                {/* <Typography
                                 variant="small"
                                 color="blue-gray"
                                 className="font-normal opacity-70"
                                 >
-                                {email}
-                                </Typography>
+                                {foodCategory}
+                                </Typography> */}
                             </div>
                             </div>
                         </td>
                         <td className={classes}>
                             <div className="flex flex-col">
                             <Typography variant="small" color="blue-gray" className="font-normal">
-                                {job}
+                                {value.sku}
                             </Typography>
-                            <Typography
+                            {/* <Typography
                                 variant="small"
                                 color="blue-gray"
                                 className="font-normal opacity-70"
                             >
-                                {org}
-                            </Typography>
+                                {}
+                            </Typography> */}
                             </div>
                         </td>
                         <td className={classes}>
-                            <div className="w-max">
-                            <Chip
-                                variant="ghost"
-                                size="sm"
-                                value={online ? "online" : "offline"}
-                                color={online ? "green" : "blue-gray"}
-                            />
-                            </div>
+                        <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-normal opacity-70"
+                            >
+                                {value.barcodeType}
+                            </Typography>
+              
                         </td>
                         <td className={classes}>
                             <Typography variant="small" color="blue-gray" className="font-normal">
-                            {date}
+                            {value.unit}
+                            </Typography>
+                        </td>
+                        <td className={classes}>
+                            <Typography variant="small" color="blue-gray" className="font-normal">
+                            {value.categoryId}
                             </Typography>
                         </td>
                         <td className={classes}>
@@ -228,7 +221,10 @@ function dsisinventory() {
             </CardFooter>
             </Card>
             </div>
+
+
+  
   )
 }
 
-export default dsisinventory
+export default Products

@@ -15,7 +15,7 @@ export default function Example() {
  
   return (
     <Fragment>
-      <Button className="mt-5" onClick={handleOpen} variant="gradient">
+      <Button onClick={handleOpen} >
         ADD Inventory
       </Button>
       <Dialog
@@ -35,19 +35,19 @@ export default function Example() {
                     <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                         <div class="mb-4">
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="Action">
-                                Action
+                                Product
                             </label>
                             <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder=""/>
                         </div>
                         <div class="mb-4">
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="Date">
-                                Date
+                                Brand
                             </label>
                             <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="DD/MM/YY"/>
                         </div>
                         <div class="mb-4">
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="ReferenceNO">
-                                ReferenceNO
+                                Category
                             </label>
                             <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="REF#"/>
                         </div>
