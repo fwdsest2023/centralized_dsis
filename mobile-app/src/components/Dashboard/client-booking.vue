@@ -198,6 +198,7 @@ export default {
                 key: 'clientList',
                 value: JSON.stringify(this.loadClientData)
             }).then(() => {
+                this.bookingList = [];
                 this.$emit('moveStep', {nextTo: 'remarks'});
             })
         },

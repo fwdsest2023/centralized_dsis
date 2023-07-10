@@ -89,10 +89,9 @@ export default {
                 key: 'clientList',
                 value: JSON.stringify(this.loadClientData)
             }).then(() => {
+                this.imgSrc = ''
                 this.$emit('updateStatus', false);
             })
-            // this.$emit('addClientVisit', this.loadClientData);
-            // this.$emit('updateStatus', false);
         },
         reTake(){
             this.imgSrc = ''
@@ -112,10 +111,7 @@ export default {
                 vm.closeModal()
             })
             this.imgSrc = image.dataUrl
-
-            // this.loadClientData[this.clientId].files = image.dataUrl
             this.showPicture = true
-            // LocalStorage.set("clientList", this.loadClientData)
         }
     }
 }

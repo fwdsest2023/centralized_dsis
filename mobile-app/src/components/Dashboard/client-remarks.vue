@@ -133,6 +133,7 @@ export default {
                 key: 'clientList',
                 value: JSON.stringify(this.loadClientData)
             }).then(() => {
+                this.remarkList = []
                 this.$emit('moveStep', {nextTo: 'selfie'});
             })
         },

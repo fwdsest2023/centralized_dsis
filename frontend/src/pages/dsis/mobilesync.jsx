@@ -122,7 +122,8 @@ export function AgentSync() {
 
   const getCategoryName = (val) => {
     let res = categories.filter(el => el.id === val)
-    return res[0].catName
+    res = res.length === 0 ? '' : res[0].catName
+    return res
   }
 
   const loaderTable = () => {
