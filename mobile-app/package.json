@@ -16,6 +16,7 @@
     "@capacitor/filesystem": "^5.0.4",
     "@capacitor/geolocation": "^5.0.4",
     "@capacitor/google-maps": "^5.1.2",
+    "@capacitor/network": "^5.0.5",
     "@capacitor/preferences": "^5.0.4",
     "@googlemaps/js-api-loader": "^1.16.2",
     "@ionic/pwa-elements": "^3.1.1",

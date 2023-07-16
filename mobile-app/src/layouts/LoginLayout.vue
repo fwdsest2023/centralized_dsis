@@ -21,12 +21,12 @@
       <!-- drawer content -->
       <Profile v-bind="userProfile" />
       <q-separator dark />
-      <!-- <SideNav 
+      <SideNav 
         v-for="link in filteredMenus"
         :key="link.title"
         v-bind="link"
         @linkCrumbs="setCrumbsItem"
-      /> -->
+      />
     </q-drawer>
 
     <q-page-container>
@@ -51,14 +51,24 @@ import Profile from '../components/Templates/Profile.vue';
 import Crumbs from '../components/Templates/Breadcrumbs.vue';
 
 const linksList = [
+  // {
+  //   title: 'Dashboard',
+  //   icon: 'dashboard',
+  //   link: 'dashboard',
+  //   code: 101,
+  //   crumbs: [
+  //     {label: '', icon: 'home', link: '/'},
+  //     {label: 'Dashboard', icon: 'dashboard', link: 'dashboard'}
+  //   ]
+  // },
   {
-    title: 'Dashboard',
-    icon: 'dashboard',
-    link: 'dashboard',
+    title: 'Call Hitory',
+    icon: 'history',
+    link: 'callHistory',
     code: 101,
     crumbs: [
       {label: '', icon: 'home', link: '/'},
-      {label: 'Dashboard', icon: 'dashboard', link: 'dashboard'}
+      {label: 'Call Hitory', icon: 'history', link: 'callHistory'}
     ]
   },
 
@@ -145,7 +155,7 @@ export default {
     filteredMenus: function(){
       return this.linksList;
     },
-    getCurrentRouteName:function(){
+    getCurrentRouteName(){
       return this.$router.currentRoute._value.name
     }
   },

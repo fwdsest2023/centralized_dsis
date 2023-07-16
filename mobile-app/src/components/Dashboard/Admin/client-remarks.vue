@@ -121,7 +121,7 @@ export default {
     },
     methods: {
         async clientList(){
-            const { value } = await Preferences.get({ key: 'clientList' });
+            const { value } = await Preferences.get({ key: 'adminList' });
             let data = value !== null ? JSON.parse(value) : [];
             this.loadClientData = data
         },
@@ -138,7 +138,7 @@ export default {
             this.loadClientData[this.clientId].remarks = this.remarkList
             
             await Preferences.set({
-                key: 'clientList',
+                key: 'adminList',
                 value: JSON.stringify(this.loadClientData)
             }).then(() => {
                 this.remarkList = []

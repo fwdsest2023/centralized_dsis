@@ -32,4 +32,18 @@ class MobileModel extends Model
         $results = $query->getRow();
         return $results;
     }
+
+    public function getAllSummaryCalls($params){
+
+        // $query = $this->db->table($this->table)->where("agentId", $where['agentId'])->get();
+        // $results = $query->getResult();
+        // return $results;
+        $sql = "SELECT * FROM `tblmobile_sync` WHERE agentId = :aid: AND DATE_FORMAT(syncDate, '%Y-%m-%d') BETWEEN :dateFrom: AND :dateTo:";
+       
+        $query = $this->db->query($sql, $params);
+        $results = $query->getResult();
+
+        return $results;
+    }
+
 }

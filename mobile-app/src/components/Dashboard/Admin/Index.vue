@@ -1,20 +1,11 @@
 <template>
     <div>
-        <q-btn
-            @click="cancelTransaction"
-            label="Cancel"
-            class="q-mr-sm"
-            color="negative" 
-            icon="close" 
-            size="sm"
-            stretch
-        />
         <q-toolbar>
-            <q-input
+             <q-input
                 class="q-mt-sm"
                 bottom-slots 
                 v-model="searchClient" 
-                label="Search Client" 
+                label="Search Admin List" 
                 dense
             >
                 <template v-slot:append>
@@ -24,14 +15,13 @@
             </q-input>
             
             <q-space />
-            <q-btn
+           <q-btn
                 @click="addClient"
                 round 
                 color="primary" 
-                icon="add_business" 
+                icon="assignment_add" 
                 size="md"
             />
-            
         </q-toolbar>
         <q-list >
             <div v-if="loadClientList.length !== 0">
@@ -46,12 +36,12 @@
                         </q-item-section>
 
                         <q-item-section side top>
-                            <!-- <q-item-label caption>{{item.client.branch}}</q-item-label> -->
                             <q-btn
                                 v-if="item.client.status !== 'finish'"
                                 @click="item.client.status === 'in-progress' ? stopCall(index) : playCall(index)"
                                 flat 
                                 round
+                                disabled
                                 :loading="item.client.loading"
                                 :color="item.client.color" 
                                 :icon="item.client.icon" 
@@ -82,23 +72,13 @@
             </div>
         </q-list>
         
-        
-        <clientBookingModal
-            :modalStatus="openBooking"
-            :clientId="inProgress"
-            @updateStatus="closeBooking"
-            @moveStep="nextStep"
-            @orderSubmit="updateData"
-         />
         <clientRemarksModal 
             :modalStatus="openRemarks"
             :clientId="inProgress"
-            :transType="transType"
             @updateStatus="closeRemarks"
             @moveStep="nextStep"
             @addClientRemarks="updateData"
             @backStep="prevStep"
-            @closeBack="closeBooking"
          />
         <clientSelfieModal 
             :modalStatus="openSelfie"
@@ -106,7 +86,6 @@
             @updateStatus="closeSelfie"
             @addClientVisit="updateData"
             @backStep="prevStep"
-            @finishStep="stopCall"
          />
         <clientAddModal
             :modalStatus="openAdd"
@@ -118,20 +97,13 @@
 import moment from 'moment'
 import {LocalStorage} from 'quasar'
 import { Geolocation } from '@capacitor/geolocation'
-import clientBookingModal from './client-booking.vue'
-import clientRemarksModal from './client-remarks.vue'
-import clientSelfieModal from './client-selfie.vue'
-import clientAddModal from './client-add.vue'
+import clientRemarksModal from '../Admin/client-remarks.vue'
+import clientSelfieModal from '../Admin/client-selfie.vue'
+import clientAddModal from '../Admin/client-add.vue'
 import { Preferences } from '@capacitor/preferences';
-import miscJson from '../../context-data/misc.json'
 
 export default {
     name: "ClientWidget",
-    props: {
-        transType: {
-            type: String
-        }
-    },
     data() {
         return {
             renderComponent: true,
@@ -157,15 +129,11 @@ export default {
         }
     },
     components:{
-        clientBookingModal,
         clientRemarksModal,
         clientSelfieModal,
         clientAddModal
     },
     watch:{
-        loadClientList(newVal){
-            // LocalStorage.set("clientList", newVal)
-        },
         openAdd(){
             this.getClientListPref();
         }
@@ -173,15 +141,6 @@ export default {
     computed: {
         filterList(){
             if(this.loadClientList.length !== 0){
-                this.loadClientList.map((item) => {
-                    let category = miscJson.category.filter(el => {
-                        return el.id === item.client.categoryId
-                    })
-                    item.category = category
-                    return item
-                })
-
-
                 return this.loadClientList.filter(search => {
                     return search.client.storeName.toLowerCase().includes(this.searchClient.toLowerCase())
                 })
@@ -191,27 +150,13 @@ export default {
         },
     },
     created(){
-        // LocalStorage.set("clientList", [])
-        // this.clientList()
-        // this.removePref()
         this.getClientListPref()
-
     },
     methods: {
-        cancelTransaction(){
-            this.$emit('closeClient');
-        },
         async getClientListPref(){
-            const { value } = await Preferences.get({ key: 'clientList' });
+            const { value } = await Preferences.get({ key: 'adminList' });
             let data = value !== null ? JSON.parse(value) : []
             this.loadClientList = data.length !== 0 ? data : [];
-        },
-        async removePref(){
-            await Preferences.remove({ key: 'clientList' });
-        },
-        clientList(){
-            let list = LocalStorage.getItem('clientList');
-            this.loadClientList = list.length !== 0 ? list : [];
         },
         addClient(){
             this.openAdd = true
@@ -223,12 +168,7 @@ export default {
             this.openAdd = false
         },
         closeSelfie(){
-            this.getClientListPref()
-            
-            this.$nextTick(() => {
-                this.openSelfie = false
-            })
-            
+            this.openSelfie = false
         },
         nextStep(val){
             if(val.nextTo === 'remarks') {
@@ -298,24 +238,16 @@ export default {
                     }
 
                     this.$nextTick(async () => {
-                        vm.loadClientList[index].client.status = "in-progress";
-                        vm.inProgress = index
-                        vm.loadClientList[index].client.icon = 'fiber_manual_record';
-                        vm.loadClientList[index].client.color = 'red';
-                        vm.loadClientList[index].client.loading = false;
-                        vm.loadClientList[index].attendance.startCall = timeIn;
-                        
                         await Preferences.set({
-                            key: 'clientList',
+                            key: 'adminList',
                             value: JSON.stringify(vm.loadClientList)
                         }).then(() => {
-                            // alert(JSON.stringify(vm.loadClientList[index]))
-                            if(this.transType === 'Client Visit'){
-                                this.openRemarks = true;
-                            } else {
-                                this.openBooking = true;
-                            }
-                            
+                            vm.loadClientList[index].client.status = "in-progress";
+                            vm.inProgress = index
+                            vm.loadClientList[index].client.icon = 'fiber_manual_record';
+                            vm.loadClientList[index].client.color = 'red';
+                            vm.loadClientList[index].client.loading = false;
+                            vm.loadClientList[index].attendance.startCall = timeIn;
                         })
                     })
                 } catch (error) {
@@ -370,17 +302,17 @@ export default {
 
 
                 this.$nextTick(async () => {
-                    vm.loadClientList[index].client.status = "finish";
-                    vm.loadClientList[index].client.loading = false;
-                    vm.loadClientList[index].client.icon = 'check_circle';
-                    vm.loadClientList[index].client.color = 'blue';
+                    
                     
                     await Preferences.set({
-                        key: 'clientList',
+                        key: 'adminList',
                         value: JSON.stringify(vm.loadClientList)
                     }).then(() => {
+                        vm.loadClientList[index].client.status = "finish";
+                        vm.loadClientList[index].client.loading = false;
+                        vm.loadClientList[index].client.icon = 'check_circle';
+                        vm.loadClientList[index].client.color = 'blue';
                         this.getClientListPref()
-                        this.$emit('closeClient');
                     })
                 })
             } catch (error) {
@@ -401,14 +333,10 @@ export default {
             this.loadClientList[this.inProgress].files = '';
 
             await Preferences.set({
-                key: 'clientList',
+                key: 'adminList',
                 value: JSON.stringify(this.loadClientList)
             }).then(() => {
-                if(this.transType === 'Client Visit'){
-                    this.openRemarks = false;
-                } else {
-                    this.openBooking = false;
-                }
+                this.openBooking = false;
             })
         },
         updateData(val){

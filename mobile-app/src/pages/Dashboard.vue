@@ -29,7 +29,7 @@
       transition-next="jump-up"
     >
       <q-tab-panel name="client">
-        <clientWidget />
+        <agentBoard />
       </q-tab-panel>
 
       <q-tab-panel name="activities">
@@ -37,7 +37,7 @@
       </q-tab-panel>
 
       <q-tab-panel name="adminWorks">
-        <div class="text-h4 q-mb-md">Admins</div>
+        <adminActivities />
       </q-tab-panel>
     </q-tab-panels>
   </q-page>
@@ -46,8 +46,10 @@
 <script>
 import { SessionStorage } from 'quasar'
 import jwt_decode from 'jwt-decode'
-import clientWidget from '../components/Dashboard/client-widget.vue'
+// import clientWidget from '../components/Dashboard/client-widget.vue'
+import agentBoard from '../components/Dashboard/agent-board.vue'
 import clientActivities from '../components/Dashboard/Activities/Index.vue'
+import adminActivities from '../components/Dashboard/Admin/Index.vue'
 
 
 export default {
@@ -59,8 +61,9 @@ export default {
     }
   },
   components: {
-    clientWidget,
-    clientActivities
+    agentBoard,
+    clientActivities,
+    adminActivities
   },
   computed: {
     getUserProfile: function(){
