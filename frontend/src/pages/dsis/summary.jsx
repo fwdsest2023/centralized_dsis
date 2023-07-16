@@ -1,8 +1,9 @@
-import React, {useState} from "react";
-import { PencilIcon } from "@heroicons/react/24/solid";
+import React, {useState, useMemo } from "react";
 import { 
   UserCircleIcon,
-  AdjustmentsHorizontalIcon
+  AdjustmentsHorizontalIcon,
+  ArrowRightIcon, 
+  ArrowLeftIcon 
 } from "@heroicons/react/24/outline";
 import {
   Card,
@@ -10,90 +11,41 @@ import {
   Typography,
   Button,
   CardBody,
-  Chip,
   CardFooter,
-  Avatar,
-  IconButton,
-  Tooltip,
-  Spinner,
   Input,
   Select, 
   Option,
-  Menu,
-  MenuHandler,
-  MenuList,
-  MenuItem,
-  Dialog,
-  DialogHeader,
-  DialogBody,
 } from "@material-tailwind/react";
 import Mobile from '@/api/Mobile'
 import moment from "moment/moment";
-import {
-  useMaterialTailwindController,
-  setEvidenceContent,
-  setBookingContent,
-  setCallContent
-} from '@/context'
-import { 
-  EvidenceDialog,
-  BookingDialog,
-  CallDialog
-} from "@/widgets/mobile";
+import Pagination from "@/hooks/Pagination";
  
-const callHeading = ["DATE", "CLIENT NAME", "ADDRESS", "TIME-IN", "TIME-OUT", "DURATION","Remarks"];
-const categories = [
-  {
-      "id":1,
-      "catName": "Farm",
-      "catDesc": "All farm establishment or business",
-      "icon": "agriculture",
-      "color": "green"
-  },
-  {
-      "id":2,
-      "catName": "Vet",
-      "catDesc": "Vet clinics that supplied of the products",
-      "icon": "vaccines",
-      "color": "blue"
-  },
-  {
-      "id":3,
-      "catName": "Poultry",
-      "catDesc": "Chicken farm supplied of the products",
-      "icon": "flutter_dash",
-      "color": "orange"
-  },
-  {
-      "id":4,
-      "catName": "Pet Shop",
-      "catDesc": "Pet Shop that supplied of the products",
-      "icon": "pets",
-      "color": "red"
-  }
-]
+const TABLE_HEAD = ["DATE", "CLIENT NAME", "ADDRESS", "TIME-IN", "TIME-OUT", "DURATION","Remarks"];
 
 export function AgentSummary() {
-  const [controller, dispatch] = useMaterialTailwindController();
-  const { evidenceContent } = controller;
 
-  const [listAgent, setListAgent] = useState([]);
-  const [TABLE_HEAD, setTableHead] = useState(callHeading);
-  const [TABLE_ROWS, setTableRow] = useState([]);
-  const [tableLoad, setTableLoad] = useState(false);
-  const [syncDate, setSyncDate] = useState(moment().format('yyyy-MM-DD'))
+  const [listAgent, setListAgent] = useState([])
+  const [TABLE_ROWS, setTableRow] = useState([])
+  const [tableLoad, setTableLoad] = useState(false)
   const [dateFrom, setDateFrom] = useState(moment().format('yyyy-MM-DD'))
   const [dateTo, setDateTo] = useState(moment().format('yyyy-MM-DD'))
   const [agentId, setAgentId] = useState(0)
+
+  //For Pagination
+  const totalCountPerPage = 10;
+  const [totalCount, setTotalCount] = useState(0)
+  const [currPage, setCurrPage] = useState(1)
+  const paginatedData = [];
+
+  
 
   // Onchanges Methods
   const dateFromOnChange = (e) => {
     setDateFrom(e)
   }
-  const dateToOnchange = (e) => {
+  const dateToOnChange = (e) => {
     setDateTo(e)
   }
-
   const agentOnchange = (e) => {
     setAgentId(e)
   }
@@ -111,6 +63,7 @@ export function AgentSummary() {
   }
   const getClientListCall = async () => {
     setTableRow([])
+    setTotalCount(0)
     setTableLoad(true)
     let payload = {
       aid: Number(agentId),
@@ -120,30 +73,40 @@ export function AgentSummary() {
     const {status, data} = await Mobile.getAgentSummaryList(payload);
     // Action Scenario
     if(status <= 200){
-      let setData = await setTableRow(data.list)
+      await setTableRow(data.list)
+
+      setTotalCount(data.count)
+      // setting the total page count
       setTableLoad(false)
     } else {
+      setTotalCount(0)
       setTableLoad(false)
     }
-  }
-
-  const getCategoryName = (val) => {
-    let res = categories.filter(el => el.id === val)
-    res = res.length === 0 ? '' : res[0].catName
-    return res
   }
 
   const loaderTable = () => {
     if(tableLoad){
       return 'Fetching Data Please Wait...'
     } else {
-      return ''
+      return <Pagination
+        currentPage={currPage}
+        totalCount={totalCount}
+        pageSize={totalCountPerPage}
+        onPageChange={page => setCurrPage(page)}
+      />
     }
   }
 
   React.useEffect(() => {
     getAgentListCall()
   }, [])
+
+  const currentTableData = useMemo(() => {
+    const firstPageIndex = (currPage - 1) * totalCountPerPage;
+    const lastPageIndex = firstPageIndex + totalCountPerPage;
+    return TABLE_ROWS.slice(firstPageIndex, lastPageIndex);
+  }, [currPage, TABLE_ROWS]);
+
 
   return (
     <>
@@ -168,10 +131,10 @@ export function AgentSummary() {
               </Select>
             </div>
             <div className="w-full md:w-60">
-              <Input type="date" onChange={e => dateFromOnChange(e.target.value)} value={syncDate} label="Date From" />
+              <Input type="date" onChange={e => dateFromOnChange(e.target.value)} value={dateFrom} label="Date From" />
             </div>
             <div className="w-full md:w-60">
-              <Input type="date" onChange={e => dateToOnChange(e.target.value)} value={syncDate} label="Date To" />
+              <Input type="date" onChange={e => dateToOnChange(e.target.value)} value={dateTo} label="Date To" />
             </div>
             <div className="w-full md:w-90">
               <Button onClick={() => {getClientListCall()}}>Show Record</Button>
@@ -207,7 +170,7 @@ export function AgentSummary() {
           </thead>
           <tbody>
             {
-            TABLE_ROWS.map((value, index) => {
+            currentTableData.map((value, index) => {
                 const isLast = index === TABLE_ROWS.length - 1;
                 const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
                 
@@ -270,14 +233,21 @@ export function AgentSummary() {
           </tbody>
         </table>
       </CardBody>
-      <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-        {loaderTable()}
+      <CardFooter >
+        <div className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
+          <div className="flex w-full shrink-0 gap-2 md:w-max">
+            
+            <Typography variant="h5" color="blue-gray">
+              Total Calls: {totalCount}
+            </Typography>
+          </div>
+          <div>
+            {loaderTable()}
+          </div>
+        </div>
+        
       </CardFooter>
     </Card>
-    <EvidenceDialog />
-    <BookingDialog />
-    <CallDialog />
-
     </>
   );
 }

@@ -270,7 +270,6 @@ class MobileController extends BaseController
                 "address" => $cvalue->address,
                 "timeIn" => date('h:i:s A', strtotime($cvalue->attendance->startCall)),
                 "timeOut" => date('h:i:s A', strtotime($cvalue->attendance->endCall)),
-                // "attendance" => $cvalue->attendance,
                 "duration" => $callDuration .'min(s)',
                 "remarks" => $this->callReamrks($callDuration),
             ];
@@ -282,7 +281,7 @@ class MobileController extends BaseController
     public function callReamrks($mins){
         $rem = 'SHORT CALL';
 
-        if($mins >= 8){
+        if($mins >= 5){
             $rem = 'GOOD';
         }
 

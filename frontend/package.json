@@ -18,7 +18,7 @@
     "apexcharts": "3.35.5",
     "await-to-js": "^3.0.0",
     "axios": "^1.4.0",
-    "dotenv": "^16.0.3",
+    "dotenv": "^16.3.1",
     "jquery": "^3.7.0",
     "jwt-decode": "^3.1.2",
     "moment": "^2.29.4",
