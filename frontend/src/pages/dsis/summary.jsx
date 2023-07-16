@@ -41,7 +41,7 @@ import {
   CallDialog
 } from "@/widgets/mobile";
  
-const callHeading = ["Business Name", "Address", "Category", "Call", "Remarks", "Action"];
+const callHeading = ["DATE", "CLIENT NAME", "ADDRESS", "TIME-IN", "TIME-OUT", "DURATION","Remarks"];
 const categories = [
   {
       "id":1,
@@ -73,7 +73,7 @@ const categories = [
   }
 ]
 
-export function AgentSync() {
+export function AgentSummary() {
   const [controller, dispatch] = useMaterialTailwindController();
   const { evidenceContent } = controller;
 
@@ -82,12 +82,18 @@ export function AgentSync() {
   const [TABLE_ROWS, setTableRow] = useState([]);
   const [tableLoad, setTableLoad] = useState(false);
   const [syncDate, setSyncDate] = useState(moment().format('yyyy-MM-DD'))
+  const [dateFrom, setDateFrom] = useState(moment().format('yyyy-MM-DD'))
+  const [dateTo, setDateTo] = useState(moment().format('yyyy-MM-DD'))
   const [agentId, setAgentId] = useState(0)
 
   // Onchanges Methods
-  const dateOnchange = (e) => {
-    setSyncDate(e)
+  const dateFromOnChange = (e) => {
+    setDateFrom(e)
   }
+  const dateToOnchange = (e) => {
+    setDateTo(e)
+  }
+
   const agentOnchange = (e) => {
     setAgentId(e)
   }
@@ -108,9 +114,10 @@ export function AgentSync() {
     setTableLoad(true)
     let payload = {
       aid: Number(agentId),
-      date: moment(syncDate).format('yyyy-MM-DD')
+      dateFrom: moment(dateFrom).format('yyyy-MM-DD'),
+      dateTo: moment(dateTo).format('yyyy-MM-DD')
     }
-    const {status, data} = await Mobile.getClientList(payload);
+    const {status, data} = await Mobile.getAgentSummaryList(payload);
     // Action Scenario
     if(status <= 200){
       let setData = await setTableRow(data.list)
@@ -146,10 +153,7 @@ export function AgentSync() {
         <div className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
           
           <div className="flex w-full shrink-0 gap-2 md:w-max">
-            <div className="w-full md:w-60">
-              {/* <Input label="Search" icon={<MagnifyingGlassIcon className="h-5 w-5" />} /> */}
-              <Input type="date" onChange={e => dateOnchange(e.target.value)} value={syncDate} label="Sync Date" />
-            </div>
+            
             <div className="w-full md:w-90">
               <Select
                 onChange={e => agentOnchange(e)}
@@ -163,16 +167,22 @@ export function AgentSync() {
                 ))}
               </Select>
             </div>
+            <div className="w-full md:w-60">
+              <Input type="date" onChange={e => dateFromOnChange(e.target.value)} value={syncDate} label="Date From" />
+            </div>
+            <div className="w-full md:w-60">
+              <Input type="date" onChange={e => dateToOnChange(e.target.value)} value={syncDate} label="Date To" />
+            </div>
             <div className="w-full md:w-90">
               <Button onClick={() => {getClientListCall()}}>Show Record</Button>
             </div>
           </div>
           <div>
             <Typography variant="h5" color="blue-gray">
-              Agent Transactions
+              Agent Summary Report
             </Typography>
             <Typography color="gray" className="mt-1 font-normal">
-              These are details about the agent synced mobile app transactions to the clients and admin
+              These are details about the agent call from the range selected to be generated
             </Typography>
           </div>
         </div>
@@ -200,83 +210,60 @@ export function AgentSync() {
             TABLE_ROWS.map((value, index) => {
                 const isLast = index === TABLE_ROWS.length - 1;
                 const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
-
+                
+               
                 return (
-                  <tr key={index}>
-                    <td className={classes}>
-                      <div className="flex items-center gap-3">
-                      
-                        <Typography variant="small" color="blue-gray" className="font-bold">
-                          {value.storeName}
-                        </Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex items-center gap-3">
-                      
-                        <Typography variant="small" color="blue-gray" className="font-bold">
-                          {value.address}
-                        </Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex items-center gap-3">
-                      
-                        <Typography variant="small" color="blue-gray" className="font-bold">
-                          {getCategoryName(value.categoryId)}
-                        </Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex items-center gap-3">
-                        <Typography variant="small" color="blue-gray" className="font-bold">
-                          {/* {value.attendance} */}
-                          <Button 
-                            onClick={() => setCallContent(dispatch, {
-                              show: true,
-                              store: {
-                                name: value.storeName,
-                                address: value.address,
-                                loc: value.geoLocation,
-                              },
-                              callDetails: value.attendance
-                            })}
-                            size="sm"
-                          >
-                            Call Details
-                          </Button>
-                        </Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex items-center gap-3">
-                      
-                        <Typography variant="small" color="blue-gray" className="font-bold">
-                          {value.remarks}
-                        </Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex items-center gap-3">
-                      <Menu size="sm" placement="right-start">
-                        <MenuHandler>
-                          <Button variant="outlined" size="sm" className="flex items-center gap-3">
-                            <AdjustmentsHorizontalIcon strokeWidth={2} className="h-5 w-5" />
-                          </Button>
-                        </MenuHandler>
-                        <MenuList>
-                          <MenuItem
-                            onClick={() => setBookingContent(dispatch, {show: true, list: value.books})}
-                          >Booking Details</MenuItem>
-                          <MenuItem
-                            onClick={() => setEvidenceContent(dispatch, {show: true, imageUrl: value.files})}
-                          >Evidence</MenuItem>
-                        </MenuList>
-                      </Menu>
-                      
-                      </div>
-                    </td>
-                  </tr>
+                    <tr key={index}>
+                      <td className={classes}>
+                        <div className="flex items-center gap-3">
+                          <Typography variant="small" color="blue-gray" className="font-bold">
+                            {value.date}
+                          </Typography>
+                        </div>
+                      </td>
+                      <td className={classes}>
+                        <div className="flex items-center gap-3">
+                          <Typography variant="small" color="blue-gray" className="font-bold">
+                            {value.storeName}
+                          </Typography>
+                        </div>
+                      </td>
+                      <td className={classes}>
+                        <div className="flex items-center gap-3">
+                          <Typography variant="small" color="blue-gray" className="font-bold">
+                            {value.address}
+                          </Typography>
+                        </div>
+                      </td>
+                      <td className={classes}>
+                        <div className="flex items-center gap-3">
+                          <Typography variant="small" color="blue-gray" className="font-bold">
+                            {value.timeIn}
+                          </Typography>
+                        </div>
+                      </td>
+                      <td className={classes}>
+                        <div className="flex items-center gap-3">
+                          <Typography variant="small" color="blue-gray" className="font-bold">
+                            {value.timeOut}
+                          </Typography>
+                        </div>
+                      </td>
+                      <td className={classes}>
+                        <div className="flex items-center gap-3">
+                          <Typography variant="small" color="blue-gray" className="font-bold">
+                            {value.duration}
+                          </Typography>
+                        </div>
+                      </td>
+                      <td className={classes}>
+                        <div className="flex items-center gap-3">
+                          <Typography variant="small" color="blue-gray" className="font-bold">
+                            {value.remarks}
+                          </Typography>
+                        </div>
+                      </td>
+                    </tr>
                 )
               })
             }
@@ -285,35 +272,6 @@ export function AgentSync() {
       </CardBody>
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
         {loaderTable()}
-        {/* <Button variant="outlined" color="blue-gray" size="sm">
-          Previous
-        </Button>
-        <div className="flex items-center gap-2">
-          <IconButton variant="outlined" color="blue-gray" size="sm">
-            1
-          </IconButton>
-          <IconButton variant="text" color="blue-gray" size="sm">
-            2
-          </IconButton>
-          <IconButton variant="text" color="blue-gray" size="sm">
-            3
-          </IconButton>
-          <IconButton variant="text" color="blue-gray" size="sm">
-            ...
-          </IconButton>
-          <IconButton variant="text" color="blue-gray" size="sm">
-            8
-          </IconButton>
-          <IconButton variant="text" color="blue-gray" size="sm">
-            9
-          </IconButton>
-          <IconButton variant="text" color="blue-gray" size="sm">
-            10
-          </IconButton>
-        </div>
-        <Button variant="outlined" color="blue-gray" size="sm">
-          Next
-        </Button> */}
       </CardFooter>
     </Card>
     <EvidenceDialog />
@@ -325,4 +283,4 @@ export function AgentSync() {
 }
 
 
-export default AgentSync;
+export default AgentSummary;

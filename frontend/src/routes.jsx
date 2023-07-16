@@ -6,11 +6,12 @@ import {
   BuildingStorefrontIcon,
   CalendarDaysIcon,
   DevicePhoneMobileIcon,
-  QrCodeIcon
+  QrCodeIcon,
+  ClipboardDocumentListIcon
 } from "@heroicons/react/24/solid";
 import { Home, Patients, } from "@/pages/dashboard";
 import { SignIn, SignUp } from "@/pages/auth";
-import { Dsishome, DSISDashboard, Products, AgentSync } from "@/pages/dsis";
+import { Dsishome, DSISDashboard, Products, AgentSync, AgentSummary } from "@/pages/dsis";
 
 
 const icon = {
@@ -79,6 +80,12 @@ export const routes = [
         name: "Mobile Sync Management",
         path: "/mobile_sync",
         element: <AgentSync />,
+      },
+      {
+        icon: <ClipboardDocumentListIcon {...icon} />,
+        name: "Summary Report",
+        path: "/report/summary",
+        element: <AgentSummary />,
       },
     ],
   },

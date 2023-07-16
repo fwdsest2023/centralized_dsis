@@ -19,5 +19,12 @@ export default {
         )
         return serialize(err ? err.response : data);
     },
+
+    getAgentSummaryList: async (payload) => {
+        const [err, data] = await to(
+            api.post(`${baseMob}/agent/callSummary`, payload)
+        )
+        return serialize(err ? err.response : data);
+    },
     
 }
