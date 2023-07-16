@@ -38,7 +38,7 @@ class MobileModel extends Model
         // $query = $this->db->table($this->table)->where("agentId", $where['agentId'])->get();
         // $results = $query->getResult();
         // return $results;
-        $sql = "SELECT * FROM `tblmobile_sync` WHERE agentId = :aid: AND DATE_FORMAT(syncDate, '%Y-%m-%d') BETWEEN :dateFrom: AND :dateTo:";
+        $sql = "SELECT * FROM `tblmobile_sync` WHERE agentId = :aid: AND DATE_FORMAT(syncDate, '%Y-%m-%d') BETWEEN :dateFrom: AND :dateTo: ORDER BY syncDate ASC";
        
         $query = $this->db->query($sql, $params);
         $results = $query->getResult();
