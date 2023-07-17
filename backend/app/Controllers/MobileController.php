@@ -288,6 +288,164 @@ class MobileController extends BaseController
         return $rem;
     }
 
+    public function migrateClient(){
+        try {
+            // get the data
+            $payload = $this->request->getJSON();
+            $list = [];
+            $i = 0;
+            $params = [
+                "aid" => $payload->aid,
+                "dateFrom" => $payload->dateFrom,
+                "dateTo" => $payload->dateTo,
+            ];
+
+            $query = $this->mobModel->getAllSummaryCalls($params);
+
+            if($query){
+                $marr = [];
+                foreach ($query as $key => $value) {
+                    
+                    $clients = $value->client;
+                    $clist = $this->generateClientData($clients, $value);
+                    $marr = array_merge($marr, $clist['list']);
+                }
+
+                $result = $this->unique_multidim_array($marr, 'storeName');
+
+                // Do Inserting of client data
+                if($result){
+                    foreach ($result as $rvalue) {
+                        # code...
+                        // print_r($rvalue);
+                        $insert = $this->mobModel->insertMigrateClient($rvalue);
+                        $i++;
+                    }
+                }
+            }
+
+            if($i === sizeof($result)){
+                $response = [
+                    'title' => 'Success',
+                    'message' => 'Client migration done!'
+                ];
+
+                return $this->response
+                        ->setStatusCode(200)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($response));
+            } else {
+                $response = [
+                    'title' => 'Error',
+                    'message' => 'Something is not right, please check to your administrator'
+                ];
+    
+                return $this->response
+                        ->setStatusCode(404)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($response));
+            }
+
+        } catch (\Throwable $th) {
+            print_r($th);
+            throw $th;
+        }
+    }
+
+    public function generateClientData($arr, $val){
+        $clist = [];
+        $client = json_decode($arr);
+        foreach($client as $ckey => $cvalue){
+            $clist['list'][$ckey] = [
+                "storeName" => $cvalue->storeName,
+                "address" => $cvalue->address,
+                "geoLocation" => json_encode($cvalue->geoLocation),
+                "contactPerson" => json_encode($cvalue->contactPerson),
+                "status" => 1,
+                "createdBy" => $val->agentId
+            ];
+        }
+
+        return $clist;
+    }
+
+    public function unique_multidim_array($array, $key) {
+
+        $temp_array = array();
+    
+        $i = 0;
+    
+        $key_array = array();
+    
+        
+    
+        foreach($array as $val) {
+    
+            if (!in_array($val[$key], $key_array)) {
+    
+                $key_array[$i] = $val[$key];
+    
+                $temp_array[$i] = $val;
+    
+            }
+    
+            $i++;
+    
+        }
+    
+        return $temp_array;
+    
+    }
+
+
+
+
+    public function migrateProducts(){
+        try {
+            // get the data
+            $payload = $this->request->getJSON();
+            $payload = json_decode(json_encode($payload), true);
+            $list = $payload['products'];
+            $i = 0;
+            
+            foreach ($list as $listval) {
+                if($listval['hasPriceGroup']){
+                    $listval['costGroup'] = json_encode($listval['costGroup']);
+                }
+                $this->mobModel->insertMigrateProduct($listval);
+                $i++;
+            } 
+            // print_r($list);
+
+            // exit();
+
+            if($i === sizeof($list)){
+                $response = [
+                    'title' => 'Success',
+                    'message' => 'Product migration done!'
+                ];
+
+                return $this->response
+                        ->setStatusCode(200)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($response));
+            } else {
+                $response = [
+                    'title' => 'Error',
+                    'message' => 'Something is not right, please check to your administrator'
+                ];
+    
+                return $this->response
+                        ->setStatusCode(404)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($response));
+            }
+
+        } catch (\Throwable $th) {
+            print_r($th);
+            throw $th;
+        }
+    }
 
 
 }

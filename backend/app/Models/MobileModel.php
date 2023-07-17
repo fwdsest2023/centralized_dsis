@@ -7,6 +7,8 @@ use CodeIgniter\Model;
 class MobileModel extends Model
 {
     protected $table      = 'tblmobile_sync';
+    protected $clientTable = 'tblclients';
+    protected $productTable = 'tblproducts';
     protected $primaryKey = 'id';
 
     protected $useAutoIncrement = true;
@@ -44,6 +46,15 @@ class MobileModel extends Model
         $results = $query->getResult();
 
         return $results;
+    }
+
+    public function insertMigrateClient($params){
+        $query = $this->db->table($this->clientTable)->insert($params);
+        return $query ? true : false;
+    }
+    public function insertMigrateProduct($params){
+        $query = $this->db->table($this->productTable)->insert($params);
+        return $query ? true : false;
     }
 
 }

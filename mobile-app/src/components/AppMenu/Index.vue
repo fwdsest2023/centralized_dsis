@@ -16,8 +16,8 @@
                         flat 
                         round
                         :loading="item.loading"
-                        @click="syndDataToDev"
-                        :disabled="!item.notSync"
+                        @click="item.action"
+                        :disabled="index===0 && !item.notSync"
                         :color="item.sides.color" 
                         :icon="item.sides.icon" 
                     />
@@ -33,6 +33,7 @@ import {LocalStorage} from 'quasar'
 import jwt_decode from 'jwt-decode'
 import { api } from 'boot/axios'
 import { Preferences } from '@capacitor/preferences';
+import prodJson from '../../context-data/products.json'
 
 export default {
     name: "SettingPAge",
@@ -56,8 +57,25 @@ export default {
                         color: 'grey'
                     },
                     notSync: true,
-                    loading: false
-                }
+                    loading: false,
+                    action: () => {return this.syndDataToDev()}
+                },
+                {
+                    avatar: {
+                        icon: 'sync',
+                        color: 'primary',
+                        textColor: 'white'
+                    },
+                    label: 'Migrate Product',
+                    caption: 'Migrate product for admin use only',
+                    sides:{
+                        icon: 'cloud_sync',
+                        color: 'blue'
+                    },
+                    notSync: false,
+                    loading: false,
+                    action: () => {return this.migrateProductAdminUse()}
+                },
             ]
         }
     },
@@ -140,6 +158,46 @@ export default {
             }).catch((err) => {
                 alert(JSON.stringify(err))
                 this.settingList[0].loading = false
+            })
+        },
+        async migrateProductAdminUse(){
+            // Collection of data
+            let payload = {
+                products: prodJson.products
+            }
+            // alert(JSON.stringify(payload))
+            // return
+
+            // Loading part
+            this.settingList[1].loading = true
+            // this.clearFinishData()
+            // return
+
+            // Call Sync API
+            api.post('mobile/product/migrate', payload)
+            .then((response) => {
+                if(response.status <= 200){
+                    this.$q.dialog({
+                        title: response.data.title,
+                        message: response.data.message,
+                        position: 'top'
+                    })
+
+                    this.$nextTick(()=>{
+                        this.settingList[1].loading = false
+                    })
+                    
+                } else {
+                    this.$q.dialog({
+                        title: 'Migration Failed',
+                        message: 'Something went wrong. Please contact your administrator',
+                        position: 'top'
+                    })
+                }
+                
+            }).catch((err) => {
+                alert(JSON.stringify(err))
+                this.settingList[1].loading = false
             })
         },
 
