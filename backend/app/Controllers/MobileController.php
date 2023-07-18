@@ -307,23 +307,24 @@ class MobileController extends BaseController
                 foreach ($query as $key => $value) {
                     
                     $clients = $value->client;
+                    print_r($clients);
                     $clist = $this->generateClientData($clients, $value);
                     $marr = array_merge($marr, $clist['list']);
                 }
 
                 $result = $this->unique_multidim_array($marr, 'storeName');
-
+                print_r($result);
                 // Do Inserting of client data
-                if($result){
-                    foreach ($result as $rvalue) {
-                        # code...
-                        // print_r($rvalue);
-                        $insert = $this->mobModel->insertMigrateClient($rvalue);
-                        $i++;
-                    }
-                }
+                // if($result){
+                //     foreach ($result as $rvalue) {
+                //         # code...
+                //         print_r($rvalue);
+                //         // $insert = $this->mobModel->insertMigrateClient($rvalue);
+                //         // $i++;
+                //     }
+                // }
             }
-
+            exit();
             if($i === sizeof($result)){
                 $response = [
                     'title' => 'Success',
@@ -359,8 +360,10 @@ class MobileController extends BaseController
             $clist['list'][$ckey] = [
                 "storeName" => $cvalue->storeName,
                 "address" => $cvalue->address,
-                "geoLocation" => json_encode($cvalue->geoLocation),
-                "contactPerson" => json_encode($cvalue->contactPerson),
+                "geoLocation" => $cvalue->geoLocation,
+                "contactPerson" => $cvalue->contactPerson,
+                // "geoLocation" => json_encode($cvalue->geoLocation),
+                // "contactPerson" => json_encode($cvalue->contactPerson),
                 "status" => 1,
                 "createdBy" => $val->agentId
             ];
