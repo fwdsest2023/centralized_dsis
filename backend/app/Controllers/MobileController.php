@@ -307,7 +307,6 @@ class MobileController extends BaseController
                 foreach ($query as $key => $value) {
                     
                     $clients = $value->client;
-                    print_r($clients);
                     $clist = $this->generateClientData($clients, $value);
                     $marr = array_merge($marr, $clist['list']);
                 }
