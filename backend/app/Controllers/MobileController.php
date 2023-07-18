@@ -312,18 +312,17 @@ class MobileController extends BaseController
                 }
 
                 $result = $this->unique_multidim_array($marr, 'storeName');
-                print_r($result);
+                // print_r($result);
                 // Do Inserting of client data
-                // if($result){
-                //     foreach ($result as $rvalue) {
-                //         # code...
-                //         print_r($rvalue);
-                //         // $insert = $this->mobModel->insertMigrateClient($rvalue);
-                //         // $i++;
-                //     }
-                // }
+                if($result){
+                    foreach ($result as $rvalue) {
+                        # code...
+                        $insert = $this->mobModel->insertMigrateClient($rvalue);
+                        $i++;
+                    }
+                }
             }
-            exit();
+            // exit();
             if($i === sizeof($result)){
                 $response = [
                     'title' => 'Success',
