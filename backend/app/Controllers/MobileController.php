@@ -312,15 +312,15 @@ class MobileController extends BaseController
                 }
 
                 $result = $this->unique_multidim_array($marr, 'storeName');
-                print_r($result);
+                // print_r($result);
                 // Do Inserting of client data
-                // if($result){
-                //     foreach ($result as $rvalue) {
-                //         # code...
-                //         $insert = $this->mobModel->insertMigrateClient($rvalue);
-                //         $i++;
-                //     }
-                // }
+                if($result){
+                    foreach ($result as $rvalue) {
+                        # code...
+                        $insert = $this->mobModel->insertMigrateClient($rvalue);
+                        $i++;
+                    }
+                }
             }
             // exit();
             if($i === sizeof($result)){
@@ -358,10 +358,8 @@ class MobileController extends BaseController
             $clist['list'][$ckey] = [
                 "storeName" => $cvalue->storeName,
                 "address" => $cvalue->address,
-                "geoLocation" => $cvalue->geoLocation,
-                "contactPerson" => $cvalue->contactPerson,
-                // "geoLocation" => json_encode($cvalue->geoLocation),
-                // "contactPerson" => json_encode($cvalue->contactPerson),
+                "geoLocation" => json_encode($cvalue->geoLocation),
+                "contactPerson" => json_encode($cvalue->contactPerson),
                 "status" => 1,
                 "createdBy" => $val->agentId
             ];
