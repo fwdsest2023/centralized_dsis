@@ -51,6 +51,9 @@ export function reducer(state, action) {
     case "BOOKING_DIALOG": {
       return { ...state, bookingContent: action.value };
     }
+    case "PRODUCT_DIALOG": {
+      return { ...state, productModal: action.value };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -99,6 +102,9 @@ export function MaterialTailwindControllerProvider({ children }) {
       show: false,
       list: []
     },
+
+    // Product
+    productModal: false
   };
 
   const [controller, dispatch] = React.useReducer(reducer, initialState);
@@ -162,3 +168,5 @@ export const setCallContent = (dispatch, value) =>
   dispatch({ type: "CALL_DIALOG", value });
 export const setBookingContent = (dispatch, value) =>
   dispatch({ type: "BOOKING_DIALOG", value });
+export const setProductDialog = (dispatch, value) =>
+  dispatch({ type: "PRODUCT_DIALOG", value });

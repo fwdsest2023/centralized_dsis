@@ -110,6 +110,7 @@ $routes->group('mlrs/api/v1', function($routes){
 		// for migration
 		$routes->post('client/migrate', 'MobileController::migrateClient');
 		$routes->post('product/migrate', 'MobileController::migrateProducts');
+		$routes->post('product/update', 'MobileController::updateProductList');
 	});
 
 

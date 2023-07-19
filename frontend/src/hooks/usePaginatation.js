@@ -47,7 +47,7 @@ export const usePaginate = ({
             let leftItemCount = 3 + 2 * siblingCount;
             let leftRange = range(1, leftItemCount);
 
-            return [...leftRange, DOTS, totalPageCount];
+            return [...leftRange, '...', totalPageCount];
         }
 
         /*
@@ -60,7 +60,7 @@ export const usePaginate = ({
                 totalPageCount - rightItemCount + 1,
                 totalPageCount
             );
-            return [firstPageIndex, DOTS, ...rightRange];
+            return [firstPageIndex, '...', ...rightRange];
         }
         
         /*
@@ -68,7 +68,7 @@ export const usePaginate = ({
         */
         if (shouldShowLeftDots && shouldShowRightDots) {
             let middleRange = range(leftSiblingIndex, rightSiblingIndex);
-            return [firstPageIndex, DOTS, ...middleRange, DOTS, lastPageIndex];
+            return [firstPageIndex, '...', ...middleRange, '...', lastPageIndex];
         }
 
     }, [totalCount, pageSize, siblingCount, currentPage]);

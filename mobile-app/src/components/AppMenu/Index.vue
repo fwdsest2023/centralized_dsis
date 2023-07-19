@@ -60,22 +60,22 @@ export default {
                     loading: false,
                     action: () => {return this.syndDataToDev()}
                 },
-                {
-                    avatar: {
-                        icon: 'sync',
-                        color: 'primary',
-                        textColor: 'white'
-                    },
-                    label: 'Migrate Product',
-                    caption: 'Migrate product for admin use only',
-                    sides:{
-                        icon: 'cloud_sync',
-                        color: 'blue'
-                    },
-                    notSync: false,
-                    loading: false,
-                    action: () => {return this.migrateProductAdminUse()}
-                },
+                // {
+                //     avatar: {
+                //         icon: 'sync',
+                //         color: 'primary',
+                //         textColor: 'white'
+                //     },
+                //     label: 'Migrate Product',
+                //     caption: 'Migrate product for admin use only',
+                //     sides:{
+                //         icon: 'cloud_sync',
+                //         color: 'blue'
+                //     },
+                //     notSync: false,
+                //     loading: false,
+                //     action: () => {return this.migrateProductAdminUse()}
+                // },
             ]
         }
     },

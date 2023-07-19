@@ -35,7 +35,6 @@ export function AgentSummary() {
   const totalCountPerPage = 10;
   const [totalCount, setTotalCount] = useState(0)
   const [currPage, setCurrPage] = useState(1)
-  const paginatedData = [];
 
   
 

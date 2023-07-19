@@ -56,9 +56,9 @@ export default function Pagination(props) {
                 paginationRange.map(pageNumber => {
                 
                     // If the pageItem is a DOT, render the DOTS unicode character
-                    // if (pageNumber === DOTS) {
-                    //     return <IconButton>&#8230;</IconButton>;
-                    // }
+                    if (pageNumber === '...') {
+                        return <IconButton variant="text" color="blue-gray" >&#8230;</IconButton>;
+                    }
                     
                     // Render our Page Pills
                     return (

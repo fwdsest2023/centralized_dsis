@@ -1,118 +1,106 @@
-import React, {useState} from "react";
-import { MagnifyingGlassIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
+import React, {useState, useMemo} from "react";
+import { MagnifyingGlassIcon, ChevronUpDownIcon, AdjustmentsHorizontalIcon  } from "@heroicons/react/24/outline";
 import { PencilIcon, PlusCircleIcon } from "@heroicons/react/24/solid";
 import {
   Card,
   CardHeader,
-  Input,
   Typography,
   Button,
   CardBody,
   CardFooter,
-  Tabs,
-  TabsHeader,
-  Tab,
-  Avatar,
-  IconButton,
-  Tooltip,
+  Menu,
+  MenuHandler,
+  MenuList,
+  MenuItem,
 } from "@material-tailwind/react";
-import Modal from "../dsis/dsispages/modal"
+import { AddProduct } from "@/widgets/dialogs";
 import Product from "@/api/Product";
-const TABS = [
-  {
-    label: "All",
-    value: "all",
-  },
-  {
-    label: "Pet Food",
-    value: "pet food",
-  },
-  {
-    label: "Medicine",
-    value: "medicine",
-  },
-  {
-    label: "Accessories",
-    value: "Accessories",
-  },
-];
+import Pagination from "@/hooks/Pagination";
+import {
+    useMaterialTailwindController,
+    setProductDialog
+} from '@/context'
 
-
+const TABLE_HEAD = ["SKU", "Products", "Unit Type", "Unit Price", "Category ID", "Total Stock", "Action" ];
  
-const callHeading = ["Products", "SKU", "Barcode", "unit","Category ID","Subcategory ID","Stock Warning","Status" ];
- 
-
-
-
-
-
- 
-
 
 export function Products() {
-    const [ListProduct, setListProduct] = useState("");
-    const [TABLE_HEAD, setTableHead] = useState(callHeading);
+    const [controller, dispatch] = useMaterialTailwindController();
+    const { productModal } = controller;
+    
     const [TABLE_ROWS, setTableRow] = useState([]);
-    const [clientDetail, setClientDetail] = useState({});
-
-
-
+    const [tableLoad, setTableLoad] = useState(false)
+    //For Pagination
+    const totalCountPerPage = 10;
+    const [totalCount, setTotalCount] = useState(0)
+    const [currPage, setCurrPage] = useState(1)
 
     const fetchProduct =  async () => {
+        setTableLoad(true)
+        setTableRow([])
         const {status, data} = await Product.getProductList();
         // Action Scenario
         if(status <= 200){
             setTableRow(data.list)
+            setTotalCount(data.list.length)
+            setTableLoad(false)
         } else {
             setTableRow([])
+            setTotalCount(0)
+            setTableLoad(false)
         }
     }
+
+    const loaderTable = () => {
+        if(tableLoad){
+          return 'Fetching Data Please Wait...'
+        } else {
+          return <Pagination
+            currentPage={currPage}
+            totalCount={totalCount}
+            pageSize={totalCountPerPage}
+            onPageChange={page => setCurrPage(page)}
+          />
+        }
+      }
+
     React.useEffect(() => {
         fetchProduct()
     }, [])
+
+    const currentTableData = useMemo(() => {
+        const firstPageIndex = (currPage - 1) * totalCountPerPage;
+        const lastPageIndex = firstPageIndex + totalCountPerPage;
+        return TABLE_ROWS.slice(firstPageIndex, lastPageIndex);
+    }, [currPage, TABLE_ROWS]);
  
   return (
     
     <div>
 
-            <Card className="h-full w-full">
-            <CardHeader floated={false} shadow={false} className="rounded-none">
-                <div className="mb-8 flex items-center justify-between gap-8">
+        <Card className="h-full w-full">
+            <CardHeader floated={false} shadow={false} className="rounded-none overflow-visible">
+                <div className="mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center">
+                
+                <div className="flex w-full shrink-0 gap-2 md:w-max">
+                    <div className="w-full md:w-90">
+                        <Button 
+                            onClick={() => setProductDialog(dispatch, !productModal)}
+                        >Add Product</Button>
+                    </div>
+                </div>
                 <div>
                     <Typography variant="h5" color="blue-gray">
-                    Product List
+                        Product List
                     </Typography>
                     <Typography color="gray" className="mt-1 font-normal">
-                    Inventory of all Products
+                        These are list of product
                     </Typography>
-                </div>
-                <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-                    {/* <Button variant="outlined" color="blue-gray" size="sm">
-                        view all
-                    </Button> */}
-                    <Button className="flex items-center gap-3" color="blue" size="sm">
-                        {/* <PlusCircleIcon strokeWidth={2} className="h-4 w-4" />  */}
-                        <Modal/>
-                    </Button>
-                </div>
-                </div>
-                <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-                <Tabs value="all" className="w-full md:w-max">
-                    <TabsHeader>
-                    {TABS.map(({ label, value }) => (
-                        <Tab key={value} value={value}>
-                        &nbsp;&nbsp;{label}&nbsp;&nbsp;
-                        </Tab>
-                    ))}
-                    </TabsHeader>
-                </Tabs>
-                <div className="w-full md:w-72">
-                    <Input label="Search" icon={<MagnifyingGlassIcon className="h-5 w-5" />} />
                 </div>
                 </div>
             </CardHeader>
-            <CardBody className="overflow-scroll px-0">
-                <table className="mt-4 w-full min-w-max table-auto text-left">
+            <CardBody className=" px-0">
+                <table className="w-full min-w-max table-auto text-left">
                 <thead>
                     <tr>
                     {TABLE_HEAD.map((head, index) => (
@@ -136,70 +124,69 @@ export function Products() {
                 </thead>
                 <tbody>
                     {/* for value.name etc */}
-                    {TABLE_ROWS.map((value, index) => {
+                    {currentTableData.map((value, index) => {
                     const isLast = index === TABLE_ROWS.length - 1;
                     const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
         
                     return (
-                        <tr key={name}>
-                        <td className={classes}>
-                            <div className="flex items-center gap-3">
-                            <div className="flex flex-col">
-                                <Typography variant="small" color="blue-gray" className="font-normal">
-                                {/* value.name postman reponse */}
-                                {value.name}
-                                </Typography>
-                                {/* <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-normal opacity-70"
+                        <tr key={value.productName}>
+                            <td className={classes}>
+                                <div className="flex flex-col">
+                                    <Typography variant="small" color="blue-gray" className="font-normal">
+                                        {value.sku}
+                                    </Typography>
+                                </div>
+                            </td>
+                            <td className={classes}>
+                                <div className="flex items-center gap-3">
+                                    <div className="flex flex-col">
+                                        <Typography variant="small" color="blue-gray" className="font-normal">
+                                            {value.productName}
+                                        </Typography>
+                                    </div>
+                                </div>
+                            </td>
+                            
+                            <td className={classes}>
+                                <Typography
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="font-normal opacity-70"
                                 >
-                                {foodCategory}
-                                </Typography> */}
-                            </div>
-                            </div>
-                        </td>
-                        <td className={classes}>
-                            <div className="flex flex-col">
-                            <Typography variant="small" color="blue-gray" className="font-normal">
-                                {value.sku}
-                            </Typography>
-                            {/* <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-normal opacity-70"
-                            >
-                                {}
-                            </Typography> */}
-                            </div>
-                        </td>
-                        <td className={classes}>
-                        <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-normal opacity-70"
-                            >
-                                {value.barcodeType}
-                            </Typography>
-              
-                        </td>
-                        <td className={classes}>
-                            <Typography variant="small" color="blue-gray" className="font-normal">
-                            {value.unit}
-                            </Typography>
-                        </td>
-                        <td className={classes}>
-                            <Typography variant="small" color="blue-gray" className="font-normal">
-                            {value.categoryId}
-                            </Typography>
-                        </td>
-                        <td className={classes}>
-                            <Tooltip content="Edit User">
-                            <IconButton variant="text" color="blue-gray">
-                                <PencilIcon className="h-4 w-4" />
-                            </IconButton>
-                            </Tooltip>
-                        </td>
+                                    {value.unit}
+                                </Typography>
+                            </td>
+                            <td className={classes}>
+                                <Typography variant="small" color="blue-gray" className="font-normal">
+                                {value.productCost}
+                                </Typography>
+                            </td>
+                            <td className={classes}>
+                                <Typography variant="small" color="blue-gray" className="font-normal">
+                                    N/A
+                                </Typography>
+                            </td>
+                            <td className={classes}>
+                                <Typography variant="small" color="blue-gray" className="font-normal">
+                                {value.stock}
+                                </Typography>
+                            </td>
+                            <td className={classes}>
+                                <div className="flex items-center gap-3">
+                                    <Menu size="sm" placement="right-start">
+                                        <MenuHandler>
+                                        <Button variant="outlined" size="sm" className="flex items-center gap-3">
+                                            <AdjustmentsHorizontalIcon strokeWidth={2} className="h-5 w-5" />
+                                        </Button>
+                                        </MenuHandler>
+                                        <MenuList>
+                                            <MenuItem>View Full Details</MenuItem>
+                                            <MenuItem>Stock Details</MenuItem>
+                                            
+                                        </MenuList>
+                                    </Menu>
+                                </div>
+                            </td>
                         </tr>
                     );
                     })}
@@ -207,23 +194,14 @@ export function Products() {
                 </table>
             </CardBody>
             <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-                <Typography variant="small" color="blue-gray" className="font-normal">
-                Page 1 of 10
-                </Typography>
-                <div className="flex gap-2">
-                <Button variant="outlined" color="blue-gray" size="sm">
-                    Previous
-                </Button>
-                <Button variant="outlined" color="blue-gray" size="sm">
-                    Next
-                </Button>
-                </div>
+                {loaderTable()}
             </CardFooter>
-            </Card>
-            </div>
+        </Card>
 
-
-  
+        <AddProduct
+            handleChange={fetchProduct}  
+        />
+    </div>
   )
 }
 
