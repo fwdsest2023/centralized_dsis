@@ -21,8 +21,15 @@ import {
     setProductDialog
 } from '@/context'
 
+
 const TABLE_HEAD = ["SKU", "Products", "Unit Type", "Unit Price", "Category ID", "Total Stock", "Action" ];
- 
+const cat = [
+    {id:1, name: "CAT FOOD"},
+    {id:2, name: "DOG FOOD"},
+    {id:3, name: "OTC MEDICINE"},
+    {id:4, name: "PET ACCESSORIES"},
+    {id:5, name: "POULTRY LINES"},
+]
 
 export function Products() {
     const [controller, dispatch] = useMaterialTailwindController();
@@ -31,7 +38,7 @@ export function Products() {
     const [TABLE_ROWS, setTableRow] = useState([]);
     const [tableLoad, setTableLoad] = useState(false)
     //For Pagination
-    const totalCountPerPage = 10;
+    const totalCountPerPage = 5;
     const [totalCount, setTotalCount] = useState(0)
     const [currPage, setCurrPage] = useState(1)
 
@@ -49,6 +56,13 @@ export function Products() {
             setTotalCount(0)
             setTableLoad(false)
         }
+    }
+
+    const getCat = (id) => {
+        let category = cat.filter((el, key) => {
+            return Number(el.id) === Number(id)
+        })
+        return category.length !== 0 ? category[0].name : "N/A"
     }
 
     const loaderTable = () => {
@@ -163,7 +177,7 @@ export function Products() {
                             </td>
                             <td className={classes}>
                                 <Typography variant="small" color="blue-gray" className="font-normal">
-                                    N/A
+                                    {getCat(value.category)}
                                 </Typography>
                             </td>
                             <td className={classes}>
@@ -182,7 +196,7 @@ export function Products() {
                                         <MenuList>
                                             <MenuItem>View Full Details</MenuItem>
                                             <MenuItem>Stock Details</MenuItem>
-                                            
+                                            <MenuItem>Price Group Details</MenuItem>
                                         </MenuList>
                                     </Menu>
                                 </div>

@@ -4,12 +4,18 @@ import serialize from '@/lib/Serializer'
 
 
 const base = "product"
-const baseProductList = "get"
 
 export default {
     getProductList: async () => {
         const [err, data] = await to(
             api.post(`${base}/get/products`)
+        )
+        return serialize(err ? err.response : data);
+    },
+    
+    addNewProduct: async (payload) => {
+        const [err, data] = await to(
+            api.post(`${base}/add/new`, payload)
         )
         return serialize(err ? err.response : data);
     },

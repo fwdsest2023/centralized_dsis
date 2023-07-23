@@ -35,6 +35,7 @@ class ProductController extends BaseController
         // $payload->scheduleDate = date('c', strtotime($payload->scheduleDate));
         $payload->costGroup = json_encode($payload->costGroup );
         $payload = json_decode(json_encode($payload), true);
+
         
         // Insert the data
         $query = $this->productModel->insertProduct($payload);
