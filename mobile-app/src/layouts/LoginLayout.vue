@@ -45,93 +45,23 @@
 
 <script>
 import { LocalStorage, SessionStorage } from 'quasar'
+import { Preferences } from '@capacitor/preferences';
 import jwt_decode from 'jwt-decode'
 import SideNav from '../components/Templates/Sidenav.vue';
 import Profile from '../components/Templates/Profile.vue';
 import Crumbs from '../components/Templates/Breadcrumbs.vue';
 
 const linksList = [
-  // {
-  //   title: 'Dashboard',
-  //   icon: 'dashboard',
-  //   link: 'dashboard',
-  //   code: 101,
-  //   crumbs: [
-  //     {label: '', icon: 'home', link: '/'},
-  //     {label: 'Dashboard', icon: 'dashboard', link: 'dashboard'}
-  //   ]
-  // },
   {
-    title: 'Call Hitory',
-    icon: 'history',
-    link: 'callHistory',
+    title: 'Add Client',
+    icon: 'group_add',
+    link: 'AddClient',
     code: 101,
     crumbs: [
       {label: '', icon: 'home', link: '/'},
-      {label: 'Call Hitory', icon: 'history', link: 'callHistory'}
+      {label: 'Add Client', icon: 'group_add', link: 'AddClient'}
     ]
   },
-
-  // {
-  //   title: 'OR Forms',
-  //   icon: 'history_edu',
-  //   link: 'forms',
-  //   code: 102,
-  //   crumbs: [
-  //     {label: '', icon: 'home', link: '/'},
-  //     {label: 'OR Forms', icon: 'history_edu', link: 'forms'}
-  //   ]
-  // },
-  // {
-  //   title: 'Print OR',
-  //   icon: 'print',
-  //   link: 'print',
-  //   code: 103,
-  //   crumbs: [
-  //     {label: '', icon: 'home', link: '/'},
-  //     {label: 'Print Form', icon: 'print', link: 'print'}
-  //   ]
-  // },
-  // {
-  //   title: 'Patient List',
-  //   icon: 'view_list',
-  //   link: 'mylist',
-  //   code: 104,
-  //   crumbs: [
-  //     {label: '', icon: 'home', link: '/'},
-  //     {label: 'Patient List', icon: 'view_list', link: 'mylist'}
-  //   ]
-  // },
-  // {
-  //   title: 'Save List',
-  //   icon: 'save',
-  //   link: 'mysavelist',
-  //   code: 105,
-  //   crumbs: [
-  //     {label: '', icon: 'home', link: '/'},
-  //     {label: 'Saved Data List', icon: 'save', link: 'mysavelist'}
-  //   ]
-  // },
-  // {
-  //   title: 'Manage Users',
-  //   icon: 'manage_accounts',
-  //   link: 'usermanagement',
-  //   code: 106,
-  //   crumbs: [
-  //     {label: '', icon: 'home', link: '/'},
-  //     {label: 'Manage Users', icon: 'manage_accounts', link: 'usermanagement'}
-  //   ]
-  // },
-  // {
-  //   title: 'Manage CRS',
-  //   icon: 'dynamic_form',
-  //   link: 'crsmanagement',
-  //   code: 107,
-  //   crumbs: [
-  //     {label: '', icon: 'home', link: '/'},
-  //     {label: 'Manage CRS', icon: 'dynamic_form', link: 'crsmanagement'}
-  //   ]
-  // },
 ];
 
 export default {
@@ -161,15 +91,24 @@ export default {
   },
   created(){
     // SessionStorage.set('userDataLogin', data.jwt);
-    let profile = SessionStorage.getItem('userDataLogin');
-    if(profile){
-      this.userProfile = jwt_decode(profile);
-    } else {
-      this.$router.push('/')
-    }
-    
+    this.getRememberLogin()
   },
   methods: {
+    async getRememberLogin(){
+      const { value } = await Preferences.get({ key: 'agentToken' });
+      let token = value !== null ? value : null;
+
+      if(token !== null){
+        this.userProfile = jwt_decode(token);
+      } else {
+        let profile = SessionStorage.getItem('userDataLogin');
+        if(profile){
+          this.userProfile = jwt_decode(profile);
+        } else {
+          this.$router.push('/')
+        }
+      }
+    },
     toggleLeftDrawer () {
       this.leftDrawerOpen = !this.leftDrawerOpen
     },

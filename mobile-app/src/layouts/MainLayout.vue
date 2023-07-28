@@ -12,6 +12,7 @@
 <script>
 import { SessionStorage } from 'quasar'
 import { defineComponent, ref } from 'vue'
+import { Preferences } from '@capacitor/preferences';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -23,6 +24,23 @@ export default defineComponent({
     } else {
       this.$router.push('/')
     }
+  },
+  methods:{
+    async getRememberLogin(){
+      const { value } = await Preferences.get({ key: 'agentToken' });
+      let token = value !== null ? value : null;
+
+      if(token !== null){
+        this.userProfile = jwt_decode(token);
+      } else {
+        let profile = SessionStorage.getItem('userDataLogin');
+        if(profile){
+          this.userProfile = jwt_decode(profile);
+        } else {
+          this.$router.push('/')
+        }
+      }
+    },
   }
 })
 </script>

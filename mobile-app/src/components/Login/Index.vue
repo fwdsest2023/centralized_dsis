@@ -45,6 +45,7 @@
                         </template>
                     </q-input>
                     <q-separator />
+                    <q-toggle v-model="remember" label="Remember this login to device" />
                     <q-btn 
                         type="submit"
                         color="teal-5" 
@@ -66,6 +67,7 @@
 
 <script>
 import { LocalStorage, SessionStorage } from 'quasar'
+import { Preferences } from '@capacitor/preferences';
 import { loginapi } from 'boot/loginAxios'
 
 export default{
@@ -90,21 +92,43 @@ export default{
             },
             isPwd: true,
             submitting: false,
+            remember: true
         }
     },
+    created(){
+        this.getRememberLogin();
+    },
     methods: {
+        async getRememberLogin(){
+            const { value } = await Preferences.get({ key: 'agentToken' });
+            let token = value !== null ? value : null;
+
+            if(token !== null){
+                LocalStorage.set('userData', token);
+                SessionStorage.set('userDataLogin', token);
+                // this.$router.push('/dashboard')
+            }
+        },
         async submitLogin(){
             this.submitting = true;
             let vm = this;
             let payload = vm.form;
 
-            loginapi.post('auth/login', payload).then((response) => {
+            loginapi.post('auth/login', payload).then(async (response) => {
               
                 const data = {...response.data};
                 if(!data.error){
                     LocalStorage.set('userData', data.jwt);
                     // Session Login with Expiration
                     SessionStorage.set('userDataLogin', data.jwt);
+
+                    if(this.remember){
+                        await Preferences.set({
+                            key: 'agentToken',
+                            value: data.jwt
+                        })
+                    }
+                    
                     this.$router.push('/dashboard')
                 } else {
                     this.$q.notify({

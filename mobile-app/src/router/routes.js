@@ -16,6 +16,7 @@ const routes = [
       { name: 'HomeSettings', path: 'settings', component: () => import('pages/Settings.vue') },
       { name: 'Profile', path: 'profile', component: () => import('pages/Profile.vue') },
       { name: 'Call History', path: 'callHistory', component: () => import('pages/History.vue') },
+      { name: 'Add Client', path: 'AddClient', component: () => import('pages/AddClient.vue') },
     ]
   },
 

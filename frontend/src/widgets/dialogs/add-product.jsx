@@ -50,14 +50,15 @@ const regions = [
     }
 ]
 
-let appData = localStorage.getItem('token');
-const token = appData;
-const usrData = jwtDecode(token);
+
 
 export function AddProduct(props) {
     const [controller, dispatch] = useMaterialTailwindController();
     const { productModal } = controller;
 
+    let appData = localStorage.getItem('token');
+    const token = appData;
+    const usrData = jwtDecode(token);
 
     const [sku, setSku] = useState("");
     const [prdoctName, setPrdoctName] = useState("");

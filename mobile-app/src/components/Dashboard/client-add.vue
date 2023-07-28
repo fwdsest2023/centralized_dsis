@@ -114,6 +114,7 @@
     .gmap_iframe {width:600px!important;height:400px!important;}
 </style>
 <script>
+import {regions, provinces, cities, barangays} from 'select-philippines-address';
 import jsonMisc from '../../context-data/misc.json'
 import jsonBranch from '../../context-data/branches.json'
 import { Geolocation } from '@capacitor/geolocation'
