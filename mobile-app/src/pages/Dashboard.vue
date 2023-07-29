@@ -63,7 +63,8 @@
     </q-card>
     <q-separator />
     <client-list 
-      :filterList="filterListArea"
+      :filteredList="filterListArea"
+      :curCallDate="dateToday"
     />
     <!-- <q-tab-panels
       v-model="tab"

@@ -230,11 +230,10 @@ class Users extends BaseController
         
         $list = [];
         $where = [
-            "userType" => 3,
             "status" => 1,
         ];
         // $list['list'] = $this->userModel->getAllUserInfo($where);
-        $query = $this->userModel->getAllUserInfo($where);
+        $query = $this->userModel->getAllUserAgentInfo($where, [3, 1]);
         foreach ($query as $key => $value) {
             $list['list'][$key] = [
                 "key" => $value['id'],

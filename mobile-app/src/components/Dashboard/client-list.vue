@@ -27,35 +27,26 @@
         <q-list >
             <div v-if="loadClientList.length !== 0">
                 <div v-for="(item, index) in filterList" :key="index">
-                    <q-item>
+                    <q-item clickable @click="viewClientDetails(item, index)">
                         <q-item-section avatar top>
                             <q-avatar :icon="item.category[0].icon" :color="item.category[0].color" text-color="white" />
                         </q-item-section>
                         <q-item-section>
                             <q-item-label>{{item.client.storeName.toUpperCase()}}</q-item-label>
-                            <q-item-label caption lines="2">{{`${item.client.address} - ${item.client.branch}`}}</q-item-label>
+                            <q-item-label caption lines="2">
+                                {{`${item.client.address}, ${item.client.addressDetails.barangay.label}, ${item.client.addressDetails.city.label}, ${item.client.addressDetails.province.label}`}}
+                            </q-item-label>
                         </q-item-section>
 
                         <q-item-section side top>
-                            <!-- <q-item-label caption>{{item.client.branch}}</q-item-label> -->
                             <q-btn
-                                v-if="item.client.status !== 'finish'"
                                 @click="item.client.status === 'in-progress' ? stopCall(index) : playCall(index)"
                                 flat 
                                 round
                                 :loading="item.client.loading"
-                                :color="item.client.color" 
-                                :icon="item.client.icon" 
-                                size="md" 
-                            />
-                            <q-btn
-                                v-if="item.client.status === 'finish'"
-                                flat 
-                                round
-                                :loading="item.client.loading"
-                                :color="item.client.color" 
-                                :icon="item.client.icon" 
-                                size="md" 
+                                color="blue" 
+                                icon="edit_note" 
+                                size="lg" 
                             />
                         </q-item-section>
                     </q-item>
@@ -74,7 +65,7 @@
         </q-list>
         
         
-        <clientBookingModal
+        <!-- <clientBookingModal
             :modalStatus="openBooking"
             :clientId="inProgress"
             @updateStatus="closeBooking"
@@ -98,10 +89,11 @@
             @addClientVisit="updateData"
             @backStep="prevStep"
             @finishStep="stopCall"
-         />
+         /> -->
         <clientAddModal
             :modalStatus="openAdd"
             @updateStatus="closeAddClient"
+            @addCallClient="pushClientToDate"
          />
     </div>
 </template>
@@ -119,12 +111,13 @@ import miscJson from '../../context-data/misc.json'
 export default {
     name: "ClientListWidget",
     props: {
-        filterList: {
+        filteredList: {
             type: Object
         }
     },
     data() {
         return {
+            curDate: moment().format('MM-DD-YYYY'),
             renderComponent: true,
             loadClientList: [],
             searchClient: '',
@@ -169,9 +162,11 @@ export default {
                     return item
                 })
 
-
+                let filterCatId = this.filteredList.category.value;
+                let filterBranch = this.filteredList.branch.label;
                 return this.loadClientList.filter(search => {
-                    return search.client.storeName.toLowerCase().includes(this.searchClient.toLowerCase())
+                    let filtered = search.client.storeName.toLowerCase().includes(this.searchClient.toLowerCase()) && search.client.categoryId === filterCatId && search.client.addressDetails.province.label === filterBranch;
+                    return filtered
                 })
             }
 
@@ -190,16 +185,23 @@ export default {
             this.$emit('closeClient');
         },
         async getClientListPref(){
-            const { value } = await Preferences.get({ key: 'clientList' });
+            const { value } = await Preferences.get({ key: this.curDate });
             let data = value !== null ? JSON.parse(value) : []
             this.loadClientList = data.length !== 0 ? data : [];
         },
+        async pushClientToDate(val){
+            const { prefVal } = await Preferences.get({ key: this.curDate });
+            let data = prefVal !== undefined ? JSON.parse(prefVal) : []
+            data.push(val)
+            await Preferences.set({
+                key: this.curDate,
+                value: JSON.stringify(data)
+            }).then(() => {
+                this.getClientListPref();
+            })
+        },
         async removePref(){
             await Preferences.remove({ key: 'clientList' });
-        },
-        clientList(){
-            let list = LocalStorage.getItem('clientList');
-            this.loadClientList = list.length !== 0 ? list : [];
         },
         addClient(){
             this.openAdd = true

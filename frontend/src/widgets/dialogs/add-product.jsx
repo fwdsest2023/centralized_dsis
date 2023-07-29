@@ -139,7 +139,7 @@ export function AddProduct(props) {
     }
 
     return (
-        <Dialog open={productModal} size="xs" >
+        <Dialog open={productModal} size="md" >
             <DialogHeader>
                 <div className=" flex flex-col justify-between gap-8 md:flex-row md:items-center">
                     <div>
@@ -147,7 +147,7 @@ export function AddProduct(props) {
                     </div>
                 </div>
             </DialogHeader>
-            <DialogBody divider className="">
+            <DialogBody divider className="overflow-auto h-[30rem]">
                 <form className="flex flex-col gap-4">
                     <div>
                         <Typography

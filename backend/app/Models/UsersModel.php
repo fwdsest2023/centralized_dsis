@@ -56,6 +56,23 @@ class UsersModel extends Model
 
         return $all;
     }
+    public function getAllUserAgentInfo($where, $utypes){
+
+        $query = $this->db->table($this->table)->where($where)->whereIn('userType', $utypes)->get();
+        $results = $query->getResult('array');
+
+        $all = array_map(function($el){
+            foreach($el as $key => $val){
+                $type = $this->db->table($this->typeTable)->where('id', $el['userType'])->get()->getRow();
+                $el['userTypeDescription'] = $type->description;
+                $branch = $this->db->table($this->branchTable)->where('id', $el['branchId'])->get()->getRow();
+                $el['branch'] = $branch->branchName;
+            }
+            return $el;
+        }, $results);
+
+        return $all;
+    }
     public function getAllPtientInfo($where){
 
         $query = $this->db->table($this->patientTable)->where($where)->get();
