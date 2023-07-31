@@ -8,7 +8,7 @@
                     </q-avatar>
                     {{ user.fullName }}
                 </q-chip>
-                <q-btn-dropdown
+                <!-- <q-btn-dropdown
                     class="q-mr-sm"
                     dense
                     flat
@@ -25,7 +25,7 @@
                             </q-item-section>
                         </q-item>
                     </q-list>
-                </q-btn-dropdown>
+                </q-btn-dropdown> -->
                 
             </div>
         </q-img>

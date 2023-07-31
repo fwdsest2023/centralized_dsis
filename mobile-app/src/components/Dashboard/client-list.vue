@@ -40,7 +40,6 @@
 
                         <q-item-section side top>
                             <q-btn
-                                @click="item.client.status === 'in-progress' ? stopCall(index) : playCall(index)"
                                 flat 
                                 round
                                 :loading="item.client.loading"
@@ -95,6 +94,13 @@
             @updateStatus="closeAddClient"
             @addCallClient="pushClientToDate"
          />
+        <clientDetails
+            :modalStatus="openDetails"
+            :clientData="selectedClient"
+            :clientIndex="clientIndex"
+            @updateStatus="closeClientDetails"
+            @addCallClient="pushClientToDate"
+         />
     </div>
 </template>
 <script>
@@ -105,6 +111,7 @@ import clientBookingModal from './client-booking.vue'
 import clientRemarksModal from './client-remarks.vue'
 import clientSelfieModal from './client-selfie.vue'
 import clientAddModal from './client-add.vue'
+import clientDetails from './client-details.vue'
 import { Preferences } from '@capacitor/preferences';
 import miscJson from '../../context-data/misc.json'
 
@@ -113,6 +120,9 @@ export default {
     props: {
         filteredList: {
             type: Object
+        },
+        curCallDate: {
+            type: String
         }
     },
     data() {
@@ -126,29 +136,32 @@ export default {
             openRemarks: false,
             openSelfie: false,
             openAdd: false,
+            openDetails: false,
             inProgress: null,
             geoLoc: {},
-            attendance: {
-                startCall: "",
-                endCall: "",
-                geoLocation: {
-                    timeIn: "",
-                    timeOut: "",
-                    coorIn: {},
-                    coorOut: {}
-                }
-            }
+
+            selectedClient:{},
+            clientIndex: 0,
         }
     },
     components:{
         clientBookingModal,
         clientRemarksModal,
         clientSelfieModal,
-        clientAddModal
+        clientAddModal,
+        clientDetails
     },
     watch:{
         openAdd(){
             this.getClientListPref();
+        },
+        curCallDate(newVal){
+            let formatDate = moment(newVal).format('MM-DD-YYYY')
+
+            if(newVal){
+                this.curDate = formatDate
+                this.getClientListPref();
+            }
         }
     },
     computed: {
@@ -165,7 +178,9 @@ export default {
                 let filterCatId = this.filteredList.category.value;
                 let filterBranch = this.filteredList.branch.label;
                 return this.loadClientList.filter(search => {
-                    let filtered = search.client.storeName.toLowerCase().includes(this.searchClient.toLowerCase()) && search.client.categoryId === filterCatId && search.client.addressDetails.province.label === filterBranch;
+                    let filtered = search.client.storeName.toLowerCase().includes(this.searchClient.toLowerCase()) && 
+                    search.client.categoryId === filterCatId && 
+                    search.client.addressDetails.province.label === filterBranch;
                     return filtered
                 })
             }
@@ -174,13 +189,18 @@ export default {
         },
     },
     created(){
-        // LocalStorage.set("clientList", [])
         // this.clientList()
         // this.removePref()
         this.getClientListPref()
 
     },
     methods: {
+        viewClientDetails(val, idx){
+            this.selectedClient = val
+            this.clientIndex = idx
+
+            this.openDetails = true
+        },
         cancelTransaction(){
             this.$emit('closeClient');
         },
@@ -190,8 +210,8 @@ export default {
             this.loadClientList = data.length !== 0 ? data : [];
         },
         async pushClientToDate(val){
-            const { prefVal } = await Preferences.get({ key: this.curDate });
-            let data = prefVal !== undefined ? JSON.parse(prefVal) : []
+            const { value } = await Preferences.get({ key: this.curDate });
+            let data = value !== null ? JSON.parse(value) : []
             data.push(val)
             await Preferences.set({
                 key: this.curDate,
@@ -211,6 +231,9 @@ export default {
         },
         closeAddClient(){
             this.openAdd = false
+        },
+        closeClientDetails(){
+            this.openDetails = false
         },
         closeSelfie(){
             this.getClientListPref()

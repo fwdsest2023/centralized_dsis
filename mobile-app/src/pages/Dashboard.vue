@@ -55,7 +55,7 @@
           class="col col-xs-6 col-md-6 q-pa-sm" 
           outlined 
           v-model="branch" 
-          :options="regionList" 
+          :options="branchList" 
           label="Area" 
           dense 
         />
@@ -110,11 +110,11 @@ export default {
         desc: "All farm establishment or business"
       },
       branch: {
-         value: 1,
-         label: "Nueva Ecija",
-         branch: "Nueva Ecija",
-         code: "NE"
+        value: 1,
+        label: "Nueva Ecija",
+        code: "NE"
       },
+      branchList: [],
       dateSum: 1,
       dateToday: moment().format('MMMM D YYYY'),
       dayToday: moment().format('dddd'),
@@ -148,24 +148,10 @@ export default {
     currDate(){
       return moment().format('MMMM D YYYY');
     },
-    regionList: function(){
-      let list = jsonBranch.regions
-      let res = list.map((el) => {
-          let opt = {
-              value: el.id,
-              label: el.branchName,
-              branch: el.branchName,
-              code: el.branchCode
-          }
-
-          return opt
-      });
-
-      return res
-    },
     categoryList: function(){
+      let res = [];
       let list = jsonMisc.category;
-      let res = list.map((el) => {
+      res = list.map((el) => {
           let opt = {
               value: el.id,
               label: el.catName,
@@ -175,22 +161,57 @@ export default {
           return opt
       });
 
+      res.push({
+        value: 0,
+        label: "All",
+        desc: "All"
+      })
+
       return res
     },
   },
   created(){
     this.getUserProfile.then((res) => {
-      this.getCurrentArea();
+      this.getBranchList().then(() => {
+        this.getCurrentArea();
+      });
     })
   },
   methods:{
+    async getBranchList(){
+      const { value } = await Preferences.get({ key: 'clientList' });
+      let clientlist = value !== null ? JSON.parse(value) : []
+      clientlist = clientlist.map((el, _indx) => {
+        return el.client.addressDetails.province
+      })
+      let res = [];
+      res = clientlist.map((el) => {
+        let opt = {
+          value: el.label,
+          label: el.label,
+          code: el.value
+        }
+
+        return opt
+      });
+
+      res.push({
+        value: 0,
+        label: "All",
+        code: "All"
+      })
+
+      this.branchList = res
+    },
     async getClientListPref(){
       const { value } = await Preferences.get({ key: 'clientList' });
       let data = value !== null ? JSON.parse(value) : []
       this.loadClientList = data.length !== 0 ? data : [];
     },
     async getCurrentArea(){
-      let currArea = this.regionList.filter((el) => { return el.value === Number(this.userProfile.branchId)})
+      let list = jsonBranch.regions
+      let userAreaBranch = list.filter((el) => { return el.id === Number(this.userProfile.branchId)})
+      let currArea = this.branchList.filter((el) => { return el.value === userAreaBranch[0].branchName})
       this.branch = currArea[0];
     },
     async goToTommorrow(){

@@ -21,15 +21,20 @@
                     <q-list>
                         <div v-if="bookingList.length !== 0">
                             <div v-for="(item, index) in bookingList" :key="index">
-                                <q-item>
-                                    <q-item-section>
-                                        <q-item-label>{{item.itemName}}</q-item-label>
-                                        <q-item-label caption lines="2">{{item.price}}</q-item-label>
-                                    </q-item-section>
-                                    <q-item-section side top>
-                                        <q-input type="number" outlined v-model="item.qty" style="width: 70px;" label="QTY" />
-                                    </q-item-section>
-                                </q-item>
+                                <q-slide-item @right="removeItem(index)"  right-color="red">
+                                    <template v-slot:right>
+                                        <q-icon name="delete_forever" />
+                                    </template>
+                                    <q-item>
+                                        <q-item-section>
+                                            <q-item-label>{{item.itemName}}</q-item-label>
+                                            <q-item-label caption lines="2">{{item.price}}</q-item-label>
+                                        </q-item-section>
+                                        <q-item-section side top>
+                                            <q-input type="number" outlined v-model="item.qty" style="width: 70px;" label="QTY" />
+                                        </q-item-section>
+                                    </q-item>
+                                </q-slide-item>
                             </div>
                         </div>
                         <q-item v-if="bookingList.length === 0" >
@@ -47,7 +52,7 @@
 
                 <q-card-actions align="right">
                      <q-btn flat label="Cancel" :loading="btnLoading" color="negative" @click="closeModal" />
-                    <q-btn flat label="Next" :loading="btnLoading" color="positive" @click="submitOrder" />
+                    <q-btn flat label="Done" :loading="btnLoading" color="positive" @click="submitOrder" />
                 </q-card-actions>
             </q-card>
         </q-dialog>
@@ -133,7 +138,7 @@ export default {
     },
     props: {
         clientId: {
-            type: Number,
+            type: Object,
             default: 0
         },
         modalStatus: {
@@ -144,24 +149,26 @@ export default {
         modalStatus: function(newVal){
             this.openModal = newVal
             if(newVal === true){
-                this.clientList()
+                // this.clientList()
+                // this.clientId
+                this.bookingList = this.clientId.booking.length > 0 ? this.clientId.booking : [];
             }
         }
     },
     computed: {
         filterList(){
-            let dataClient = this.loadClientData[this.clientId]
-            this.loadProductList.map((item) => {
-                if(item.hasPriceGroup){
-                    let setPrice = item.costGroup.filter(el => {
-                        return el.regionId === dataClient.client.regionId
-                    })
-                    item.productCost = setPrice[0].price
-                }
+            // let dataClient = this.loadClientData[this.clientId]
+            // this.loadProductList.map((item) => {
+            //     if(item.hasPriceGroup){
+            //         let setPrice = item.costGroup.filter(el => {
+            //             return el.regionId === dataClient.client.regionId
+            //         })
+            //         item.productCost = setPrice[0].price
+            //     }
 
-                item.productCost = Number(item.productCost).toFixed(2)
-                return item
-            })
+            //     item.productCost = Number(item.productCost).toFixed(2)
+            //     return item
+            // })
 
             return this.loadProductList.filter(search => {
                 return search.productName.toLowerCase().includes(this.searchClient.toLowerCase())
@@ -190,17 +197,23 @@ export default {
                 })
                 return false;
             }
+            let data = {
+                type: 'booking',
+                value: this.bookingList
+            }
+
+            this.$emit('orderSubmit', data)
             
             // set the booking value
-            this.loadClientData[this.clientId].booking = this.bookingList
+            // this.loadClientData[this.clientId].booking = this.bookingList
 
-            await Preferences.set({
-                key: 'clientList',
-                value: JSON.stringify(this.loadClientData)
-            }).then(() => {
-                this.bookingList = [];
-                this.$emit('moveStep', {nextTo: 'remarks'});
-            })
+            // await Preferences.set({
+            //     key: 'clientList',
+            //     value: JSON.stringify(this.loadClientData)
+            // }).then(() => {
+            //     this.bookingList = [];
+            //     this.$emit('moveStep', {nextTo: 'remarks'});
+            // })
         },
         async addProduct(item){
             let list = {
@@ -213,6 +226,9 @@ export default {
             this.bookingList.push(list)
             this.addProductView = false;
 
+        },
+        async removeItem(index){
+            this.bookingList.splice(index, 1)
         }
     }
 }

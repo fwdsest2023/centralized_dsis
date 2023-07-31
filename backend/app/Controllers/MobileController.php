@@ -16,27 +16,39 @@ class MobileController extends BaseController
             $payload = $this->request->getJSON();
             $dataList = json_decode($payload->listData);
             $clientList = [];
+            $attendaceList = [];
             $bookingList = [];
+            $fileList = [];
 
             foreach ($dataList as $key => $value) {
+                $activity = isset($value->activity) ? $value->activity : [];
                 $clientList[$key] = [
                     "storeName" => $value->client->storeName,
                     "address" => $value->client->address,
+                    "addressDetails" => $value->client->address,
                     "branch" => $value->client->branch,
-                    "regionId" => $value->client->regionId,
                     "categoryId" => $value->client->categoryId,
                     "geoLocation" => $value->client->geoLocation,
                     "type" => $value->client->type,
                     "contactPerson" => $value->client->contactPerson,
-                    "attendance" => $value->attendance,
                     "remarks" => $value->remarks,
-                    "files" => $value->files,
+                    "activity" => $activity
+                ];
+
+                $attendaceList[$key] = [
+                    "clientId" => $key,
+                    "attendance" => $value->attendance
                 ];
 
                 $bookingList[$key] = [
                     "clientId" => $key,
                     "booking" => $value->booking
                 ];
+
+                $fileList[$key] = [
+                    "clientId" => $key,
+                    "imgSrc" => $value->files
+                ]
             }
 
 
@@ -44,7 +56,9 @@ class MobileController extends BaseController
                 "agentId" => $payload->agentId,
                 "category" => $payload->category,
                 "client" => json_encode($clientList),
+                "attendance" => json_encode($attendaceList),
                 "booking" => json_encode($bookingList)
+                "files" => json_encode($fileList)
             ];
             
             // echo '<pre>';

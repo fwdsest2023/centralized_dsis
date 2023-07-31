@@ -39,6 +39,7 @@ export default {
     name: "SettingPAge",
     data() {
         return {
+            curDate: moment().format('MM-DD-YYYY'),
             tab: 'mails',
             splitterModel: 25,
             expanded: false,
@@ -90,11 +91,10 @@ export default {
             return jwt_decode(profile);
         },
         clData: async function(){
-            const { value } = await Preferences.get({ key: 'clientList' });
+            const { value } = await Preferences.get({ key: this.curDate });
             let data = value !== null ? JSON.parse(value) : []
             let list = data.length !== 0 ? data : [];
-            let filtered = list.filter(el => el.client.status === 'finish')
-            return data.length !== 0 ? filtered : [];
+            return list.length !== 0 ? list : [];
         }
     },
     created(){
@@ -117,6 +117,11 @@ export default {
         },
         async syndDataToDev(){
             const listData = await this.clData
+
+            if(listData.length === 0){
+                alert('There is no data to sync')
+                return false
+            }
             // Collection of data
             let payload = {
                 agentId: Number(this.user.userId),

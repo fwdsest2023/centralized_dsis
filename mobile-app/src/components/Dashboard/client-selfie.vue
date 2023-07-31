@@ -6,6 +6,7 @@
                     <q-toolbar>
                         <q-toolbar-title>Selfie Evidence</q-toolbar-title>
                         <q-btn
+                            v-if="!isDone"
                             @click="reTake"
                             round 
                             color="red" 
@@ -26,8 +27,8 @@
                 <q-separator />
 
                 <q-card-actions align="right">
-                    <q-btn flat label="Previous" :loading="btnLoading" color="negative" @click="closeModal" />
-                    <q-btn flat label="Done" :loading="btnLoading" color="positive" @click="submitOrder" />
+                    <q-btn flat label="Close" :loading="btnLoading" color="negative" @click="closeModal" />
+                    <q-btn v-if="!isDone" flat label="Done" :loading="btnLoading" color="positive" @click="submitOrder" />
                 </q-card-actions>
             </q-card>
         </q-dialog>
@@ -46,6 +47,7 @@ export default {
         return {
             openModal: false,
             showPicture: false,
+            isDone: false,
             loadClientData: [],
             imgSrc: ''
         }
@@ -64,10 +66,17 @@ export default {
             let vm = this
             this.openModal = newVal
             if(newVal === true){
-                this.clientList()
-                defineCustomElements(window).then(()=>{
-                    vm.playCamera()
-                })
+                let data = this.clientId;
+                if(data.files !== ''){
+                    this.imgSrc = data.files
+                    this.showPicture = true
+                    this.isDone = true
+                } else {
+                    defineCustomElements(window).then(()=>{
+                        vm.playCamera()
+                    })
+                }
+                
             }
         }
     },
@@ -80,24 +89,34 @@ export default {
         async closeModal(){
             this.imgSrc = '';
             this.$emit('updateStatus', false);
-            this.$emit('backStep', {nextTo: 'remarks'});
         },
         async submitOrder(){
-            this.loadClientData[this.clientId].files = this.imgSrc
-            // console.log(this.loadClientData)
-            await Preferences.set({
-                key: 'clientList',
-                value: JSON.stringify(this.loadClientData)
-            }).then(() => {
-                this.imgSrc = ''
-                this.$emit('updateStatus', false);
-                this.$emit('finishStep', this.clientId);
-            })
+            // this.loadClientData[this.clientId].files = this.imgSrc
+            // // console.log(this.loadClientData)
+            // await Preferences.set({
+            //     key: 'clientList',
+            //     value: JSON.stringify(this.loadClientData)
+            // }).then(() => {
+            //     this.imgSrc = ''
+            //     this.$emit('updateStatus', false);
+            //     this.$emit('finishStep', this.clientId);
+            // })
+            let data = {
+                type: 'selfie',
+                value: this.imgSrc
+            }
+            this.$emit('clientSelfie', data);
+            this.imgSrc = ''
+            this.$emit('updateStatus', false);
         },
         reTake(){
+            const vm = this
             this.imgSrc = ''
             this.showPicture = false
-            this.playCamera()
+            defineCustomElements(window).then(()=>{
+                vm.playCamera()
+            })
+            
         },
         async playCamera(){
             let vm = this;

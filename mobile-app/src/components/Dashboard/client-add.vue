@@ -125,13 +125,17 @@ export default {
         }
     },
     methods: {
-        async addClientToCall(value){
-            const { prefVal } = await Preferences.get({ key: this.curDate });
-            let data = prefVal !== undefined ? JSON.parse(prefVal) : []
+        async addClientToCall(val){
+            const { value } = await Preferences.get({ key: this.curDate });
+            let data = value !== undefined ? JSON.parse(value) : []
             // check if val is already on the list on this date today
             let filterData = data.filter((el) => {
-                return el.client.storeName === value.client.storeName
+                return el.client.storeName === val.client.storeName
             })
+
+            // console.log(data)
+            // console.log(filterData)
+            // return
             
             if(filterData.length >= 1){
                 this.$q.dialog({
