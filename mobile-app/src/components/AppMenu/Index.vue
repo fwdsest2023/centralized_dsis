@@ -97,6 +97,7 @@ export default {
             return list.length !== 0 ? list : [];
         }
     },
+    
     created(){
         this.checkUnsyncData()
         // this.clearFinishData()

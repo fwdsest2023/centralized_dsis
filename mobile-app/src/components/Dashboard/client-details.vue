@@ -384,6 +384,18 @@ export default {
             }
 
         },
+
+        resetFields(){
+            // Reset activities 
+            this.activities = this.activities.map((el) => {
+                el.active = false
+
+                return el
+            })
+
+            this.remarks = ""
+            
+        }
     }
 }
 </script>

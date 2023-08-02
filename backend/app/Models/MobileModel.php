@@ -16,7 +16,7 @@ class MobileModel extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = false;
 
-    protected $allowedFields = ['agentId', 'category', 'client', 'attendace', 'booking', 'files'];
+    protected $allowedFields = ['agentId', 'category', 'client', 'attendance', 'booking', 'files'];
 
     protected $useTimestamps = false;
     // protected $createdField  = 'syncDate';

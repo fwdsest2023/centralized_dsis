@@ -1,0 +1,48 @@
+{
+    "category": [
+        {
+            "id":1,
+            "catName": "Farm",
+            "catDesc": "All farm establishment or business",
+            "icon": "agriculture",
+            "color": "green"
+        },
+        {
+            "id":2,
+            "catName": "Vet",
+            "catDesc": "Vet clinics that supplied of the products",
+            "icon": "vaccines",
+            "color": "blue"
+        },
+        {
+            "id":3,
+            "catName": "Poultry",
+            "catDesc": "Chicken farm supplied of the products",
+            "icon": "flutter_dash",
+            "color": "orange"
+        },
+        {
+            "id":4,
+            "catName": "Pet Shop",
+            "catDesc": "Pet Shop that supplied of the products",
+            "icon": "pets",
+            "color": "red"
+        }
+    ],
+    "adminCategory": [
+        {
+            "id":1,
+            "catName": "Meeting",
+            "catDesc": "All agent meeting attended",
+            "icon": "diversity_1",
+            "color": "accent"
+        },
+        {
+            "id":2,
+            "catName": "Training",
+            "catDesc": "All agent training attended",
+            "icon": "cast_for_education",
+            "color": "info"
+        }
+    ]
+}

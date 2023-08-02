@@ -81,6 +81,18 @@
                 :options-dense="true"
             >
             </q-select>
+
+            <q-select
+              v-if="userProfile.userType === '1'"
+              class="col col-xs-12 col-md-12 q-pa-sm"
+              bottom-slots
+              v-model="form.client.adminAssigned" 
+              :options="agentList" 
+              label="Assinged Agent"
+              dense 
+              :options-dense="true"
+            >
+            </q-select>
             
             <q-separator />
             <div class="text-h6">Address Details</div>
@@ -160,13 +172,16 @@
 </template>
 
 <script>
+import { Network } from '@capacitor/network';
 import { Preferences } from '@capacitor/preferences';
 import {regions, provinces, cities, barangays} from 'select-philippines-address';
 import jsonMisc from '../context-data/misc.json'
+import addressesJson from '../context-data/addresses.json'
 import { SessionStorage } from 'quasar'
 import { Geolocation } from '@capacitor/geolocation'
 import { Loader } from "@googlemaps/js-api-loader"
 import jwt_decode from 'jwt-decode'
+import { api } from 'boot/axios'
 
 const loader = new Loader({
     apiKey: 'AIzaSyCrQ2gSBwhbFsnj8JSYxCnTkXrb1ZJbmjw',
@@ -178,8 +193,10 @@ export default {
   name: 'AddClient',
   data(){
     return {
+      isOnline: true,
       userProfile: {},
       tab: 'client',
+      agentList: [],
       regionList: [],
       provinceList: [],
       cityList: [],
@@ -230,6 +247,8 @@ export default {
                   coorOut: {}
               }
           },
+          isAdmin: false,
+          adminAssigned: 0,
           booking:[],
           remarks: [],
           files: ""
@@ -257,22 +276,73 @@ export default {
       return res
     },
   },
+  mounted(){
+      const vm = this;
+      Network.addListener('networkStatusChange', status => {
+        vm.isOnline = status.connected
+        vm.loadRegion()
+      });
+  },
   created(){
     this.getUserProfile
-
-    regions().then((region) =>{
-      let res = region.map((el, _index) => {
-        let obj = {
-          label: el.region_name,
-          value: el.region_code
-        }
-
-        return obj
-      })
-      this.regionList = res;
-    })
+    this.loadRegion()
+    this.loadAgents()
   },
   methods:{
+    loadAgents(){
+      if(this.userProfile.userType === "1"){
+        this.form.client.isAdmin = true
+        api.get('users/getAgents')
+        .then((response) => {
+            if(response.status <= 200){
+              let list = response.data.list;
+              this.agentList = list.map((el) => {
+                let obj = {
+                  label: el.name,
+                  value: el.key
+                }
+
+                return obj
+              })
+            } else {
+                this.$q.dialog({
+                  title: 'Fetch Failed',
+                  message: 'Something went wrong. Please contact your administrator',
+                  position: 'top'
+                })
+            }
+            
+        }).catch((err) => {
+            alert(JSON.stringify(err))
+            this.settingList[0].loading = false
+        })
+      }
+    },
+    loadRegion(){
+      if(this.isOnline){
+        regions().then((region) =>{
+          let res = region.map((el, _index) => {
+            let obj = {
+              label: el.region_name,
+              value: el.region_code
+            }
+
+            return obj
+          })
+          this.regionList = res;
+        })
+      } else {
+        const regionsList = addressesJson.region;
+        this.regionList = regionsList.map((el, _index) => {
+          let obj = {
+            label: el.region_name,
+            value: el.region_code
+          }
+
+          return obj
+        })
+      }
+    },
     async addClient(){
         const { value } = await Preferences.get({ key: 'clientList' });
         let data = value !== null && value.length !== 0 ? JSON.parse(value) : []
@@ -292,16 +362,16 @@ export default {
         frm.client.branch = frm.client.addressDetails.region.label
         frm.client.categoryId = frm.client.categoryId.id
 
-        
+        // Check if the transaction network is offline or Online
         data.push(frm)
-        
+
         await Preferences.set({
             key: 'clientList',
             value: JSON.stringify(data)
         }).then(() => {
           this.clearForm();
         })
-        
+
     },
     async clearForm(){
       this.form = {
@@ -346,8 +416,22 @@ export default {
       }
     },
     regionChanged(val){
-      provinces(val.value).then((province) => {
-        let res = province.map((el, _index) => {
+      if(this.isOnline){
+        provinces(val.value).then((province) => {
+          let res = province.map((el, _index) => {
+            let obj = {
+              label: el.province_name,
+              value: el.province_code
+            }
+
+            return obj
+          })
+          this.provinceList = res
+        });
+      } else {
+        const provList = addressesJson.province
+        let filterProv = provList.filter(el => {return el.region_code === val.value})
+        this.provinceList = filterProv.map((el, _index) => {
           let obj = {
             label: el.province_name,
             value: el.province_code
@@ -355,12 +439,25 @@ export default {
 
           return obj
         })
-        this.provinceList = res
-      });
+      }
     },
     provinceChanged(val){
-      cities(val.value).then((city) => {
-        let res = city.map((el, _index) => {
+      if(this.isOnline){
+        cities(val.value).then((city) => {
+          let res = city.map((el, _index) => {
+            let obj = {
+              label: el.city_name,
+              value: el.city_code
+            }
+
+            return obj
+          })
+          this.cityList = res
+        });
+      } else {
+        const cityList = addressesJson.city
+        let filterCity = cityList.filter(el => {return el.province_code === val.value})
+        this.cityList = filterCity.map((el, _index) => {
           let obj = {
             label: el.city_name,
             value: el.city_code
@@ -368,12 +465,26 @@ export default {
 
           return obj
         })
-        this.cityList = res
-      });
+      }
+
     },
     cityChange(val){
-      barangays(val.value).then((barangay) => {
-        let res = barangay.map((el, _index) => {
+      if(this.isOnline){
+        barangays(val.value).then((barangay) => {
+          let res = barangay.map((el, _index) => {
+            let obj = {
+              label: el.brgy_name,
+              value: el.brgy_code
+            }
+
+            return obj
+          })
+          this.brgyList = res
+        });
+      } else {
+        const brgyList = addressesJson.barangay
+        let filterCity = brgyList.filter(el => {return el.city_code === val.value})
+        this.brgyList = filterCity.map((el, _index) => {
           let obj = {
             label: el.brgy_name,
             value: el.brgy_code
@@ -381,8 +492,7 @@ export default {
 
           return obj
         })
-        this.brgyList = res
-      });
+      }
     },
     initMap(){
         loader

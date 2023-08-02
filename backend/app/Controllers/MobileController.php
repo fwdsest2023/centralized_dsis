@@ -15,13 +15,16 @@ class MobileController extends BaseController
             // get the data
             $payload = $this->request->getJSON();
             $dataList = json_decode($payload->listData);
+
+
             $clientList = [];
             $attendaceList = [];
             $bookingList = [];
             $fileList = [];
 
             foreach ($dataList as $key => $value) {
-                $activity = isset($value->activity) ? $value->activity : [];
+
+                // First Check Client saved to db and migrate
                 $clientList[$key] = [
                     "storeName" => $value->client->storeName,
                     "address" => $value->client->address,
@@ -32,7 +35,7 @@ class MobileController extends BaseController
                     "type" => $value->client->type,
                     "contactPerson" => $value->client->contactPerson,
                     "remarks" => $value->remarks,
-                    "activity" => $activity
+                    "activity" => $value->activity
                 ];
 
                 $attendaceList[$key] = [
@@ -48,7 +51,7 @@ class MobileController extends BaseController
                 $fileList[$key] = [
                     "clientId" => $key,
                     "imgSrc" => $value->files
-                ]
+                ];
             }
 
 
@@ -57,7 +60,7 @@ class MobileController extends BaseController
                 "category" => $payload->category,
                 "client" => json_encode($clientList),
                 "attendance" => json_encode($attendaceList),
-                "booking" => json_encode($bookingList)
+                "booking" => json_encode($bookingList),
                 "files" => json_encode($fileList)
             ];
             
