@@ -38,9 +38,9 @@
       </q-page>
     </q-page-container>
 
-    <q-footer reveal class="bg-grey-5 text-weight-thin text-blue-white-9 text-center q-pt-lg q-pb-lg">
+    <!-- <q-footer reveal class="bg-grey-5 text-weight-thin text-blue-white-9 text-center q-pt-lg q-pb-lg">
       <div>{{ `Centralize Distribution and Sales Inventory System ©2023 Created by FWDS` }}</div>
-    </q-footer>
+    </q-footer> -->
 
   </q-layout>
 </template>
@@ -64,7 +64,7 @@ const linksList = [
     ]
   },
   {
-    title: 'Sales',
+    title: 'Create Invoice',
     icon: 'receipt',
     link: 'salesForm',
     code: 101,
@@ -73,16 +73,6 @@ const linksList = [
       {label: 'OR Forms', icon: 'history_edu', link: 'forms'}
     ]
   },
-  // {
-  //   title: 'Print Receipt',
-  //   icon: 'print',
-  //   link: 'print',
-  //   code: 103,
-  //   crumbs: [
-  //     {label: '', icon: 'home', link: '/'},
-  //     {label: 'Print Form', icon: 'print', link: 'print'}
-  //   ]
-  // },
   {
     title: 'Inventory Management',
     icon: 'inventory',
@@ -117,10 +107,36 @@ const linksList = [
       {
         title: 'Agent Call Sync',
         icon: 'contact_phone',
-        link: 'mobileSync',
+        link: 'agentCallSync',
       },
       {
         title: 'Client List',
+        icon: 'storefront',
+        link: 'clientList',
+      },
+    ],
+    crumbs: [
+      {label: '', icon: 'home', link: '/'},
+      {label: 'Patient List', icon: 'view_list', link: 'mylist'}
+    ]
+  },
+  {
+    title: 'Reports',
+    icon: 'analytics',
+    code: 104,
+    children: [
+      {
+        title: 'Agent Call Report',
+        icon: 'contact_phone',
+        link: 'mobileSync',
+      },
+      {
+        title: 'Summary Report',
+        icon: 'contact_phone',
+        link: 'mobileSync',
+      },
+      {
+        title: 'Sales Report',
         icon: 'storefront',
         link: 'clientList',
       },
@@ -140,26 +156,26 @@ const linksList = [
   //     {label: 'Saved Data List', icon: 'save', link: 'mysavelist'}
   //   ]
   // },
-  // {
-  //   title: 'Configurations',
-  //   icon: 'display_settings',
-  //   link: 'usermanagement',
-  //   code: 106,
-  //   crumbs: [
-  //     {label: '', icon: 'home', link: '/'},
-  //     {label: 'Manage Users', icon: 'manage_accounts', link: 'usermanagement'}
-  //   ]
-  // },
-  // {
-  //   title: 'Manage Users',
-  //   icon: 'manage_accounts',
-  //   link: 'crsmanagement',
-  //   code: 107,
-  //   crumbs: [
-  //     {label: '', icon: 'home', link: '/'},
-  //     {label: 'Manage CRS', icon: 'dynamic_form', link: 'crsmanagement'}
-  //   ]
-  // },
+  {
+    title: 'Configurations',
+    icon: 'display_settings',
+    link: 'usermanagement',
+    code: 106,
+    crumbs: [
+      {label: '', icon: 'home', link: '/'},
+      {label: 'Manage Users', icon: 'manage_accounts', link: 'usermanagement'}
+    ]
+  },
+  {
+    title: 'Manage Users',
+    icon: 'manage_accounts',
+    link: 'crsmanagement',
+    code: 107,
+    crumbs: [
+      {label: '', icon: 'home', link: '/'},
+      {label: 'Manage CRS', icon: 'dynamic_form', link: 'crsmanagement'}
+    ]
+  },
 ];
 
 export default {

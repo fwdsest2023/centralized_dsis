@@ -115,10 +115,8 @@ export default{
                     format: val => `${val}`,
                     sortable: true
                 },
-                { name: 'productSerial', label: 'Serial Number', field: 'productSerial' },
                 { name: 'unitType', label: 'Unit Type', field: 'unitType' },
                 { name: 'qty', label: 'Quantity', field: 'qty' },
-                { name: 'expirationDate', label: 'Date Expiry', field: 'expirationDate' },
                 { name: 'actions', label: 'Action', field: 'actions' }
             ]
         }
@@ -151,7 +149,7 @@ export default{
             
         },
         getProducts(){
-            api.get('inventory/stock/get').then((response) => {
+            api.post('product/get/products').then((response) => {
                 const data = {...response.data};
                 if(!data.error){
                     this.tableRow = response.status < 300 ? data.list : [];

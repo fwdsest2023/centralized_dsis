@@ -22,7 +22,7 @@ import {
 } from '@/context'
 
 
-const TABLE_HEAD = ["SKU", "Products", "Unit Type", "Unit Price", "Category ID", "Total Stock", "Action" ];
+const TABLE_HEAD = ["SKU", "Products", "Unit Type", "Unit Price", "Category ID", "Total Stock", "Action"];
 const cat = [
     {id:1, name: "CAT FOOD"},
     {id:2, name: "DOG FOOD"},

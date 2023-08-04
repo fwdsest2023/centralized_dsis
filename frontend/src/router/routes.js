@@ -39,6 +39,23 @@ const routes = [
       },
     ]
   },
+  {
+    path: '/mobile-app-management/',
+    component: () => import('layouts/LoginLayout.vue'),
+    children: [
+      // Inventory Management
+      { 
+        path: 'agent-call-sync',
+        name: 'agentCallSync',
+        component: () => import('pages/mobile/syncData.vue') 
+      },
+      { 
+        path: 'product-list',
+        name: 'productList',
+        component: () => import('pages/Inventory/Product.vue') 
+      },
+    ]
+  },
 
   {
     path: '/sales/',

@@ -33,7 +33,9 @@ class ProductController extends BaseController
 
         // conversion of dateTime
         // $payload->scheduleDate = date('c', strtotime($payload->scheduleDate));
-        $payload->costGroup = json_encode($payload->costGroup );
+        $payload->costGroup = json_encode($payload->costGroup);
+        $payload->category = json_encode($payload->category);
+        $payload->unit = json_encode($payload->unit);
         $payload = json_decode(json_encode($payload), true);
 
         

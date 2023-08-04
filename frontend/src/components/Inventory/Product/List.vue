@@ -9,6 +9,7 @@
                     <q-btn 
                         unelevated 
                         color="primary"
+                        @click="openAddModal = !openAddModal"
                     >
                         <q-icon left name="add" />
                         <div>New Product</div>
@@ -21,7 +22,9 @@
                     />
                 </div>
                 <div v-if="tableRow.length === 0" class="col col-md-12 text-center">
-                    <noData />
+                    <noData
+                        @reloadData="getList"
+                    />
                 </div>
                 <div v-if="tableRow.length > 0" class="col col-md-12 q-mt-md">
                     <q-table
@@ -36,6 +39,36 @@
                                     <q-icon name="search" />
                                 </template>
                             </q-input>
+                        </template>
+                        <template v-slot:body-cell-unit="props">
+                            <q-td :props="props">
+                                {{parseData(props.row.unit)}}
+                            </q-td>
+                        </template>
+                        <template v-slot:body-cell-category="props">
+                            <q-td :props="props">
+                                {{parseData(props.row.category)}}
+                            </q-td>
+                        </template>
+                        <template v-slot:body-cell-stock="props">
+                            <q-td :props="props">
+                                999999
+                            </q-td>
+                        </template>
+                        <template v-slot:body-cell-hasPriceGroup="props">
+                            <q-td :props="props">
+                                <span v-if="props.row.hasPriceGroup === '0'">N/A</span>
+                                <q-btn
+                                    v-else
+                                    dense
+                                    flat
+                                    outline
+                                    size="md"
+                                    color="primary" 
+                                    label="View"
+                                    @click="showCostGroup(props.row.costGroup)"
+                                />
+                            </q-td>
                         </template>
                         <template v-slot:body-cell-actions="props">
                             <q-td :props="props">
@@ -63,7 +96,11 @@
                 </div>
             </div>
         </div>
-
+        <addProductModal
+            :modalStatus="openAddModal"
+            @updateModalStatus="openAddModal = !openAddModal"
+            @refreshData="getList"
+        />
         
     </div>
 </template>
@@ -72,6 +109,7 @@
 import moment from 'moment';
 import { LocalStorage, SessionStorage } from 'quasar'
 import noData from '../../Templates/NoData.vue';
+import addProductModal from '../Modals/AddProduct.vue'
 import jwt_decode from 'jwt-decode'
 import { api } from 'boot/axios'
 
@@ -88,18 +126,24 @@ export default{
             saveDetails: null,
             saveId: null,
             insertedID: null,
-            openPrintStatus: false,
+            openAddModal: false,
             appId: 0,
         }
     },
     components: {
-        noData
+        noData,
+        addProductModal
     },
     created(){
         this.getList();
     },
     methods: {
         moment,
+        parseData(data){
+            let res = JSON.parse(data);
+
+            return res.label
+        },
         async getList(){
             this.tableRow = [];
             this.isLoading = true;
@@ -132,7 +176,17 @@ export default{
             return jwt_decode(profile);
         },
         tableColumns: function(){
+            // "SKU", "Products", "Unit Type", "Unit Price", "Category ID", "Total Stock", "Action"
             return [
+                {
+                    name: 'sku',
+                    required: true,
+                    label: 'SKU',
+                    align: 'left',
+                    field: row => row.sku,
+                    format: val => `${val}`,
+                    sortable: true
+                },
                 {
                     name: 'productName',
                     required: true,
@@ -142,12 +196,11 @@ export default{
                     format: val => `${val}`,
                     sortable: true
                 },
-                { name: 'description', label: 'Description', field: 'description' },
+                { name: 'unit', label: 'Unit', field: 'unit' },
                 { name: 'category', label: 'Category', field: 'category' },
-                { name: 'subCategory', label: 'Sub Category', field: 'subCategory' },
-                { name: 'type', label: 'Type', field: 'type' },
-                { name: 'status', label: 'Status', field: 'status' },
-                { name: 'createdDate', label: 'Created Date', field: 'createdDate' },
+                { name: 'productCost', label: 'Cost', field: 'productCost' },
+                { name: 'stock', label: 'Stock', field: 'stock' },
+                { name: 'hasPriceGroup', label: 'Price Group', field: 'hasPriceGroup' },
                 { name: 'actions', label: 'Action', field: 'actions' }
             ]
         }

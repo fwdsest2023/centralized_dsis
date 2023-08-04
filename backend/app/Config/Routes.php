@@ -102,6 +102,10 @@ $routes->group('mlrs/api/v1', function($routes){
 		
 		$routes->post('sync/data', 'MobileController::syncAgentData'); 
 		$routes->post('client/list', 'MobileController::agentClientList');
+		$routes->post('get/photo', 'MobileController::agentClientPhoto');
+		$routes->post('get/booking', 'MobileController::agentClientBooking');
+
+		
 		$routes->post('booking/list', 'MobileController::agentBookingList');
 
 		$routes->post('history/dates', 'MobileController::agentHistoryList');

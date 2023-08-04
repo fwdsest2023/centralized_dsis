@@ -28,7 +28,7 @@ class MobileController extends BaseController
                 $clientList[$key] = [
                     "storeName" => $value->client->storeName,
                     "address" => $value->client->address,
-                    "addressDetails" => $value->client->address,
+                    "addressDetails" => $value->client->addressDetails,
                     "branch" => $value->client->branch,
                     "categoryId" => $value->client->categoryId,
                     "geoLocation" => $value->client->geoLocation,
@@ -112,26 +112,27 @@ class MobileController extends BaseController
             
             if($query){
                 $client = json_decode($query->client);
-                $bookings = json_decode($query->booking);
+                $attendaces = json_decode($query->attendance);
                 // print_r(gettype($client));
                 // print_r($bookings);
                 // exit();
                 foreach ($client as $key => $value) {
                     // print_r($value);
-                    $booking = $bookings[$key]->booking;
+                    $attendace = $attendaces[$key];
                     // print_r($booking);
 
                     $list['list'][$key] = [
+                        "key" => $key,
                         "storeName" => $value->storeName,
                         "address" => $value->address,
                         "branch" => $value->branch,
                         "categoryId" => $value->categoryId,
                         "geoLocation" => $value->geoLocation,
-                        "contactPerson" => $value->contactPerson,
-                        "attendance" => $value->attendance,
+                        "contactPerson" => $value->contactPerson->name,
+                        "contactNumber" => $value->contactPerson->contactNum,
+                        "attendance" => $attendace,
+                        "activity" => $value->activity,
                         "remarks" => $value->remarks,
-                        "books" => $booking,
-                        "files" => $value->files
                     ];
                 }
             } 
@@ -142,6 +143,46 @@ class MobileController extends BaseController
                         ->setStatusCode(200)
                         ->setContentType('application/json')
                         ->setBody(json_encode($list));
+            } else {
+                $response = [
+                    'title' => 'Error',
+                    'message' => 'No Data Found'
+                ];
+    
+                return $this->response
+                        ->setStatusCode(404)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($response));
+            }
+
+        } catch (\Throwable $th) {
+            print_r($th);
+            throw $th;
+        }
+    }
+
+    public function agentClientPhoto(){
+        try {
+            // get the data
+            $payload = $this->request->getJSON();
+            $where = [
+                "agentId" => $payload->aid,
+                "syncDate" => $payload->date
+            ];
+            $res = [];
+
+            $query = $this->mobModel->getAllAgentSyncCalls($where);
+            
+            if($query){
+                $file = json_decode($query->files);
+                $res = $file[$payload->idx];
+            }
+            
+            if($res){
+                return $this->response
+                        ->setStatusCode(200)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($res));
             } else {
                 $response = [
                     'title' => 'Error',

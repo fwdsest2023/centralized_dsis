@@ -4,6 +4,16 @@
             <q-icon name="upcoming" style="color: #554c4c" size="7.4em" />
             <q-separator inset  />
             <span class="text-h4" style="color: #554c4c;">No Data Found!</span>
+            <br />
+            <q-btn 
+              dense
+              flat
+              outline
+              size="md"
+              color="primary" 
+              label="Retry"
+              @click="reloadRetry"
+            />
         </div>
     </div>
 </template>
@@ -17,6 +27,11 @@ export default defineComponent({
     contentLink: {
       type: Array,
     },
+  },
+  methods:{
+    reloadRetry(){
+      this.$emit('reloadData')
+    }
   }
 })
 </script>

@@ -25,20 +25,45 @@
                             <q-separator />
                         </div>
                         <div class="col col-md-4 q-pa-sm">
-                            <q-select 
+                            <q-input 
                                 outlined 
-                                v-model="form.prodId" 
-                                :options="productOptions" 
-                                label="Product" 
+                                v-model="form.sku" 
+                                label="Product SKU" 
                                 stack-label 
                                 dense
-                                options-dense 
+                            />
+                        </div>
+                        <div class="col col-md-4 q-pa-sm">
+                            <q-input 
+                                outlined 
+                                v-model="form.productName" 
+                                label="Product Name" 
+                                stack-label 
+                                dense
+                            />
+                        </div>
+                        <div class="col col-md-4 q-pa-sm">
+                            <q-input 
+                                outlined 
+                                v-model="form.productCost" 
+                                label="Product Cost" 
+                                stack-label 
+                                dense
+                            />
+                        </div>
+                        <div class="col col-md-4 q-pa-sm">
+                            <q-input 
+                                outlined 
+                                v-model="form.productSRP" 
+                                label="Product SRP" 
+                                stack-label 
+                                dense
                             />
                         </div>
                         <div class="col col-md-4 q-pa-sm">
                             <q-select 
                                 outlined 
-                                v-model="form.unitType" 
+                                v-model="form.unit" 
                                 :options="uTypeOptions" 
                                 label="Unit Type" 
                                 stack-label 
@@ -47,100 +72,62 @@
                             />
                         </div>
                         <div class="col col-md-4 q-pa-sm">
-                            <q-input 
+                            <q-select 
                                 outlined 
-                                v-model="form.prodSerial" 
-                                label="Product Serial" 
+                                v-model="form.category" 
+                                :options="catOptions" 
+                                label="Category" 
                                 stack-label 
                                 dense
-                                :rules="[ val => val && val.length > 0 || 'This field is required']"
+                                options-dense
                             />
                         </div>
-                        <div class="col col-md-4 q-pa-sm">
+                        <div class="col col-md-12 q-pa-sm">
                             <q-input 
                                 outlined 
-                                type="date"
-                                v-model="form.deliveryDate" 
-                                label="Delivery Date" 
+                                type="textarea"
+                                v-model="form.description" 
+                                label="Product Description" 
                                 stack-label 
                                 dense
-                                :rules="[ val => val && val.length > 0 || 'This field is required']"
-                            />
-                        </div>
-                        <div class="col col-md-4 q-pa-sm">
-                            <q-input 
-                                outlined 
-                                type="date"
-                                v-model="form.expirationDate" 
-                                label="Expiry Date" 
-                                stack-label 
-                                dense
-                                :rules="[ val => val && val.length > 0 || 'This field is required']"
                             />
                         </div>
                         <div class="col col-md-4 q-pa-sm"></div>
 
                         
                         <div class="col col-md-12 q-mt-md">
-                            <span class="text-h5">Inventory Details</span>
+                            <q-toolbar>
+                                <span class="text-h5">Price Group Details</span>
+                                <q-space />
+                                <q-toggle v-model="form.hasPriceGroup" />
+                            </q-toolbar>
+                            
                             <q-separator />
                         </div>
-
-                        <div class="col col-md-4 q-pa-sm">
-                            <q-input 
-                                outlined 
-                                v-model="form.qty" 
-                                label="Product Quantity" 
-                                stack-label 
-                                dense
-                                :rules="[ val => val && val.length > 0 || 'This field is required']"
-                            />
-                        </div>
-                        <div class="col col-md-4 q-pa-sm">
-                            <q-input 
-                                outlined 
-                                v-model="form.stockNotice" 
-                                label="Stock Notice" 
-                                stack-label 
-                                dense
-                                :rules="[ val => val && val.length > 0 || 'This field is required']"
-                            />
-                        </div>
-                        <div class="col col-md-4 q-pa-sm">
-                            <q-input 
-                                outlined 
-                                v-model="form.itemPrice" 
-                                label="Price" 
-                                stack-label 
-                                dense
-                                :rules="[ val => val && val.length > 0 || 'This field is required']"
-                            />
-                        </div>
-                        
-                        <div class="col col-md-12"></div>
-                        <div
-                            v-for="(el, index) in form.otherDetails"
-                            class="col col-md-4 q-pa-sm"
-                            :key="index"
+                        <div 
+                            v-for="(item, index) in groupBrnach" 
+                            :key="index" 
+                            class="col col-md-12 q-pa-sm"
                         >
+                            <div v-if="form.hasPriceGroup" class="row">
                             <q-input 
+                                class="col col-md-6 q-pa-sm"
                                 outlined 
-                                v-model="form.otherDetails[index]" 
-                                :label="otherDetailsLabels[index]" 
+                                v-model="item.regionName"
+                                label="Branch"
                                 stack-label 
-                                dense 
+                                disable
+                                dense
                             />
-                        </div>
-                        <div class="col col-md-4 q-pa-sm">
-                            <q-select 
+                            <q-input 
+                                class="col col-md-6 q-pa-sm"
                                 outlined 
-                                v-model="form.status" 
-                                :options="statusOption" 
-                                label="Status" 
+                                v-model="item.price" 
+                                label="Price"
                                 stack-label 
                                 dense
-                                options-dense
                             />
+                            </div>
                         </div>
                     </q-form>
                 </q-card-section>
@@ -174,26 +161,44 @@ export default{
         return {
             openModal: false,
             form: {
-                name: '',
-                description: '',
+                sku: '',
+                productName: '',
+                productCost: '',
+                productSRP: '',
+                unit: '',
                 category: '',
-                subCategory: '',
-                type: '',
-                supplier: { label: '', value: '' },
-                status: { label: 'Active', value: 1 },
+                description: '',
+                hasPriceGroup: false,
+                costGroup: {},
+                createdBy: 0,
             },
             catOptions: [
-                {label: 'Box', value: 'box'},
-                {label: 'Piece', value: 'pcs'}
+                {label: 'Box', value: 'BX'},
+                {label: 'Piece', value: 'PC'},
+                {label: 'Bottle', value: 'BT'},
+                {label: 'Bag', value: 'BG'},
+                {label: 'Pouch', value: 'PH'}
             ],
-            subCatOptions: [
-                {label: 'Box', value: 'box'},
-                {label: 'Piece', value: 'pcs'}
+            uTypeOptions: [
+                {label: 'Cat Food', value: '1'},
+                {label: 'Dog Food', value: '2'},
+                {label: 'OTC Medicine', value: '3'},
+                {label: 'Pet Accesories', value: '4'},
+                {label: 'Poultry Lines', value: '5'}
             ],
-            statusOption: [
-                {label: 'Active', value: 1},
-                {label: 'Inactive', value: 0}
-            ],
+            groupBrnach: [
+                {
+                    "regionId": 1,
+                    "regionName": 'Nueva Ecija',
+                    "price": 0
+                },
+                {
+                    "regionId": 2,
+                    "regionName": 'Aurora',
+                    "price": 0
+                }
+            ]
+
         }
     },
     watch:{
@@ -215,9 +220,7 @@ export default{
             return jwt_decode(profile);
         }
     },
-    created(){
-        this.getProducts();
-    },
+
     methods: {
         async closeModal(){
             this.$emit('updateModalStatus', false);
@@ -249,25 +252,30 @@ export default{
                         },
                         persistent: true
                     }).onOk(() => {
-                        this.$emit('submitModalClick', vm.form);
+                        // this.$emit('submitModalClick', vm.form);
+                        this.addNewProduct();
                     })
                 }
             })
             
         },
-        getProducts(){
-            api.get('inventory/product/get').then((response) => {
+
+        async addNewProduct(){
+            this.$q.loading.show();
+            let payload = this.form
+            payload.createdBy = this.user.userId
+
+            // check if group pricing
+            if(payload.hasPriceGroup){
+                payload.costGroup = this.groupBrnach
+            }
+
+            api.post('product/add/new', payload).then((response) => {
                 const data = {...response.data};
                 if(!data.error){
-                    let listVal = data.list;
-
-                    this.productOptions = listVal.map((el) => {
-                        return {
-                            label: el.productName,
-                            value: el.key
-                        }
-                    })
-                    // this.tableRow = response.status < 300 ? data.list : [];
+                    this.$emit('refreshData')
+                    this.clearForm();
+                    this.closeModal();
                 } else {
                     this.$q.notify({
                         color: 'negative',
@@ -279,6 +287,23 @@ export default{
                 }
 
             })
+
+            this.$q.loading.hide();
+        },
+
+        clearForm(){
+            this.form = {
+                sku: '',
+                productName: '',
+                productCost: '',
+                productSRP: '',
+                unit: '',
+                category: '',
+                description: '',
+                hasPriceGroup: false,
+                costGroup: {},
+                createdBy: 0,
+            }
         }
     }
     
