@@ -1,7 +1,7 @@
 <template>
     <div>
         <q-dialog
-            v-model="modalStatus"
+            v-model="openModal"
             persistent
             transition-show="slide-up"
             transition-hide="slide-down"

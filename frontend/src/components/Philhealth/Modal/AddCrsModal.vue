@@ -1,6 +1,6 @@
 <template>
     <div class="q-pa-sm">
-        <q-dialog persistent v-model="modalStatus">
+        <q-dialog persistent v-model="openModal">
             <q-card style="width: 700px; max-width: 80vw;">
                 <q-card-section>
                     <div class="text-h6">{{ modalTitle }}</div>
@@ -60,6 +60,9 @@ export default{
         }
     },
     watch: {
+        modalStatus(newVal){
+            this.openModal = newVal
+        },
         actionType: function(newVal){
             if(newVal == 'EDIT'){
                 this.loadDetailsEdit();

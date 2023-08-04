@@ -1,6 +1,6 @@
 <template>
     <div class="q-pa-sm">
-        <q-dialog persistent v-model="modalStatus">
+        <q-dialog persistent v-model="openModal">
             <q-card style="width: 700px; max-width: 80vw;">
                 <q-card-section>
                     <div class="text-h6">{{ modalTitle }}</div>
@@ -58,11 +58,12 @@ export default{
         registerForm
     },
     watch:{
-        // modalStatus: function(newVal){
-        //     if(newVal){
-        //         this.getPatientDetails(this.appId)
-        //     }
-        // }
+        modalStatus: function(newVal){
+            this.openModal = newVal
+            // if(newVal){
+            //     this.getPatientDetails(this.appId)
+            // }
+        }
     },
     computed: {
         user: function(){

@@ -1,7 +1,7 @@
 <template>
     <div>
         <q-dialog
-            v-model="modalStatus"
+            v-model="openModal"
             persistent
             transition-show="slide-up"
             transition-hide="slide-down"
@@ -97,6 +97,11 @@ export default{
         },
         modalStatus: {
             type: Boolean
+        }
+    },
+    watch: {
+        modalStatus(newVal){
+            this.openModal = newVal
         }
     },
     computed: {

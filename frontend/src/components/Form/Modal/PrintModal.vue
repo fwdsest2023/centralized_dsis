@@ -1,7 +1,7 @@
 <template>
     <div>
         <q-dialog
-            v-model="modalStatus"
+            v-model="openModal"
             persistent
             :maximized="maximizedToggle"
             transition-show="slide-up"
@@ -52,6 +52,7 @@ export default{
     watch:{
         modalStatus: function(newVal){
             if(newVal){
+                this.openModal = newVal
                 this.getPatientDetails(this.appId)
             }
         }
