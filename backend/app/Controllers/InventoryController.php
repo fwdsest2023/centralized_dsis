@@ -68,6 +68,78 @@ class InventoryController extends BaseController
 
     }
 
+    public function updateProduct(){
+        // Check Auth header bearer
+        // $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
+        // if(!$authorization){
+        //     $response = [
+        //         'message' => 'Unauthorized Access'
+        //     ];
+
+        //     return $this->response
+        //             ->setStatusCode(401)
+        //             ->setContentType('application/json')
+        //             ->setBody(json_encode($response));
+        //     exit();
+        // }
+
+        $payload = $this->request->getJSON();
+        $where = ['id' => $payload->id];
+
+
+        $setProductData = [
+            'productName' => $payload->productName,
+            'unit' => json_encode($payload->unit),
+            'description' => $payload->description,
+            'category' => json_encode($payload->category),
+            'productCost' => $payload->productCost,
+            'productSRP' => $payload->productSRP
+        ];
+
+        
+        // $history = [
+        //     'prodId' => $data->prodId,
+        //     'requestData' => json_encode($data),
+        //     'actionStatus' => str_replace(['<user>'], [$userData->firstName .' '. $userData->lastName .' '. $userData->suffix], $data->action),
+        //     'createdBy' => $data->user,
+        // ];
+
+        // print_r($setData);
+        // exit;
+
+        //Update Query for finding User Information
+        $updateProduct = $this->inventoryModel->updateProduct($where, $setProductData);
+
+
+        if($updateProduct){
+            //save application history action
+            // $this->historyModel->insert($history);
+
+            //Return to user
+            $response = [
+                'title' => 'Update Product Status',
+                'message' => 'Product successfully updated!'
+            ];
+
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        } else {
+            $response = [
+                'title' => 'Update Request Status',
+                'message' => 'Your application failed to update!'
+            ];
+
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+        
+    } 
+
     public function getProductList(){
         // Check Auth header bearer
         // $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
