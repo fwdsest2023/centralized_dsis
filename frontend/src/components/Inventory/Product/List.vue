@@ -100,7 +100,7 @@
             :appId="appId"
             :modalStatus="openAddModal"
             :processType="pType"
-            @updateModalStatus="openAddModal = !openAddModal"
+            @updateModalStatus="closeProductModal"
             @refreshData="getList"
         />
         
@@ -146,6 +146,11 @@ export default{
             this.openAddModal = true;
             this.pType = type;
             this.appId = id;
+        },
+        closeProductModal(){
+            this.openAddModal = false
+            this.pType = 'add'
+            this.appId = {}
         },
         parseData(data){
             let res = JSON.parse(data);
