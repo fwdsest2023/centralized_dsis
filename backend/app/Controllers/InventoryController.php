@@ -183,6 +183,49 @@ class InventoryController extends BaseController
 
     }
 
+    public function getProductDetail(){
+        // Check Auth header bearer
+        // $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
+        // if(!$authorization){
+        //     $response = [
+        //         'message' => 'Unauthorized Access'
+        //     ];
+
+        //     return $this->response
+        //             ->setStatusCode(401)
+        //             ->setContentType('application/json')
+        //             ->setBody(json_encode($response));
+        //     exit();
+        // }
+
+        // $where = [
+        //     "userType" => 15,
+        //     "isDeleted" => 0,
+        //     "status" => 1,
+        // ];
+        $list = [];
+        $list['list'] = $this->inventoryModel->getProductList();
+
+        if($list){
+            $list['message'] = "successfully fetch product list";
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($list));
+        } else {
+            $response = [
+                'title' => 'Error',
+                'message' => 'No Data Found'
+            ];
+
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
+
     // Stocks Part
     public function addStock(){
         // Check Auth header bearer

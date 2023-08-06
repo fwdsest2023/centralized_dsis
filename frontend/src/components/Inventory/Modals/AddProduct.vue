@@ -25,7 +25,8 @@
                             <q-separator />
                         </div>
                         <div class="col col-md-4 q-pa-sm">
-                            <q-input 
+                            <q-input
+                                :disable="processType === 'edit'"
                                 outlined 
                                 v-model="form.sku" 
                                 label="Product SKU" 
@@ -135,11 +136,19 @@
                 <q-separator />
 
                 <q-card-actions align="right">
-                    <q-btn 
+                    <q-btn
+                        v-if="processType === 'add'"
                         flat 
                         label="Submit" 
                         color="primary"
                         @click="submitModalClick" 
+                    />
+                    <q-btn
+                        v-else
+                        flat 
+                        label="Update Data" 
+                        color="primary"
+                        @click="updateProduct" 
                     />
                 </q-card-actions>
             </q-card>
@@ -149,7 +158,6 @@
 <script>
 import moment from 'moment';
 import { LocalStorage } from 'quasar'
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import jwt_decode from 'jwt-decode'
 import { api } from 'boot/axios'
 
@@ -204,6 +212,9 @@ export default{
     watch:{
         modalStatus(newVal){
             this.openModal = newVal
+            if(this.processType === 'edit'){
+                this.fillTheDetails()
+            }
         }
     },
     props: {
@@ -212,6 +223,9 @@ export default{
         },
         modalStatus: {
             type: Boolean
+        },
+        processType: {
+            type: String
         }
     },
     computed: {
@@ -222,6 +236,20 @@ export default{
     },
 
     methods: {
+        fillTheDetails(){
+            console.log(this.appId)
+            this.form = {
+                sku: this.appId.sku,
+                productName: this.appId.productName,
+                productCost: this.appId.productCost,
+                productSRP: this.appId.productSRP,
+                unit: JSON.parse(this.appId.unit),
+                category: JSON.parse(this.appId.category),
+                description: this.appId.description,
+                hasPriceGroup: false,
+                costGroup: {},
+            }
+        },
         async closeModal(){
             this.$emit('updateModalStatus', false);
         },
@@ -271,6 +299,34 @@ export default{
             }
 
             api.post('product/add/new', payload).then((response) => {
+                const data = {...response.data};
+                if(!data.error){
+                    this.$emit('refreshData')
+                    this.clearForm();
+                    this.closeModal();
+                } else {
+                    this.$q.notify({
+                        color: 'negative',
+                        position: 'top-right',
+                        title:data.title,
+                        message: this.$t(`errors.${data.error}`),
+                        icon: 'report_problem'
+                    })
+                }
+
+            })
+
+            this.$q.loading.hide();
+        },
+        async updateProduct(){
+            this.$q.loading.show();
+            let payload = {
+                id: this.appId.id,
+                ...this.form
+            }
+
+           
+            api.post('product/update/details', payload).then((response) => {
                 const data = {...response.data};
                 if(!data.error){
                     this.$emit('refreshData')

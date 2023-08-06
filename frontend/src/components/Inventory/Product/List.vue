@@ -9,7 +9,7 @@
                     <q-btn 
                         unelevated 
                         color="primary"
-                        @click="openAddModal = !openAddModal"
+                        @click="openProductModal('add', 0)"
                     >
                         <q-icon left name="add" />
                         <div>New Product</div>
@@ -79,7 +79,7 @@
                                     size="md"
                                     color="primary" 
                                     label="Edit"
-                                    @click="getSavedDetails(props.row.key)"
+                                    @click="openProductModal('edit', props.row)"
                                 />
                                 <q-btn 
                                     dense
@@ -97,7 +97,9 @@
             </div>
         </div>
         <addProductModal
+            :appId="appId"
             :modalStatus="openAddModal"
+            :processType="pType"
             @updateModalStatus="openAddModal = !openAddModal"
             @refreshData="getList"
         />
@@ -127,7 +129,8 @@ export default{
             saveId: null,
             insertedID: null,
             openAddModal: false,
-            appId: 0,
+            appId: {},
+            pType: 'add'
         }
     },
     components: {
@@ -139,6 +142,11 @@ export default{
     },
     methods: {
         moment,
+        openProductModal(type, id){
+            this.openAddModal = true;
+            this.pType = type;
+            this.appId = id;
+        },
         parseData(data){
             let res = JSON.parse(data);
 
