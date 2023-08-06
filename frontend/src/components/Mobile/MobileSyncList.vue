@@ -151,7 +151,12 @@
                                         <div class="col col-md-4 q-pa-sm">
                                             <span class="text-bold q-mb-sm">Activities</span>
                                             <q-list>
-                                                <q-item v-for="(item, index) in props.row.activity" tag="label" :key="index" v-ripple>
+                                                <q-item 
+                                                    v-for="(item, index) in props.row.activity" 
+                                                    tag="label" 
+                                                    :key="index" 
+                                                    v-ripple
+                                                >
                                                     <q-item-section side top>
                                                         <q-icon v-if="!item.active" name="cancel" color="negative" />
                                                         <q-icon v-else name="check_circle" color="green" />
@@ -165,6 +170,15 @@
                                                     </q-item-section>
                                                 </q-item>
                                             </q-list>
+                                            <q-btn
+                                                class="block full-width q-mt-sm"
+                                                unelevated 
+                                                rounded
+                                                size="sm"
+                                                color="primary" 
+                                                label="Get Booking Details"
+                                                @click="getBookDetails(props)"
+                                            />
                                         </div>
                                         <div class="col col-md-4 q-pa-sm">
                                             <span class="text-bold q-mb-sm">Photo</span><br/>
@@ -182,7 +196,11 @@
                 </div>
             </div>
         </div>
-        
+        <BookingModal
+            :bookedList="bookList"
+            :modalStatus="openBookModal"
+            @updateModalStatus="closeBooking"
+        />
     </div>
 </template>
 
@@ -193,6 +211,7 @@ import noData from '../Templates/NoData.vue';
 import { Loader } from "@googlemaps/js-api-loader"
 import jwt_decode from 'jwt-decode'
 import { api } from 'boot/axios'
+import BookingModal from './Modals/BookingModal.vue';
 
 const loader = new Loader({
     apiKey: 'AIzaSyCrQ2gSBwhbFsnj8JSYxCnTkXrb1ZJbmjw',
@@ -200,7 +219,7 @@ const loader = new Loader({
     libraries: ["places"]
 });
 
-export default{
+export default {
     name: 'ProductList',
     data(){
         return {
@@ -213,7 +232,8 @@ export default{
             saveDetails: null,
             saveId: null,
             insertedID: null,
-            openAddModal: false,
+            openBookModal: false,
+            bookList: [],
             appId: 0,
 
             agentList: [],
@@ -223,13 +243,17 @@ export default{
         }
     },
     components: {
-        noData
+        noData,
+        BookingModal
     },
     created(){
         this.getAgentList()
     },
     methods: {
         moment,
+        closeBooking(){
+            this.openBookModal = false
+        },
         getAgentList(){
             api.get('users/getAgents').then((response) => {
                 const data = {...response.data};
@@ -281,6 +305,30 @@ export default{
             })
 
             this.isLoading = false;
+        },
+        getBookDetails(row){
+            let payload = {
+                aid: Number(this.agentId.value),
+                date: moment(this.syncDate).format('yyyy-MM-DD'),
+                idx: row.key
+            }
+
+            api.post('mobile/get/booking', payload).then((response) => {
+                const data = {...response.data};
+                if(!data.error){
+                    this.bookList = response.data.booking
+                    this.openBookModal = true
+                } else {
+                    this.$q.notify({
+                        color: 'negative',
+                        position: 'top-right',
+                        title:data.title,
+                        message: this.$t(`errors.${data.error}`),
+                        icon: 'report_problem'
+                    })
+                }
+
+            })
         },
         getCallPhoto(row){
             let payload = {

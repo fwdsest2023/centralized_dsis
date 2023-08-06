@@ -29,6 +29,7 @@
         :default-opened="checkSubchildOpen(children)"
       >
         <q-item
+          class="q-ml-xl"
           :header-inset-level="1"
           v-for="(item, index) in children"
           :key="index"

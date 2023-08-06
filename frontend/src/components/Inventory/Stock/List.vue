@@ -66,7 +66,6 @@
         </div>
 
         <stockModal
-            v-if="openModal"
             :modalStatus="openModal" 
             @updateModalStatus="closeAddModal"
             @submitModalClick="submitData"

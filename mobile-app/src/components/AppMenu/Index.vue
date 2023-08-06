@@ -19,7 +19,7 @@
                         @click="item.action"
                         :disabled="index===0 && !item.notSync"
                         :color="item.sides.color" 
-                        :icon="item.sides.icon" 
+                        :icon="item.sides.icon"
                     />
                     <!-- <q-icon :name="item.sides.icon" :color="item.sides.color" /> -->
                 </q-item-section>
@@ -60,6 +60,22 @@ export default {
                     notSync: true,
                     loading: false,
                     action: () => {return this.syndDataToDev()}
+                },
+                {
+                    avatar: {
+                        icon: 'sync',
+                        color: 'primary',
+                        textColor: 'white'
+                    },
+                    label: 'Update Products',
+                    caption: 'Migrate product for admin use only',
+                    sides:{
+                        icon: 'download_for_offline',
+                        color: 'green'
+                    },
+                    notSync: false,
+                    loading: false,
+                    action: () => {return this.migrateProducts()}
                 },
                 // {
                 //     avatar: {
@@ -206,7 +222,67 @@ export default {
                 this.settingList[1].loading = false
             })
         },
+        async migrateProducts(){
+            // Collection of data
+            // Loading part
+            this.settingList[1].loading = true
+            // this.clearFinishData()
+            // return
 
+            // Call Sync API
+            api.get('mobile/fetch/product/list')
+            .then(async (response) => {
+                if(response.status <= 200){
+                    // this.$q.dialog({
+                    //     title: response.data.title,
+                    //     message: response.data.message,
+                    //     position: 'top'
+                    // })
+
+
+                    let pList = response.data.list
+                    let mappedList = pList.map((el, index) => {
+                        let unit = JSON.parse(el.category)
+                        let cat = JSON.parse(el.unit)
+                        let obj = {
+                            id: el.id,
+                            productName: el.productName,
+                            unit: unit.label,
+                            prodForm: "",
+                            description: el.description,
+                            category: cat.label,
+                            sku: el.sku,
+                            barcodeType: "C128",
+                            stock: el.stock,
+                            productCost: el.productCost,
+                            productSRP: el.productSRP,
+                            hasPriceGroup: el.hasPriceGroup,
+                            costGroup: el.hasPriceGroup ? JSON.parse(el.costGroup) : []
+                        }
+
+                        return obj
+                    })
+
+                    console.log(mappedList)
+                    
+                    prodJson.products = mappedList
+                    this.$nextTick(()=>{
+                        this.settingList[1].loading = false
+                    })
+                    
+                } else {
+                    this.$q.dialog({
+                        title: 'Migration Failed',
+                        message: 'Something went wrong. Please contact your administrator',
+                        position: 'top'
+                    })
+                }
+                
+            }).catch((err) => {
+                alert(JSON.stringify(err))
+                this.settingList[1].loading = false
+            })
+        },
         async clearFinishData(){
             const { value } = await Preferences.get({ key: 'clientList' });
             let data = value !== null ? JSON.parse(value) : []

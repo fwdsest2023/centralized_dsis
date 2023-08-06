@@ -59,6 +59,9 @@ export default {
         },
         modalStatus: {
             type: Boolean
+        },
+        resetData: {
+            type: Boolean
         }
     },
     watch:{
@@ -78,6 +81,10 @@ export default {
                 }
                 
             }
+        },
+        resetData: function(newVal){
+            this.imgSrc = ""
+            this.isDone = false
         }
     },
     methods: {

@@ -102,12 +102,14 @@
         <clientBookingModal
             :modalStatus="openBooking"
             :clientId="clientInfo"
+            :resetData="backToNew"
             @updateStatus="closeBooking"
             @orderSubmit="updateData"
         />
         <clientSelfieModal 
             :modalStatus="openSelfie"
             :clientId="clientInfo"
+            :resetData="backToNew"
             @updateStatus="closeSelfie"
             @clientSelfie="updateData"
         />
@@ -136,6 +138,7 @@ export default {
             openModal: false,
             callStarted: false,
             callDone: false,
+            backToNew: false,
             clientInfo: {
                 booking: []
             },
@@ -195,23 +198,22 @@ export default {
     },
     watch:{
         modalStatus: async function(newVal){
-            const vm = this;
+            
             this.openModal = newVal
-            if(newVal){
-                this.$nextTick(() => {
-                    this.clientInfo = this.clientData
-                    if(this.clientData.activity !== undefined){
-                        // this.activities = this.clientData.activity
-                        this.clientData.activity.forEach((el, index) => {
-                            vm.activities[index].active = el.active
-                        });
-                    }
-                    this.callDone = this.clientData.status !== undefined ?
-                    true : false;
-                    this.callStarted = this.clientData.attendance.startCall !== '' ?
-                    true : false;
-                })
+            
+        },
+        clientData(newVal){
+            const vm = this;
+            this.clientInfo = this.clientData
+            if(this.clientData.activity !== undefined){
+                this.clientData.activity.forEach((el, index) => {
+                    vm.activities[index].active = el.active
+                });
             }
+            this.callDone = this.clientData.status !== undefined ?
+            true : false;
+            this.callStarted = this.clientData.attendance.startCall !== '' ?
+            true : false;
         }
     },
     methods: {
@@ -228,6 +230,7 @@ export default {
                 key: this.curDate,
                 value: JSON.stringify(data)
             }).then(() => {
+                
                 vm.$emit('updateStatus', false)
             })
         },
@@ -328,7 +331,6 @@ export default {
             } catch (error) {
                 alert(error)
             }
-
         },
         async endCall(){
             const vm = this;
@@ -376,7 +378,8 @@ export default {
                         key: this.curDate,
                         value: JSON.stringify(data)
                     }).then(() => {
-                        this.closeModal();
+                        this.closeCall();
+                        // this.resetFields();
                     })
                 })
             } catch (error) {
@@ -384,17 +387,17 @@ export default {
             }
 
         },
-
+        closeCall(){
+            this.$emit('updateStatus', false)
+        },
         resetFields(){
             // Reset activities 
             this.activities = this.activities.map((el) => {
                 el.active = false
-
                 return el
             })
-
+            this.backToNew = !this.backToNew
             this.remarks = ""
-            
         }
     }
 }

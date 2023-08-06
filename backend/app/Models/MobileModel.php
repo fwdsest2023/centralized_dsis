@@ -35,6 +35,12 @@ class MobileModel extends Model
         return $results;
     }
 
+    public function getAllProducts(){
+        $query = $this->db->table($this->productTable)->where("status", 1)->get();
+        $results = $query->getResult();
+        return $results;
+    }
+
     public function getAllSummaryCalls($params){
 
         // $query = $this->db->table($this->table)->where("agentId", $where['agentId'])->get();

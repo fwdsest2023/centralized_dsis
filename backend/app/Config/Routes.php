@@ -111,6 +111,9 @@ $routes->group('mlrs/api/v1', function($routes){
 		$routes->post('history/dates', 'MobileController::agentHistoryList');
 		$routes->post('agent/callSummary', 'MobileController::agentCallSummaryList');
 
+		// Mobile Fetch Updated Products
+		$routes->get('fetch/product/list', 'MobileController::migrateProductsToMobile');
+
 		// for migration
 		$routes->post('client/migrate', 'MobileController::migrateClient');
 		$routes->post('product/migrate', 'MobileController::migrateProducts');

@@ -18,7 +18,12 @@
     </q-header>
     
 
-    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered >
+    <q-drawer 
+      show-if-above 
+      v-model="leftDrawerOpen" 
+      side="left" 
+      bordered
+    >
       <!-- drawer content -->
       <Profile v-bind="userProfile" />
       <q-separator dark />
@@ -187,7 +192,8 @@ export default {
         {label: '', icon: 'home', link: '/'},
         {label: 'Dashboard', icon: 'dashboard', link: 'dashboard'}
       ],
-      leftDrawerOpen: false,
+      leftDrawerOpen: true,
+      miniState: false
     }
   },
   mounted(){},

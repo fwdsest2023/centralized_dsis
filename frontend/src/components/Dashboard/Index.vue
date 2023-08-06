@@ -1,71 +1,142 @@
 <template>
     <div class="q-pa-md" style="width: 100%;">
         <div class="row">
-            <div class="col"></div>
-            <div class="col col-3 text-center">
-                <span class="text-h5 indigo-12" color="indigo-12">
-                    <q-icon name="masks" size="xl" />
-                    {{ $t('system_name') }} Login
-                </span>
-                
-                <q-separator />
-                <!-- Login Form -->
-                <q-form @submit="submitLogin" class="q-gutter-md">
-                    <q-input 
-                        class="q-pt-md" 
-                        bottom-slots
-                        v-model="form.username"
-                        v-bind="formRules.username"
-                        :label="$t('form_labels.user')" 
-                        :dense="true"
-                    >
-                        <template v-slot:prepend>
-                            <q-icon name="account_circle" />
-                        </template>
-                        <template v-slot:append>
-                            <q-icon name="close" @click="form.username = ''" class="cursor-pointer" />
-                        </template>
-                    </q-input>
+            <!-- Cards -->
+            <div class="col col-md-4 q-pa-sm">
+                <q-card class="my-card" flat bordered>
+                    <q-item>
+                        <q-item-section>
+                        <q-item-label>DVS Vet Clinic</q-item-label>
+                        <q-item-label caption>
+                            Subhead
+                        </q-item-label>
+                        </q-item-section>
+                    </q-item>
 
-                    <q-input 
-                        class="q-pt-md" 
-                        bottom-slots 
-                        v-model="form.password"
-                        v-bind="formRules.password"
-                        :type="isPwd ? 'password' : 'text'"
-                        :label="$t('form_labels.pass')" 
-                        :dense="true"
-                    >
-                        <template v-slot:prepend>
-                            <q-icon name="password" />
-                        </template>
-                        <template v-slot:append>
-                            <q-icon
-                                :name="isPwd ? 'visibility_off' : 'visibility'"
-                                class="cursor-pointer"
-                                @click="isPwd = !isPwd"
-                            />
-                        </template>
-                    </q-input>
+                    <q-separator />
 
-                    <q-btn 
-                        type="submit"
-                        color="teal-5" 
-                        text-color="white" 
-                        glossy 
-                        unelevated
-                        :loading="submitting"
-                        class="on-right"
-                        icon="done"
-                        :label="$t('form_labels.login')"
-                    >
-                        <template v-slot:loading>
-                            <q-spinner-rings color="white" />
-                        </template>
-                    </q-btn>
-                </q-form>
+                    <q-card-section horizontal class="row">
+                        <q-card-section class="q-pt-xs col">
+                            <div class="text-h6 q-mt-sm q-mb-xs">0</div>
+                            <div class="text-caption text-grey">
+                                Today's Sales
+                            </div>
+                        </q-card-section>
+                        <q-card-section class="q-pt-xs col">
+                            <div class="text-h6 q-mt-sm q-mb-xs">0</div>
+                            <div class="text-caption text-grey">
+                                Clients
+                            </div>
+                        </q-card-section>
+                        <q-card-section class="q-pt-xs col">
+                            <div class="text-h6 q-mt-sm q-mb-xs">0</div>
+                            <div class="text-caption text-grey">
+                                Patients
+                            </div>
+                        </q-card-section>
+                        <q-card-section class="q-pt-xs col">
+                            <div class="text-h6 q-mt-sm q-mb-xs">0</div>
+                            <div class="text-caption text-grey">
+                                Overall Sales
+                            </div>
+                        </q-card-section>
+                    </q-card-section>
+
+                    <q-separator />
+
+                    <q-card-actions>
+                        <q-btn flat round icon="event" />
+                        <q-btn flat>
+                        7:30PM
+                        </q-btn>
+                        <q-btn flat color="primary">
+                        Reserve
+                        </q-btn>
+                    </q-card-actions>
+                </q-card>
             </div>
-            <div class="col"></div>
+            <div class="col col-md-4 q-pa-sm">
+                <q-card class="my-card" flat bordered>
+                    <q-item>
+                        <q-item-section>
+                        <q-item-label>DVS Distribution</q-item-label>
+                        <q-item-label caption>
+                            Subhead
+                        </q-item-label>
+                        </q-item-section>
+                    </q-item>
+
+                    <q-separator />
+
+                    <q-card-section horizontal class="row">
+                        <q-card-section class="q-pt-xs col">
+                            <div class="text-h6 q-mt-sm q-mb-xs">0</div>
+                            <div class="text-caption text-grey">
+                                Today's Sales
+                            </div>
+                        </q-card-section>
+                        <q-card-section class="q-pt-xs col">
+                            <div class="text-h6 q-mt-sm q-mb-xs">0</div>
+                            <div class="text-caption text-grey">
+                                Clients
+                            </div>
+                        </q-card-section>
+                        <q-card-section class="q-pt-xs col">
+                            <div class="text-h6 q-mt-sm q-mb-xs">0</div>
+                            <div class="text-caption text-grey">
+                                Products
+                            </div>
+                        </q-card-section>
+                        <q-card-section class="q-pt-xs col">
+                            <div class="text-h6 q-mt-sm q-mb-xs">0</div>
+                            <div class="text-caption text-grey">
+                                Overall Sales
+                            </div>
+                        </q-card-section>
+                    </q-card-section>
+
+                    <q-separator />
+
+                    <q-card-actions>
+                        <q-btn flat round icon="event" />
+                        <q-btn flat>
+                        7:30PM
+                        </q-btn>
+                        <q-btn flat color="primary">
+                        Reserve
+                        </q-btn>
+                    </q-card-actions>
+                </q-card>
+            </div>
+            <div class="col col-md-4 q-pa-sm">
+                <q-card class="my-card" flat bordered>
+
+                    <q-card-section horizontal class="row">
+                        <q-card-section class="col">
+                            <q-list >
+                                <q-item v-for="(item, index) in activities" tag="label" :key="index" v-ripple>
+                                    <q-item-section side top>
+                                        <q-icon v-if="!item.active" name="warning" color="orange" />
+                                        <q-icon v-else name="check_circle" color="green" />
+                                    </q-item-section>
+
+                                    <q-item-section>
+                                        <q-item-label>{{item.title}}</q-item-label>
+                                        <q-item-label caption>
+                                            {{item.caption}}
+                                        </q-item-label>
+                                    </q-item-section>
+                                </q-item>
+                            </q-list>
+                        </q-card-section>
+                    </q-card-section>
+                </q-card>
+            </div>
+            <!-- Calendar -->
+            <div class="col col-md-6 q-pa-sm">
+                
+            </div>
+            <!-- Inventory -->
         </div>
     </div>
 </template>
@@ -76,7 +147,7 @@ import jwt_decode from 'jwt-decode'
 import { api } from 'boot/axios'
 
 export default{
-    name: 'LoginTemplate',
+    name: 'CardWidgets',
     data(){
         return {
             form: {
@@ -97,34 +168,30 @@ export default{
             },
             isPwd: true,
             submitting: false,
+            activities: [
+                {
+                    active: false,
+                    title: "Client Visit",
+                    caption: "Check and Inspect for the client",
+                    action: () => { return false }
+                },
+                {
+                    active: false,
+                    title: "Booking",
+                    caption: "Proceeds with client order transactions",
+                    action: (val) => { return this.openBookingDetails(val) }
+                },
+                {
+                    active: false,
+                    title: "Onsite Activity",
+                    caption: "Vaccines, Inspections, Etc.",
+                    action: () => { return false }
+                },
+            ]
         }
     },
     methods: {
-        async submitLogin(){
-            this.submitting = true;
-            let vm = this;
-            let payload = vm.form;
-
-            api.post('auth/login', payload).then((response) => {
-              
-                const data = {...response.data};
-                if(!data.error){
-                    LocalStorage.set('userData', data.jwt);
-                    this.$router.push('/dashboard')
-                } else {
-                    this.$q.notify({
-                        color: 'negative',
-                        position: 'top-right',
-                        title:data.title,
-                        message: this.$t(`errors.${data.error}`),
-                        icon: 'report_problem'
-                    })
-                }
-
-            })
-
-            this.submitting = false;
-        }
+        
     }
 }
 </script>

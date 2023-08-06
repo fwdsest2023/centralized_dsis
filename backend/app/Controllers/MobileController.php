@@ -201,6 +201,46 @@ class MobileController extends BaseController
         }
     }
 
+    public function agentClientBooking(){
+        try {
+            // get the data
+            $payload = $this->request->getJSON();
+            $where = [
+                "agentId" => $payload->aid,
+                "syncDate" => $payload->date
+            ];
+            $res = [];
+
+            $query = $this->mobModel->getAllAgentSyncCalls($where);
+            
+            if($query){
+                $book = json_decode($query->booking);
+                $res = $book[$payload->idx];
+            }
+            
+            if($res){
+                return $this->response
+                        ->setStatusCode(200)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($res));
+            } else {
+                $response = [
+                    'title' => 'Error',
+                    'message' => 'No Data Found'
+                ];
+    
+                return $this->response
+                        ->setStatusCode(404)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($response));
+            }
+
+        } catch (\Throwable $th) {
+            print_r($th);
+            throw $th;
+        }
+    }
+
     public function agentHistoryList(){
         try {
             // get the data
@@ -498,6 +538,38 @@ class MobileController extends BaseController
                         ->setBody(json_encode($response));
             }
 
+        } catch (\Throwable $th) {
+            print_r($th);
+            throw $th;
+        }
+    }
+
+    public function migrateProductsToMobile(){
+        try {
+
+            $query = $this->mobModel->getAllProducts();
+            
+            if($query){
+                $response = [
+                    'title' => 'Success',
+                    'message' => 'Products has been updated',
+                    'list' => $query
+                ];
+                return $this->response
+                        ->setStatusCode(200)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($response));
+            } else {
+                $response = [
+                    'title' => 'Error',
+                    'message' => 'No Data Found'
+                ];
+    
+                return $this->response
+                        ->setStatusCode(404)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($response));
+            }
         } catch (\Throwable $th) {
             print_r($th);
             throw $th;

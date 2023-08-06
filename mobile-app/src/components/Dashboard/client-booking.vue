@@ -94,7 +94,7 @@
                             <q-item>
                                 <q-item-section>
                                     <q-item-label>{{item.productName}}</q-item-label>
-                                    <q-item-label caption lines="2">{{`P - ${item.productCost}`}}</q-item-label>
+                                    <q-item-label caption lines="2">{{`P - ${item.productSRP}`}}</q-item-label>
                                 </q-item-section>
                                 <q-item-section side top>
                                     <q-btn
@@ -143,6 +143,9 @@ export default {
         },
         modalStatus: {
             type: Boolean
+        },
+        resetData: {
+            type: Boolean
         }
     },
     watch:{
@@ -154,22 +157,27 @@ export default {
                 this.bookingList = this.clientId.booking.length > 0 ? this.clientId.booking : [];
                 this.loadProductList = json.products
             }
+        },
+        resetData: function(newVal){
+            this.bookingList = []
         }
     },
     computed: {
         filterList(){
-            // let dataClient = this.loadClientData[this.clientId]
-            // this.loadProductList.map((item) => {
-            //     if(item.hasPriceGroup){
-            //         let setPrice = item.costGroup.filter(el => {
-            //             return el.regionId === dataClient.client.regionId
-            //         })
-            //         item.productCost = setPrice[0].price
-            //     }
+            let dataClient = this.clientId
+            let area = dataClient.client.addressDetails.province !== undefined ? 
+            dataClient.client.addressDetails.province.label : "";
+            this.loadProductList.map((item) => {
+                if(item.hasPriceGroup === "1"){
+                    let setPrice = item.costGroup.filter(el => {
+                        return el.regionName === area
+                    })
+                    item.productSRP = setPrice[0].price
+                }
 
-            //     item.productCost = Number(item.productCost).toFixed(2)
-            //     return item
-            // })
+                item.productSRP = Number(item.productSRP).toFixed(2)
+                return item
+            })
 
             return this.loadProductList.filter(search => {
                 return search.productName.toLowerCase().includes(this.searchClient.toLowerCase())
@@ -180,7 +188,6 @@ export default {
         async clientList(){
             const { value } = await Preferences.get({ key: 'clientList' });
             let data = value !== null ? JSON.parse(value) : [];
-   
             
             this.loadClientData = data;
         },
