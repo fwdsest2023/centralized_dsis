@@ -62,8 +62,14 @@ $routes->group('mlrs/api/v1', function($routes){
 
 	// Product Group
 	$routes->group('product', function($routes){
-		$routes->post('add/new', 'ProductController::addProduct');
-		$routes->post('get/products', 'ProductController::getProductList');
+		$routes->post('add/new', 'InventoryController::addProduct');
+		$routes->post('get/products', 'InventoryController::getProductList');
+	});
+
+	// Stock Group
+	$routes->group('stock', function($routes){
+		$routes->post('add/new', 'InventoryController::addStock');
+		$routes->post('get/stocks', 'InventoryController::getStockList');
 	});
 
 
