@@ -33,6 +33,13 @@ class InventoryModel extends Model
         return $query ? true : false;
     }
 
+    public function updateProduct($where, $setData){
+
+        $query = $this->db->table($this->tableProducts)->set($setData)->where($where)->update();
+        return $query ? true : false;
+
+    }
+
     // Get Products
     public function getProductList() {
 

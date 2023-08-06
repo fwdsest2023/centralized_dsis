@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 06, 2023 at 04:43 PM
+-- Generation Time: Aug 06, 2023 at 07:30 PM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.4.10
 
@@ -40,6 +40,29 @@ CREATE TABLE `tblbranches` (
 
 INSERT INTO `tblbranches` (`id`, `branchName`, `branchLocation`, `branchRegion`) VALUES
 (1, 'DVS Pet Supplies Trading', 'Talavera', 'III');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tblcategory`
+--
+
+CREATE TABLE `tblcategory` (
+  `id` int(11) NOT NULL,
+  `label` varchar(100) NOT NULL,
+  `statusId` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tblcategory`
+--
+
+INSERT INTO `tblcategory` (`id`, `label`, `statusId`) VALUES
+(1, 'Cat Food', 1),
+(2, 'Dog Food', 1),
+(3, 'OTC Medicine', 1),
+(4, 'Pet Accessories', 1),
+(5, 'Poultry Lines', 1);
 
 -- --------------------------------------------------------
 
@@ -259,8 +282,8 @@ CREATE TABLE `tblproducts` (
 --
 
 INSERT INTO `tblproducts` (`id`, `productName`, `unit`, `prodForm`, `description`, `category`, `sku`, `barcodeType`, `stock`, `productCost`, `productSRP`, `hasPriceGroup`, `costGroup`, `isSpecial`, `isSale`, `status`, `createdBy`, `createdDate`) VALUES
-(1, 'asdsad', '{\"label\":\"Dog Food\",\"value\":\"2\"}', NULL, 'dsadasdasd', '{\"label\":\"Piece\",\"value\":\"PC\"}', 1, NULL, NULL, 10, 12, 1, '[{\"regionId\":1,\"regionName\":\"Nueva Ecija\",\"price\":\"13\"},{\"regionId\":2,\"regionName\":\"Aurora\",\"price\":\"11\"}]', 0, 0, 1, 1, '2023-08-03 16:26:27'),
-(2, 'ewr', '{\"label\":\"Cat Food\",\"value\":\"1\"}', NULL, 'sadasdas', '{\"label\":\"Bottle\",\"value\":\"BT\"}', 2, NULL, NULL, 10, 15, 0, '{}', 0, 0, 1, 1, '2023-08-03 16:33:31');
+(1, 'updated', '\"{\\\"label\\\":\\\"Dog Food\\\",\\\"value\\\":\\\"2\\\"}\"', NULL, 'dsadasdasd', '\"{\\\"label\\\":\\\"Piece\\\",\\\"value\\\":\\\"PC\\\"}\"', 1, NULL, NULL, 10, 12, 1, '[{\"regionId\":1,\"regionName\":\"Nueva Ecija\",\"price\":\"13\"},{\"regionId\":2,\"regionName\":\"Aurora\",\"price\":\"11\"}]', 0, 0, 1, 1, '2023-08-03 16:26:27'),
+(2, 'updated ulit', '\"{\\\"label\\\":\\\"Dog Food\\\",\\\"value\\\":\\\"2\\\"}\"', NULL, 'dsadasdasd', '\"{\\\"label\\\":\\\"Piece\\\",\\\"value\\\":\\\"PC\\\"}\"', 2, NULL, NULL, 10, 12, 0, '{}', 0, 0, 1, 1, '2023-08-03 16:33:31');
 
 -- --------------------------------------------------------
 
@@ -287,25 +310,6 @@ CREATE TABLE `tblschedule` (
 INSERT INTO `tblschedule` (`id`, `patientId`, `clientId`, `scheduleDate`, `chckupForm`, `remarks`, `createdBy`, `createdDate`, `status`) VALUES
 (1, 22, 5, '2023-06-08 16:00:00', '{\"complain\":\"dsadasdsa\",\"treatment\":\"asdasdasd\"}', 'new test -total:500 pesos', 4, '2023-06-05 15:00:10', 1),
 (2, 22, 5, '2023-06-15 16:00:00', '{\"complain\":\"qwerttyuyiuoio\",\"treatment\":\"zxcbvbnbnmnm\"}', 'sadasdasdas', 4, '2023-06-05 16:38:44', 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tblstatus`
---
-
-CREATE TABLE `tblstatus` (
-  `id` int(11) NOT NULL,
-  `label` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `tblstatus`
---
-
-INSERT INTO `tblstatus` (`id`, `label`) VALUES
-(1, 'active'),
-(2, 'inactive');
 
 -- --------------------------------------------------------
 
@@ -358,11 +362,11 @@ CREATE TABLE `tblunits` (
 --
 
 INSERT INTO `tblunits` (`id`, `label`, `statusId`) VALUES
-(1, 'Sack', 1),
-(2, 'Kilo', 1),
-(3, 'Grams', 1),
-(4, 'Liter', 1),
-(5, 'Milliliter', 1);
+(6, 'Box', 1),
+(7, 'Piece', 1),
+(8, 'Bottle', 1),
+(9, 'Bag', 1),
+(10, 'Pouch', 1);
 
 -- --------------------------------------------------------
 
@@ -484,6 +488,12 @@ ALTER TABLE `tblbranches`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tblcategory`
+--
+ALTER TABLE `tblcategory`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tblcheckups`
 --
 ALTER TABLE `tblcheckups`
@@ -532,12 +542,6 @@ ALTER TABLE `tblschedule`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `tblstatus`
---
-ALTER TABLE `tblstatus`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `tblstocks`
 --
 ALTER TABLE `tblstocks`
@@ -582,6 +586,12 @@ ALTER TABLE `tbl_files`
 --
 ALTER TABLE `tblbranches`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `tblcategory`
+--
+ALTER TABLE `tblcategory`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tblcheckups`
@@ -632,12 +642,6 @@ ALTER TABLE `tblschedule`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `tblstatus`
---
-ALTER TABLE `tblstatus`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
 -- AUTO_INCREMENT for table `tblstocks`
 --
 ALTER TABLE `tblstocks`
@@ -647,7 +651,7 @@ ALTER TABLE `tblstocks`
 -- AUTO_INCREMENT for table `tblunits`
 --
 ALTER TABLE `tblunits`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `tblusers`
