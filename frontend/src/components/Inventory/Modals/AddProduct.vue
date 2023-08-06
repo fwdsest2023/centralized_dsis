@@ -237,7 +237,6 @@ export default{
 
     methods: {
         fillTheDetails(){
-            console.log(this.appId)
             this.form = {
                 sku: this.appId.sku,
                 productName: this.appId.productName,
@@ -251,6 +250,7 @@ export default{
             }
         },
         async closeModal(){
+            this.clearForm();
             this.$emit('updateModalStatus', false);
         },
         async submitModalClick(){
@@ -330,7 +330,6 @@ export default{
                 const data = {...response.data};
                 if(!data.error){
                     this.$emit('refreshData')
-                    this.clearForm();
                     this.closeModal();
                 } else {
                     this.$q.notify({
