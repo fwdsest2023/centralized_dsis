@@ -43,7 +43,7 @@
                 class="col col-xs-12 col-md-6 q-pa-sm" 
                 bottom-slots
                 v-model="form.client.storeName"
-                label="Store Name" 
+                label="Store Name *" 
                 :dense="true"
                 :rules="[val => val && val.length > 0 || 'This field is required']"
             >
@@ -60,23 +60,24 @@
                 class="col col-xs-12 col-md-12 col-sm-12  q-pa-sm q-mt-sm"
                 dense
                 v-model="form.client.contactPerson.name"
-                label="Store Owner/Representantive"
+                label="Store Owner/Representantive *"
                 :rules="[ val => val && val.length > 0 || 'This field is required']"
             />
             <q-input
                 class="col col-xs-12 col-md-12 col-sm-12  q-pa-sm q-mt-sm"
                 dense
                 v-model="form.client.contactPerson.contactNum"
-                mask="09##-###-####"
-                label="Contact Number"
-                placeholder="09##-###-####"
+                mask="(####) ### - ####"
+                label="Contact Number *"
+                placeholder="(09#) ### - ####"
+                :rules="[val => val && val.length > 0 || 'This field is required']"
             />
             <q-select
                 class="col col-xs-12 col-md-12 q-pa-sm"
                 bottom-slots
                 v-model="form.client.categoryId" 
                 :options="categoryList" 
-                label="Category"
+                label="Category *"
                 dense 
                 :options-dense="true"
             >
@@ -88,7 +89,7 @@
               bottom-slots
               v-model="form.client.adminAssigned" 
               :options="agentList" 
-              label="Assinged Agent"
+              label="Assinged Agent *"
               dense 
               :options-dense="true"
             >
@@ -100,7 +101,8 @@
                 class="col col-xs-12 col-md-12 col-sm-12  q-pa-sm q-mt-sm"
                 dense
                 v-model="form.client.address"
-                label="Address Line 1 (House No/ST/Sub Division/etc..)"
+                label="Address Line 1 (House No/ST/Sub Division/etc..) *"
+                :rules="[val => val && val.length > 0 || 'This field is required']"
             />
 
             <q-select
@@ -108,7 +110,7 @@
               bottom-slots
               v-model="form.client.addressDetails.region" 
               :options="regionList" 
-              label="Region"
+              label="Region *"
               dense 
               :options-dense="true"
               @update:model-value="regionChanged"
@@ -120,7 +122,7 @@
               bottom-slots
               v-model="form.client.addressDetails.province" 
               :options="provinceList" 
-              label="Province"
+              label="Province *"
               dense 
               :options-dense="true"
               @update:model-value="provinceChanged"
@@ -132,7 +134,7 @@
               bottom-slots
               v-model="form.client.addressDetails.city" 
               :options="cityList" 
-              label="City"
+              label="City *"
               dense 
               :options-dense="true"
               @update:model-value="cityChange"
@@ -144,7 +146,7 @@
               bottom-slots
               v-model="form.client.addressDetails.barangay" 
               :options="brgyList" 
-              label="Baranagay"
+              label="Baranagay *"
               dense 
               :options-dense="true"
             >
@@ -347,31 +349,33 @@ export default {
         const { value } = await Preferences.get({ key: 'clientList' });
         let data = value !== null && value.length !== 0 ? JSON.parse(value) : []
         let frm = this.form
+
         // validate
-        if(frm.client.storeName === "" || frm.client.address === ""){
-          this.$q.dialog({
+        let compoDetails = this.$refs.formDetails;
+        compoDetails.validate().then(async (success) => {
+          if(!success){
+            this.$q.dialog({
               title: 'Error Adding Client',
-              message: 'Store name, Address, and Location must fill and pinned',
+              message: 'All Fields is require!',
               position: 'top',
               color: 'red'
-          })
+            })
+          } else{
+            frm.client.branch = frm.client.addressDetails.region.label
+            frm.client.categoryId = frm.client.categoryId.id
 
-          return false
-        }
-        
-        frm.client.branch = frm.client.addressDetails.region.label
-        frm.client.categoryId = frm.client.categoryId.id
+            // Check if the transaction network is offline or Online
+            data.push(frm)
 
-        // Check if the transaction network is offline or Online
-        data.push(frm)
-
-        await Preferences.set({
-            key: 'clientList',
-            value: JSON.stringify(data)
-        }).then(() => {
-          this.clearForm();
+            await Preferences.set({
+                key: 'clientList',
+                value: JSON.stringify(data)
+            }).then(() => {
+              this.clearForm();
+            })
+          }
         })
-
+        
     },
     async clearForm(){
       this.form = {

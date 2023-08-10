@@ -13,17 +13,19 @@
 import { SessionStorage } from 'quasar'
 import { defineComponent, ref } from 'vue'
 import { Preferences } from '@capacitor/preferences';
+import jwt_decode from 'jwt-decode'
 
 export default defineComponent({
   name: 'MainLayout',
   created(){
-    let profile = SessionStorage.getItem('userDataLogin');
+    // let profile = SessionStorage.getItem('userDataLogin');
     
-    if(profile || profile !== null){
-      this.$router.push('/dashboard')
-    } else {
-      this.$router.push('/')
-    }
+    // if(profile || profile !== null){
+    //   this.$router.push('/dashbaord')
+    // } else {
+    //   this.$router.push('/')
+    // }
+    this.getRememberLogin()
   },
   methods:{
     async getRememberLogin(){
@@ -32,6 +34,7 @@ export default defineComponent({
 
       if(token !== null){
         this.userProfile = jwt_decode(token);
+        this.$router.push('/dashboard')
       } else {
         let profile = SessionStorage.getItem('userDataLogin');
         if(profile){

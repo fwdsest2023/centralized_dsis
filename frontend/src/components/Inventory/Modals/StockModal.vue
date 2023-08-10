@@ -26,16 +26,27 @@
                         </div>
                         <div class="col col-md-4 q-pa-sm">
                             <q-select 
-                                outlined 
+                                outlined
+                                use-input
+                                input-debounce="0"
                                 v-model="form.prodId" 
                                 :options="productOptions" 
                                 label="Product" 
                                 stack-label 
                                 dense
-                                options-dense 
-                            />
+                                options-dense
+                                @filter="searchProductsFn"
+                            >
+                                <template v-slot:no-option>
+                                    <q-item>
+                                        <q-item-section class="text-grey">
+                                        No product found!
+                                        </q-item-section>
+                                    </q-item>
+                                </template>
+                            </q-select>
                         </div>
-                        <div class="col col-md-4 q-pa-sm">
+                        <!-- <div class="col col-md-4 q-pa-sm">
                             <q-select 
                                 outlined 
                                 v-model="form.unitType" 
@@ -45,7 +56,7 @@
                                 dense
                                 options-dense
                             />
-                        </div>
+                        </div> -->
                         <div class="col col-md-4 q-pa-sm">
                             <q-input 
                                 outlined 
@@ -53,7 +64,6 @@
                                 label="Product Serial" 
                                 stack-label 
                                 dense
-                                :rules="[ val => val && val.length > 0 || 'This field is required']"
                             />
                         </div>
                         <div class="col col-md-4 q-pa-sm">
@@ -64,7 +74,6 @@
                                 label="Delivery Date" 
                                 stack-label 
                                 dense
-                                :rules="[ val => val && val.length > 0 || 'This field is required']"
                             />
                         </div>
                         <div class="col col-md-4 q-pa-sm">
@@ -75,7 +84,6 @@
                                 label="Expiry Date" 
                                 stack-label 
                                 dense
-                                :rules="[ val => val && val.length > 0 || 'This field is required']"
                             />
                         </div>
                         <div class="col col-md-4 q-pa-sm"></div>
@@ -93,7 +101,6 @@
                                 label="Product Quantity" 
                                 stack-label 
                                 dense
-                                :rules="[ val => val && val.length > 0 || 'This field is required']"
                             />
                         </div>
                         <div class="col col-md-4 q-pa-sm">
@@ -103,19 +110,28 @@
                                 label="Stock Notice" 
                                 stack-label 
                                 dense
-                                :rules="[ val => val && val.length > 0 || 'This field is required']"
                             />
                         </div>
                         <div class="col col-md-4 q-pa-sm">
+                            <q-select 
+                                outlined 
+                                v-model="form.status" 
+                                :options="statusOption" 
+                                label="Status" 
+                                stack-label 
+                                dense
+                                options-dense
+                            />
+                        </div>
+                        <!-- <div class="col col-md-4 q-pa-sm">
                             <q-input 
                                 outlined 
                                 v-model="form.itemPrice" 
                                 label="Price" 
                                 stack-label 
                                 dense
-                                :rules="[ val => val && val.length > 0 || 'This field is required']"
                             />
-                        </div>
+                        </div> -->
                         
                         <div class="col col-md-12"></div>
                         <div
@@ -131,17 +147,7 @@
                                 dense 
                             />
                         </div>
-                        <div class="col col-md-4 q-pa-sm">
-                            <q-select 
-                                outlined 
-                                v-model="form.status" 
-                                :options="statusOption" 
-                                label="Status" 
-                                stack-label 
-                                dense
-                                options-dense
-                            />
-                        </div>
+                        
                     </q-form>
                 </q-card-section>
 
@@ -175,7 +181,7 @@ export default{
             openModal: false,
             form: {
                 prodId: { label: '', value: '' },
-                unitType: { label: '', value: '' },
+                // unitId: { label: '', value: '' },
                 prodSerial: '',
                 deliveryDate: '',
                 expirationDate: '',
@@ -195,11 +201,14 @@ export default{
                 pricePerItem: 'Individual Item Price',
                 perItemType: 'Individual Item Unit',
             },
-            productOptions: [{label: 'Box', value: 'box'},
-                {label: 'Piece', value: 'pcs'}],
+            productOptions: [],
+            stringProductOptions: [],
             uTypeOptions: [
-                {label: 'Box', value: 'box'},
-                {label: 'Piece', value: 'pcs'}
+                {label: 'Box', value: 'BX'},
+                {label: 'Piece', value: 'PC'},
+                {label: 'Bottle', value: 'BT'},
+                {label: 'Bag', value: 'BG'},
+                {label: 'Pouch', value: 'PH'}
             ],
             statusOption: [
                 {label: 'In Stock', value: 'In Stock'},
@@ -230,11 +239,47 @@ export default{
         this.getProducts();
     },
     methods: {
+        async searchProductsFn(val, update){
+            const vm = this;
+            if (val === '') {
+                update(() => {
+                    vm.productOptions = vm.stringProductOptions
+                    // here you have access to "ref" which
+                    // is the Vue reference of the QSelect
+                })
+                return
+            }
+
+            update(() => {
+
+                const needle = val.toLowerCase()
+                console.log(vm.stringProductOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1))
+                vm.productOptions = vm.stringProductOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
+            })
+        },
         async closeModal(){
             this.$emit('updateModalStatus', false);
         },
         async submitModalClick(){
             let vm = this;
+
+        //     {
+        //     "id": "4",
+        //     "productId": "1",
+        //     "unitId": "1",
+        //     "productSerial": "X3XU2g55",
+        //     "deliveryDate": "2023-08-06 21:16:11",
+        //     "expiryDate": "2021-09-23 21:16:11",
+        //     "ProductQuantity": "100",
+        //     "UnitTotalQuantity": "100",
+        //     "StockNotice": "2",
+        //     "Price": "500",
+        //     "IndividualPrice": "50",
+        //     "IndividualItemUnit": "1",
+        //     "StatusId": "1",
+        //     "createdAt": "2023-08-06 21:22:50",
+        //     "updatedAt": null
+        // }
 
             this.$refs.formDetails.validate().then(success => {
                 if(!success){
@@ -260,14 +305,59 @@ export default{
                         },
                         persistent: true
                     }).onOk(() => {
-                        this.$emit('submitModalClick', vm.form);
+                        // this.$emit('submitModalClick', vm.form);
+                        this.addStock()
                     })
                 }
             })
             
         },
+        async addStock(){
+            this.$q.loading.show();
+            let payload = this.form
+            payload.prodId = payload.prodId.value
+            payload.status = payload.status.value
+
+            api.post('stock/add/new', payload).then((response) => {
+                const data = {...response.data};
+                if(!data.error){
+                    this.$emit('refreshData')
+                    this.clearForm();
+                    this.closeModal();
+                } else {
+                    this.$q.notify({
+                        color: 'negative',
+                        position: 'top-right',
+                        title:data.title,
+                        message: this.$t(`errors.${data.error}`),
+                        icon: 'report_problem'
+                    })
+                }
+
+            })
+
+            this.$q.loading.hide();
+        },
+        clearForm(){
+            this.form = {
+                prodId: { label: '', value: '' },
+                unitId: { label: '', value: '' },
+                prodSerial: '',
+                deliveryDate: '',
+                expirationDate: '',
+                isLoose: 'No',
+                qty: '',
+                otherDetails: {
+                    totalQty: '',
+                    pricePerItem: '',
+                    perItemType: '',
+                },
+                stockNotice: '',
+                status: {label: '', value: '' },
+            }
+        },
         getProducts(){
-            api.get('inventory/product/get').then((response) => {
+            api.post('product/get/products').then((response) => {
                 const data = {...response.data};
                 if(!data.error){
                     let listVal = data.list;
@@ -275,7 +365,13 @@ export default{
                     this.productOptions = listVal.map((el) => {
                         return {
                             label: el.productName,
-                            value: el.key
+                            value: el.id
+                        }
+                    })
+                    this.stringProductOptions = listVal.map((el) => {
+                        return {
+                            label: el.productName,
+                            value: el.id
                         }
                     })
                     // this.tableRow = response.status < 300 ? data.list : [];

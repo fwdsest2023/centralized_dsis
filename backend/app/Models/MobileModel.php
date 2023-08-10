@@ -16,7 +16,7 @@ class MobileModel extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = false;
 
-    protected $allowedFields = ['agentId', 'category', 'client', 'attendance', 'booking', 'files'];
+    protected $allowedFields = ['agentId', 'category', 'client', 'attendance', 'booking', 'files', 'syncDate'];
 
     protected $useTimestamps = false;
     // protected $createdField  = 'syncDate';
@@ -33,6 +33,10 @@ class MobileModel extends Model
         $query = $this->db->table($this->table)->where("agentId", $where['agentId'])->like("syncDate", $where['syncDate'])->get();
         $results = $query->getRow();
         return $results;
+    }
+    public function updateSyncData($where, $setData){
+        $query = $this->db->table($this->table)->set($setData)->where("agentId", $where['agentId'])->like("syncDate", $where['syncDate'])->update();
+        return $query ? true : false;
     }
 
     public function getAllProducts(){
@@ -62,5 +66,7 @@ class MobileModel extends Model
         $query = $this->db->table($this->productTable)->insert($params);
         return $query ? true : false;
     }
+
+    
 
 }

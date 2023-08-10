@@ -6,10 +6,10 @@
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
         <q-space />
-        <q-chip color="primary" text-color="white" :label="getCurrentRouteName" />
-        <q-space />
+        <!-- <q-chip color="primary" text-color="white" :label="getCurrentRouteName" />
+        <q-space /> -->
         
-        <q-btn dense flat icon="power_settings_new" @click="logout" />
+        <!-- <q-btn dense flat icon="power_settings_new" @click="logout" /> -->
       </q-toolbar>
       <!-- <q-bar dense>
         <Crumbs :contentLink.sync="menuCrumbs" />
@@ -99,7 +99,9 @@ export default {
       let token = value !== null ? value : null;
 
       if(token !== null){
+        console.log(token)
         this.userProfile = jwt_decode(token);
+        this.$router.push('/dashboard')
       } else {
         let profile = SessionStorage.getItem('userDataLogin');
         if(profile){

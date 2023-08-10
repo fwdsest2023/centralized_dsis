@@ -15,13 +15,20 @@ class MobileController extends BaseController
             // get the data
             $payload = $this->request->getJSON();
             $dataList = json_decode($payload->listData);
-
-
             $clientList = [];
             $attendaceList = [];
             $bookingList = [];
             $fileList = [];
 
+            // Check if there was an existing Sync
+            $where = [
+                "agentId" => $payload->agentId,
+                "syncDate" => date('Y-m-d')
+            ];
+            $check = $this->mobModel->getAllAgentSyncCalls($where);
+
+
+            // Set of Data List Save
             foreach ($dataList as $key => $value) {
 
                 // First Check Client saved to db and migrate
@@ -54,26 +61,31 @@ class MobileController extends BaseController
                 ];
             }
 
-
-            $data = [
-                "agentId" => $payload->agentId,
-                "category" => $payload->category,
-                "client" => json_encode($clientList),
-                "attendance" => json_encode($attendaceList),
-                "booking" => json_encode($bookingList),
-                "files" => json_encode($fileList)
-            ];
+            if($check){
+                $data = [
+                    "client" => json_encode($clientList),
+                    "attendance" => json_encode($attendaceList),
+                    "booking" => json_encode($bookingList),
+                    "files" => json_encode($fileList)
+                ];
+                $query = $this->mobModel->updateSyncData($where, $data);
+            } else {
+                $data = [
+                    "agentId" => $payload->agentId,
+                    "category" => $payload->category,
+                    "client" => json_encode($clientList),
+                    "attendance" => json_encode($attendaceList),
+                    "booking" => json_encode($bookingList),
+                    "files" => json_encode($fileList)
+                ];
+                $query = $this->mobModel->insert($data);
+            }
             
-            // echo '<pre>';
-            // print_r($data);
-            // exit();
-            $query = $this->mobModel->insert($data);
-
             if($query){
 
                 $response = [
                     'title' => 'Sync Complete',
-                    'message' => 'data hasbeen successfully sync to database'
+                    'message' => 'data has been successfully sync to database'
                 ];
     
                 return $this->response

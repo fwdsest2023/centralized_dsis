@@ -140,7 +140,7 @@
                                                     </q-item-section>
 
                                                     <q-item-section>
-                                                        <q-item-label>{{props.row.attendance.attendance.startCall}}</q-item-label>
+                                                        <q-item-label>{{props.row.attendance.attendance.endCall}}</q-item-label>
                                                         <q-item-label caption>
                                                             Time Out
                                                         </q-item-label>

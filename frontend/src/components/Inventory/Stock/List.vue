@@ -143,7 +143,7 @@ export default{
             this.isLoading = true;
             let vm = this;
             
-            api.get('inventory/stock/get').then((response) => {
+            api.get('stock/get/stocks').then((response) => {
                 const data = {...response.data};
                 if(!data.error){
                     this.tableRow = response.status < 300 ? data.list : [];
