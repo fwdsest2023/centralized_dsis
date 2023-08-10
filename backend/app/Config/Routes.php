@@ -72,6 +72,11 @@ $routes->group('mlrs/api/v1', function($routes){
 	$routes->group('stock', function($routes){
 		$routes->post('add/new', 'InventoryController::addStock');
 		$routes->post('get/stocks', 'InventoryController::getStockList');
+
+		// Stock specs
+		$routes->post('get/categories', 'InventoryController::getCategories');
+		$routes->post('get/units', 'InventoryController::getUnits');
+
 	});
 
 

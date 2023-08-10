@@ -8,6 +8,8 @@ class InventoryModel extends Model
 {
     protected $tableProducts    = 'tblproducts';
     protected $tableStocks    = 'tblstocks';
+    protected $tableCategories    = 'tblcategory';
+    protected $tableUnits    = 'tblunits';
 
     protected $primaryKey = 'id';
 
@@ -60,6 +62,21 @@ class InventoryModel extends Model
     public function insertStock($data){
         $query = $this->db->table($this->tableStocks)->insert($data);
         return $query ? true : false;
+    }
+
+    // Get Specs
+    public function getCategories() {
+
+        $query = $this->db->table($this->tableCategories)->get();
+        $results = $query->getResult('array');
+        return $results;
+    }
+
+    public function getUnits() {
+
+        $query = $this->db->table($this->tableUnits)->get();
+        $results = $query->getResult('array');
+        return $results;
     }
 
 }
