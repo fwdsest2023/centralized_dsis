@@ -104,90 +104,7 @@
                             <q-tr v-if="props.expand" :props="props">
                                 <q-td colspan="100%">
                                     <div class="row">
-                                        <div class="col col-md-4 q-pa-sm">
-                                            {{initMap(props.row)}}
-                                            <span class="text-bold q-mb-sm">Store Location</span>
-                                            <div id="map" style="width:100%; height: 200px;"></div>
-                                        </div>
-                                        <div class="col col-md-4 q-pa-sm">
-                                            {{initMapTimeIn(props.row.attendance.attendance.geoLocation.coorIn)}}
-                                            <span class="text-bold q-mb-sm">Call In</span>
-                                            <div id="mapIn" style="width:100%; height: 200px;"></div>
-                                        </div>
-                                        <div class="col col-md-4 q-pa-sm">
-                                            {{initMapTimeOut(props.row.attendance.attendance.geoLocation.timeOut)}}
-                                            <span class="text-bold q-mb-sm">Call Out</span>
-                                            <div id="mapOut" style="width:100%; height: 200px;"></div>
-                                        </div>
-                                        <div class="col col-md-4 q-pa-sm">
-                                            <span class="text-bold q-mb-sm">Call Details</span>
-                                            <q-list>
-                                                <q-item tag="label">
-                                                    <q-item-section side top>
-                                                        <q-icon name="phone_callback" color="green" />
-                                                    </q-item-section>
-
-                                                    <q-item-section>
-                                                        <q-item-label>{{props.row.attendance.attendance.startCall}}</q-item-label>
-                                                        <q-item-label caption>
-                                                            Time In
-                                                        </q-item-label>
-                                                    </q-item-section>
-                                                </q-item>
-                                                <q-item tag="label">
-                                                    <q-item-section side top>
-                                                        <q-icon name="call_end" color="negative" />
-                                                    </q-item-section>
-
-                                                    <q-item-section>
-                                                        <q-item-label>{{props.row.attendance.attendance.endCall}}</q-item-label>
-                                                        <q-item-label caption>
-                                                            Time Out
-                                                        </q-item-label>
-                                                    </q-item-section>
-                                                </q-item>
-                                            </q-list>
-                                        </div>
-                                        <div class="col col-md-4 q-pa-sm">
-                                            <span class="text-bold q-mb-sm">Activities</span>
-                                            <q-list>
-                                                <q-item 
-                                                    v-for="(item, index) in props.row.activity" 
-                                                    tag="label" 
-                                                    :key="index" 
-                                                    v-ripple
-                                                >
-                                                    <q-item-section side top>
-                                                        <q-icon v-if="!item.active" name="cancel" color="negative" />
-                                                        <q-icon v-else name="check_circle" color="green" />
-                                                    </q-item-section>
-
-                                                    <q-item-section>
-                                                        <q-item-label>{{item.title}}</q-item-label>
-                                                        <q-item-label caption>
-                                                            {{item.caption}}
-                                                        </q-item-label>
-                                                    </q-item-section>
-                                                </q-item>
-                                            </q-list>
-                                            <q-btn
-                                                class="block full-width q-mt-sm"
-                                                unelevated 
-                                                rounded
-                                                size="sm"
-                                                color="primary" 
-                                                label="Get Booking Details"
-                                                @click="getBookDetails(props)"
-                                            />
-                                        </div>
-                                        <div class="col col-md-4 q-pa-sm">
-                                            <span class="text-bold q-mb-sm">Photo</span><br/>
-                                            {{getCallPhoto(props)}}
-                                            <q-img
-                                                :src="imgSrc"
-                                                spinner-color="primary"
-                                            />
-                                        </div>
+                                        testing
                                     </div>
                                 </q-td>
                             </q-tr>
@@ -295,9 +212,9 @@ export default {
                     sortable: true
                 },
                 // { name: 'category', label: 'Category', field: 'category', align: 'left' },
-                { name: 'contactPerson', label: 'Owner', field: 'contactPerson', align: 'left' },
-                { name: 'contactNumber', label: 'Contact', field: 'contactNumber', align: 'left' },
-                { name: 'status', label: 'Remarks', field: 'remarks', align: 'left' },
+                { name: 'contactPerson', label: 'Contact Person', field: 'contactPerson', align: 'left' },
+                { name: 'contactNumber', label: 'Contact Number', field: 'contactNumber', align: 'left' },
+                { name: 'status', label: 'Status', field: 'remarks', align: 'left' },
             ]
         }
     }

@@ -23,7 +23,7 @@ class MobileController extends BaseController
             // Check if there was an existing Sync
             $where = [
                 "agentId" => $payload->agentId,
-                "dateSync" => date('Y-m-d')
+                "syncDate" => date('Y-m-d')
             ];
             $check = $this->mobModel->getAllAgentSyncCalls($where);
 
@@ -182,6 +182,7 @@ class MobileController extends BaseController
             
             if($query){
                 foreach ($query as $key => $value) {
+                    $contact = json_decode($value->contactPerson);
 
                     $list['list'][$key] = [
                         "key" => $value->id,
@@ -189,9 +190,9 @@ class MobileController extends BaseController
                         "address" => $value->address,
                         "addressInfo" => $value->addressInfo,
                         "geoLocation" => $value->geoLocation,
-                        "contactPerson" => $value->contactPerson->name,
-                        "contactNumber" => $value->contactPerson->contactNum,
-                        "status" => $value->activity
+                        "contactPerson" => $contact->name,
+                        "contactNumber" => $contact->contactNum,
+                        "status" => $value->status
                     ];
                 }
             } 
