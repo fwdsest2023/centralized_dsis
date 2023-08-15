@@ -79,6 +79,22 @@ const linksList = [
     ]
   },
   {
+    title: 'Patient Management',
+    icon: 'pets',
+    code: 104,
+    children: [
+      {
+        title: 'Patient Records',
+        icon: 'source',
+        link: 'patientRecords',
+      },
+    ],
+    crumbs: [
+      {label: '', icon: 'home', link: '/'},
+      {label: 'Patient List', icon: 'view_list', link: 'mylist'}
+    ]
+  },
+  {
     title: 'Inventory Management',
     icon: 'inventory',
     code: 104,
@@ -151,16 +167,6 @@ const linksList = [
       {label: 'Patient List', icon: 'view_list', link: 'mylist'}
     ]
   },
-  // {
-  //   title: 'Sales Report',
-  //   icon: 'request_quote',
-  //   link: 'mysavelist',
-  //   code: 105,
-  //   crumbs: [
-  //     {label: '', icon: 'home', link: '/'},
-  //     {label: 'Saved Data List', icon: 'save', link: 'mysavelist'}
-  //   ]
-  // },
   {
     title: 'Configurations',
     icon: 'display_settings',

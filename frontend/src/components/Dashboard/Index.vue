@@ -2,8 +2,20 @@
     <div class="q-pa-md" style="width: 100%;">
         <div class="row">
             <!-- Cards -->
-            <div class="col col-md-4 q-pa-sm">
-                <q-card class="my-card" flat bordered>
+            <div class="col col-md-6 q-pa-sm">
+                <FullCalendar 
+                    :options="calendarOptions"
+                >
+                    <!-- <template v-slot:eventContent='arg'>
+                        <b>{{ arg.event.title }}</b>
+                    </template> -->
+                </FullCalendar>
+            </div>
+            <div class="col col-md-3 q-pa-sm"> 
+                Booking / Schedule Details
+            </div>
+            <div class="col col-md-3 q-pa-sm">
+                <q-card class="my-card q-mb-sm" flat bordered>
                     <q-item>
                         <q-item-section>
                         <q-item-label>DVS Vet Clinic</q-item-label>
@@ -54,9 +66,8 @@
                         </q-btn>
                     </q-card-actions>
                 </q-card>
-            </div>
-            <div class="col col-md-4 q-pa-sm">
-                <q-card class="my-card" flat bordered>
+                <q-space />
+                <q-card class="my-card q-mb-sm" flat bordered>
                     <q-item>
                         <q-item-section>
                         <q-item-label>DVS Distribution</q-item-label>
@@ -107,9 +118,8 @@
                         </q-btn>
                     </q-card-actions>
                 </q-card>
-            </div>
-            <div class="col col-md-4 q-pa-sm">
-                <q-card class="my-card" flat bordered>
+                <q-space />
+                <q-card class="my-card q-mb-sm" flat bordered>
 
                     <q-card-section horizontal class="row">
                         <q-card-section class="col">
@@ -132,42 +142,38 @@
                     </q-card-section>
                 </q-card>
             </div>
-            <!-- Calendar -->
-            <div class="col col-md-6 q-pa-sm">
-                
-            </div>
-            <!-- Inventory -->
         </div>
     </div>
 </template>
 
 <script>
-import { LocalStorage, SessionStorage } from 'quasar'
 import jwt_decode from 'jwt-decode'
 import { api } from 'boot/axios'
+import FullCalendar from '@fullcalendar/vue3'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin from '@fullcalendar/interaction'
 
 export default{
     name: 'CardWidgets',
+    components: {
+        FullCalendar
+    },
     data(){
         return {
-            form: {
-                username: "",
-                password: "",
+            calendarOptions: {
+                plugins: [ dayGridPlugin, interactionPlugin ],
+                dayMaxEvents: true,
+                initialView: 'dayGridMonth',
+                // Date Action Handler
+                dateClick: (args) => { return this.handleDateClick(args.event) },
+                selectable: true,
+
+                events: [],
+                eventContent: 'Show Details',
+                // eventClick: this.eventClick,
+
+
             },
-            formRules: {
-                username: {
-                    rules: [
-                        value => !!value || this.$t('validations_error.empty'),
-                    ]
-                },
-                password: {
-                    rules: [
-                        val => !!val || this.$t('validations_error.empty'),
-                    ]
-                },
-            },
-            isPwd: true,
-            submitting: false,
             activities: [
                 {
                     active: false,
@@ -187,11 +193,42 @@ export default{
                     caption: "Vaccines, Inspections, Etc.",
                     action: () => { return false }
                 },
-            ]
+            ],
+            eventList: []
         }
     },
+    mounted(){
+        this.getSchedules()
+    },
     methods: {
-        
+        eventClick(val){
+            console.log(val)
+        },
+        handleDateClick(val){
+            console.log(val)
+            console.log(val.dayEl)
+        },
+        getSchedules(){
+            this.calendarOptions.events = [];
+            this.$q.loading.show();
+            api.get('dashboard/getScheduleList').then((response) => {
+                const data = {...response.data};
+                if(!data.error){
+                    this.calendarOptions.events = response.status < 300 ? data.list : [];
+                } else {
+                    this.$q.notify({
+                        color: 'negative',
+                        position: 'top-right',
+                        title:data.title,
+                        message: this.$t(`errors.${data.error}`),
+                        icon: 'report_problem'
+                    })
+                }
+            })
+
+            this.$q.loading.hide();
+        },
+        getDashboard(){}
     }
 }
 </script>

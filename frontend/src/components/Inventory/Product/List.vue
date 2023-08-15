@@ -115,7 +115,7 @@ import addProductModal from '../Modals/AddProduct.vue'
 import jwt_decode from 'jwt-decode'
 import { api } from 'boot/axios'
 
-export default{
+export default {
     name: 'ProductList',
     data(){
         return {

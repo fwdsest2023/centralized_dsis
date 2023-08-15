@@ -23,6 +23,18 @@ const routes = [
   },
   
   {
+    path: '/clinic-management/',
+    component: () => import('layouts/LoginLayout.vue'),
+    children: [
+      // Clinic Management
+      { 
+        path: 'patient-records',
+        name: 'patientRecords',
+        component: () => import('pages/Clinic/PatientRecord.vue') 
+      },
+    ]
+  },
+  {
     path: '/inventory-management/',
     component: () => import('layouts/LoginLayout.vue'),
     children: [
@@ -50,9 +62,9 @@ const routes = [
         component: () => import('pages/mobile/syncData.vue') 
       },
       { 
-        path: 'product-list',
-        name: 'productList',
-        component: () => import('pages/Inventory/Product.vue') 
+        path: 'client-list',
+        name: 'clientList',
+        component: () => import('pages/mobile/clientList.vue') 
       },
     ]
   },
