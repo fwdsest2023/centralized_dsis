@@ -23,7 +23,7 @@ class MobileController extends BaseController
             // Check if there was an existing Sync
             $where = [
                 "agentId" => $payload->agentId,
-                "syncDate" => date('Y-m-d')
+                "dateSync" => date('Y-m-d')
             ];
             $check = $this->mobModel->getAllAgentSyncCalls($where);
 
@@ -85,7 +85,7 @@ class MobileController extends BaseController
 
                 $response = [
                     'title' => 'Sync Complete',
-                    'message' => 'data has been successfully sync to database'
+                    'message' => 'data hasbeen successfully sync to database'
                 ];
     
                 return $this->response
@@ -145,6 +145,53 @@ class MobileController extends BaseController
                         "attendance" => $attendace,
                         "activity" => $value->activity,
                         "remarks" => $value->remarks,
+                    ];
+                }
+            } 
+            
+
+            if($list){
+                return $this->response
+                        ->setStatusCode(200)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($list));
+            } else {
+                $response = [
+                    'title' => 'Error',
+                    'message' => 'No Data Found'
+                ];
+    
+                return $this->response
+                        ->setStatusCode(404)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($response));
+            }
+
+        } catch (\Throwable $th) {
+            print_r($th);
+            throw $th;
+        }
+    }
+
+    public function clientList(){
+        try {
+            // get the data
+            $list = [];
+
+            $query = $this->mobModel->getAllClients();
+            
+            if($query){
+                foreach ($query as $key => $value) {
+
+                    $list['list'][$key] = [
+                        "key" => $value->id,
+                        "storeName" => $value->storeName,
+                        "address" => $value->address,
+                        "addressInfo" => $value->addressInfo,
+                        "geoLocation" => $value->geoLocation,
+                        "contactPerson" => $value->contactPerson->name,
+                        "contactNumber" => $value->contactPerson->contactNum,
+                        "status" => $value->activity
                     ];
                 }
             } 

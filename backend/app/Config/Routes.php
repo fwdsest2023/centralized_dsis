@@ -123,6 +123,7 @@ $routes->group('mlrs/api/v1', function($routes){
 		$routes->get('fetch/product/list', 'MobileController::migrateProductsToMobile');
 
 		// for migration
+		$routes->get('fetch/client/list', 'MobileController::clientList');
 		$routes->post('client/migrate', 'MobileController::migrateClient');
 		$routes->post('product/migrate', 'MobileController::migrateProducts');
 		$routes->post('product/update', 'MobileController::updateProductList');

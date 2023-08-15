@@ -21,9 +21,9 @@ class DashboardController extends BaseController
         foreach ($query as $key => $value) {
             $list['list'][$key] = [
                 "id" => $value['id'],
-                "title" => $value['remarks'],
+                "title" => $value['patientDetails']->petName,
                 "start" =>  $value['scheduleDate'],
-                "details" => $value
+                "details" => $value,
             ];
         }
 
