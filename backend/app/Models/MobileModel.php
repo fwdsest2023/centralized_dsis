@@ -63,15 +63,31 @@ class MobileModel extends Model
         return $results;
     }
 
-    public function insertMigrateClient($params){
-        $query = $this->db->table($this->clientTable)->insert($params);
-        return $query ? true : false;
-    }
+    
     public function insertMigrateProduct($params){
         $query = $this->db->table($this->productTable)->insert($params);
         return $query ? true : false;
     }
 
-    
+
+    // Sync Client Add and Update
+    public function getClientData($where){
+        $query = $this->db->table($this->clientTable)->like("storeName", $where['storeName'])->get();
+        $results = $query->getRow();
+        return $results;
+    }
+    public function updateClientData($where, $setData){
+        $query = $this->db->table($this->clientTable)->set($setData)->where($where)->update();
+        return $query ? true : false;
+    }
+    public function insertMigrateClient($params){
+        $query = $this->db->table($this->clientTable)->insert($params);
+        return $query ? true : false;
+    }
+    public function getAllClientsByCondition($where){
+        $query = $this->db->table($this->clientTable)->where($where)->get();
+        $results = $query->getResult();
+        return $results;
+    }
 
 }

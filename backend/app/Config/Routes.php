@@ -109,27 +109,22 @@ $routes->group('mlrs/api/v1', function($routes){
 
 	// Mobile Application
 	$routes->group('mobile', function($routes){
-		$routes->post('startCall', 'MobileController::startCallFunction');
-		$routes->post('endCall', 'MobileController::endCallFunction');
 
-		
 		$routes->post('sync/data', 'MobileController::syncAgentData'); 
 		$routes->post('client/list', 'MobileController::agentClientList');
 		$routes->post('get/photo', 'MobileController::agentClientPhoto');
 		$routes->post('get/booking', 'MobileController::agentClientBooking');
-
-		
-		$routes->post('booking/list', 'MobileController::agentBookingList');
-
-		$routes->post('history/dates', 'MobileController::agentHistoryList');
 		$routes->post('agent/callSummary', 'MobileController::agentCallSummaryList');
 
 		// Mobile Fetch Updated Products
 		$routes->get('fetch/product/list', 'MobileController::migrateProductsToMobile');
 
-		// for migration
+		// for Clients
 		$routes->get('fetch/client/list', 'MobileController::clientList');
+		$routes->post('fetch/client/agent', 'MobileController::agentClientList');
 		$routes->post('client/migrate', 'MobileController::migrateClient');
+
+		// For Product
 		$routes->post('product/migrate', 'MobileController::migrateProducts');
 		$routes->post('product/update', 'MobileController::updateProductList');
 	});

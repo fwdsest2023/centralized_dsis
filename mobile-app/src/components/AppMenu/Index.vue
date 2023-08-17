@@ -1,13 +1,16 @@
 <template>
     <div class="q-pa-sm">
-        <q-list bordered padding class="rounded-borders">
+        <q-list  padding class="rounded-borders">
             <q-item v-for="(item, index) in filteredSettings" :key="index">
                 <q-item-section avatar top>
                     <q-avatar v-bind="item.avatar" />
                 </q-item-section>
 
                 <q-item-section>
-                <q-item-label lines="1">{{ item.label }} <q-badge rounded size :color="item.notSync ? 'red' : 'green' " /></q-item-label>
+                <q-item-label lines="1">
+                    {{ item.label }} 
+                    <q-badge v-if="index === 0" rounded size :color="item.notSync ? 'red' : 'green' " />
+                </q-item-label>
                 <q-item-label caption>{{item.caption}}</q-item-label>
                 </q-item-section>
 
@@ -63,12 +66,12 @@ export default {
                 },
                 {
                     avatar: {
-                        icon: 'sync',
-                        color: 'primary',
+                        icon: 'inventory',
+                        color: 'orange',
                         textColor: 'white'
                     },
                     label: 'Update Products',
-                    caption: 'Migrate product for admin use only',
+                    caption: 'This will update you product list for booking purpose',
                     sides:{
                         icon: 'download_for_offline',
                         color: 'green'
@@ -77,22 +80,22 @@ export default {
                     loading: false,
                     action: () => {return this.migrateProducts()}
                 },
-                // {
-                //     avatar: {
-                //         icon: 'sync',
-                //         color: 'primary',
-                //         textColor: 'white'
-                //     },
-                //     label: 'Migrate Product',
-                //     caption: 'Migrate product for admin use only',
-                //     sides:{
-                //         icon: 'cloud_sync',
-                //         color: 'blue'
-                //     },
-                //     notSync: false,
-                //     loading: false,
-                //     action: () => {return this.migrateProductAdminUse()}
-                // },
+                {
+                    avatar: {
+                        icon: 'storefront',
+                        color: 'deep-purple',
+                        textColor: 'white'
+                    },
+                    label: 'Update Client Data',
+                    caption: 'Migrate and update the client data from the server and fetch the latest update',
+                    sides:{
+                        icon: 'backup',
+                        color: 'blue'
+                    },
+                    notSync: false,
+                    loading: false,
+                    action: () => {return this.uploadFetchClients()}
+                },
             ]
         }
     },
@@ -262,12 +265,52 @@ export default {
 
                         return obj
                     })
-
-                    console.log(mappedList)
                     
                     prodJson.products = mappedList
                     this.$nextTick(()=>{
                         this.settingList[1].loading = false
+                    })
+                    
+                } else {
+                    this.$q.dialog({
+                        title: 'Migration Failed',
+                        message: 'Something went wrong. Please contact your administrator',
+                        position: 'top'
+                    })
+                }
+                
+            }).catch((err) => {
+                alert(JSON.stringify(err))
+                this.settingList[1].loading = false
+            })
+        },
+        async uploadFetchClients(){
+            const { value } = await Preferences.get({ key: 'clientList' });
+            let data = value !== null ? JSON.parse(value) : []
+
+            if(data.length === 0){
+                this.$q.dialog({
+                    title: 'Upload Failed',
+                    message: 'There is no data to be uploaded. Please add a client to sync to the server',
+                    position: 'top'
+                })
+                return false;
+            }
+            // Collection of data
+            // Loading part
+            this.settingList[2].loading = true
+            let payload = {
+                aid: Number(this.user.userId),
+                clients: data,
+            }
+
+            // Call Sync API
+            api.post('mobile/client/migrate', payload)
+            .then(async (response) => {
+                if(response.status <= 200){
+
+                    this.$nextTick(()=>{
+                        this.settingList[2].loading = false
                     })
                     
                 } else {

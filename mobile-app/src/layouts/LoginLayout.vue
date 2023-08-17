@@ -9,7 +9,7 @@
         <!-- <q-chip color="primary" text-color="white" :label="getCurrentRouteName" />
         <q-space /> -->
         
-        <!-- <q-btn dense flat icon="power_settings_new" @click="logout" /> -->
+        <q-btn dense flat icon="power_settings_new" @click="logout" />
       </q-toolbar>
       <!-- <q-bar dense>
         <Crumbs :contentLink.sync="menuCrumbs" />
@@ -99,7 +99,6 @@ export default {
       let token = value !== null ? value : null;
 
       if(token !== null){
-        console.log(token)
         this.userProfile = jwt_decode(token);
         this.$router.push('/dashboard')
       } else {
@@ -120,9 +119,8 @@ export default {
     goToMenuPages(page){
       this.$router.push(page)
     },
-    logout(){
-      localStorage.removeItem('userData');
-      SessionStorage.remove('userDataLogin');
+    async logout(){
+      await Preferences.remove({ key: 'agentToken' });
       this.$router.push('/')
     }
   }

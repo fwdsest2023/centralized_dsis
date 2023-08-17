@@ -159,7 +159,7 @@ const linksList = [
       {
         title: 'Sales Report',
         icon: 'storefront',
-        link: 'clientList',
+        link: 'salesReport',
       },
     ],
     crumbs: [

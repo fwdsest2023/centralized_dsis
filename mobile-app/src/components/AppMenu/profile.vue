@@ -1,6 +1,6 @@
 <template>
     <div class="q-pa-sm">
-        <q-list bordered padding class="rounded-borders">
+        <q-list padding class="rounded-borders">
             <q-item v-for="(item, index) in filteredSettings" :key="index">
                 <q-item-section avatar top>
                     <q-avatar v-bind="item.avatar" />

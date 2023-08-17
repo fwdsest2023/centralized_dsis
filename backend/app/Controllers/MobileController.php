@@ -192,7 +192,8 @@ class MobileController extends BaseController
                         "geoLocation" => $value->geoLocation,
                         "contactPerson" => $contact->name,
                         "contactNumber" => $contact->contactNum,
-                        "status" => $value->status
+                        "status" => $value->status,
+                        "details" => $value
                     ];
                 }
             } 
@@ -446,42 +447,98 @@ class MobileController extends BaseController
         return $rem;
     }
 
+    // public function migrateClient(){
+    //     try {
+    //         // get the data
+    //         $payload = $this->request->getJSON();
+    //         $list = [];
+    //         $i = 0;
+    //         $params = [
+    //             "aid" => $payload->aid,
+    //             "dateFrom" => $payload->dateFrom,
+    //             "dateTo" => $payload->dateTo,
+    //         ];
+
+    //         $query = $this->mobModel->getAllSummaryCalls($params);
+
+    //         if($query){
+    //             $marr = [];
+    //             foreach ($query as $key => $value) {
+    //                 $clients = $value->client;
+    //                 $clist = $this->generateClientData($clients, $value);
+    //                 $marr = array_merge($marr, $clist['list']);
+    //             }
+
+    //             $result = $this->unique_multidim_array($marr, 'storeName');
+    //             // print_r($result);
+    //             // Do Inserting of client data
+    //             if($result){
+    //                 foreach ($result as $rvalue) {
+    //                     # code...
+    //                     $insert = $this->mobModel->insertMigrateClient($rvalue);
+    //                     $i++;
+    //                 }
+    //             }
+    //         }
+    //         // exit();
+    //         if($i === sizeof($result)){
+    //             $response = [
+    //                 'title' => 'Success',
+    //                 'message' => 'Client migration done!'
+    //             ];
+
+    //             return $this->response
+    //                     ->setStatusCode(200)
+    //                     ->setContentType('application/json')
+    //                     ->setBody(json_encode($response));
+    //         } else {
+    //             $response = [
+    //                 'title' => 'Error',
+    //                 'message' => 'Something is not right, please check to your administrator'
+    //             ];
+    
+    //             return $this->response
+    //                     ->setStatusCode(404)
+    //                     ->setContentType('application/json')
+    //                     ->setBody(json_encode($response));
+    //         }
+
+    //     } catch (\Throwable $th) {
+    //         print_r($th);
+    //         throw $th;
+    //     }
+    // }
+    
+    // New Integration
     public function migrateClient(){
         try {
             // get the data
             $payload = $this->request->getJSON();
             $list = [];
             $i = 0;
-            $params = [
-                "aid" => $payload->aid,
-                "dateFrom" => $payload->dateFrom,
-                "dateTo" => $payload->dateTo,
-            ];
+            // print_r($payload);
 
-            $query = $this->mobModel->getAllSummaryCalls($params);
-
-            if($query){
-                $marr = [];
-                foreach ($query as $key => $value) {
-                    
-                    $clients = $value->client;
-                    $clist = $this->generateClientData($clients, $value);
-                    $marr = array_merge($marr, $clist['list']);
-                }
-
-                $result = $this->unique_multidim_array($marr, 'storeName');
-                // print_r($result);
-                // Do Inserting of client data
-                if($result){
-                    foreach ($result as $rvalue) {
-                        # code...
-                        $insert = $this->mobModel->insertMigrateClient($rvalue);
-                        $i++;
-                    }
-                }
+            foreach ($payload->clients as $key => $value) {
+                // check if is from Admin
+                $clients = $value->client;
+                $generated = $this->generateClientData($clients, $payload->aid);
+                $list[$key] = $generated;
             }
+
+            foreach ($list as $key => $value){
+                $validate = $this->mobModel->getClientData(["storeName" => $value['storeName']]);
+
+                if($validate){
+                    $this->mobModel->updateClientData(["id" => $validate->id], $value);
+                } else {
+                    $this->mobModel->insertMigrateClient($value);
+                }
+
+                $i++;
+            }
+            
             // exit();
-            if($i === sizeof($result)){
+            if($i === sizeof($list)){
                 $response = [
                     'title' => 'Success',
                     'message' => 'Client migration done!'
@@ -509,22 +566,50 @@ class MobileController extends BaseController
         }
     }
 
-    public function generateClientData($arr, $val){
-        $clist = [];
-        $client = json_decode($arr);
-        foreach($client as $ckey => $cvalue){
-            $clist['list'][$ckey] = [
-                "storeName" => $cvalue->storeName,
-                "address" => $cvalue->address,
-                "geoLocation" => json_encode($cvalue->geoLocation),
-                "contactPerson" => json_encode($cvalue->contactPerson),
-                "status" => 1,
-                "createdBy" => $val->agentId
-            ];
+    public function generateClientData($arr, $id){
+        
+        $agentId = $id;
+        $isAdmin = 0;
+        if(isset($arr->isAdmin) && isset($arr->adminAssigned)){
+            $assined = $arr->adminAssigned;
+            $agentId = $arr->isAdmin === true ? (int)$assined->value : $id;
+            $isAdmin = $arr->isAdmin ? 1 : 0;
         }
+        
+        
+        $res = [
+            "storeName" => $arr->storeName,
+            "address" => $arr->address,
+            "addressInfo" => json_encode($arr->addressDetails),
+            "geoLocation" => json_encode($arr->geoLocation),
+            "contactPerson" => json_encode($arr->contactPerson),
+            "status" => 1,
+            "createdBy" => $agentId,
+            "isAdminCreated" => $isAdmin
+        ];
 
-        return $clist;
+        return $res;
     }
+
+    // public function generateClientData($arr, $val){
+    //     $clist = [];
+    //     $client = json_decode($arr);
+
+    //     // Validation for client if already exist
+    //     foreach($client as $ckey => $cvalue){
+    //         $clist['list'][$ckey] = [
+    //             "storeName" => $cvalue->storeName,
+    //             "address" => $cvalue->address,
+    //             "addressInfo" => json_encode($cvalue->addressDetails),
+    //             "geoLocation" => json_encode($cvalue->geoLocation),
+    //             "contactPerson" => json_encode($cvalue->contactPerson),
+    //             "status" => 1,
+    //             "createdBy" => $val->agentId
+    //         ];
+    //     }
+
+    //     return $clist;
+    // }
 
     public function unique_multidim_array($array, $key) {
 
@@ -553,6 +638,9 @@ class MobileController extends BaseController
         return $temp_array;
     
     }
+
+    // Registering Client Online
+
 
 
 

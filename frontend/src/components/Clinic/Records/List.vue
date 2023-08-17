@@ -79,14 +79,21 @@
                                     </q-item-section>
                                     <q-item-section> Open</q-item-section>
                                 </q-item>
-                                <q-item clickable v-close-popup>
+                                <q-item 
+                                    clickable 
+                                    v-close-popup
+                                >
                                     <q-item-section side>
                                         <q-icon name="help" size="xs" />
                                     </q-item-section>
                                     <q-item-section>Show Details</q-item-section>
                                 </q-item>
                                 <q-separator />
-                                <q-item clickable v-close-popup>
+                                <q-item 
+                                    clickable
+                                    v-close-popup
+                                    @click="openAddPatient(props.row)"
+                                >
                                     <q-item-section side>
                                         <q-icon name="pets" size="xs" />
                                     </q-item-section>
@@ -127,36 +134,36 @@
 
                 <template v-slot:after>
                     <q-tab-panels
-                    v-model="tab"
-                    animated
-                    swipeable
-                    vertical
-                    transition-prev="jump-up"
-                    transition-next="jump-up"
+                        v-model="tab"
+                        animated
+                        swipeable
+                        vertical
+                        transition-prev="jump-up"
+                        transition-next="jump-up"
                     >
                         <q-tab-panel name="owner">
                             <div class="text-h4 q-mb-md">Pet Owner Details</div>
-                            <p>In progress</p>
+                            <ownerDetails />
                         </q-tab-panel>
 
                         <q-tab-panel name="petdetails">
                             <div class="text-h4 q-mb-md">Pet Details</div>
-                            <p>In progress</p>
+                            <petDetails />
                         </q-tab-panel>
 
                         <q-tab-panel name="checkup">
                             <div class="text-h4 q-mb-md">Pet Checkups</div>
-                            <p>In progress</p>
+                            <checkup />
                         </q-tab-panel>
 
                         <q-tab-panel name="schedule">
                             <div class="text-h4 q-mb-md">Pet Schedules</div>
-                            <p>In progress</p>
+                            <schedule />
                         </q-tab-panel>
 
                         <q-tab-panel name="wellness">
                             <div class="text-h4 q-mb-md">Pet Wellness</div>
-                            <p>In progress</p>
+                            <wellness />
                         </q-tab-panel>
                     </q-tab-panels>
                 </template>
@@ -165,23 +172,48 @@
         </template>
 
     </q-table>
+
+    <addPatient
+        :appId="appId"
+        :modalStatus="openAddPatientModal"
+        @updateModalStatus="closePatientModal"
+        @refreshData="getList"
+    />
   </div>
 </template>
 
 <script>
 import moment from 'moment';
-import { LocalStorage, SessionStorage } from 'quasar'
+import addPatient from '../Modals/AddPatient.vue'
+import {
+    ownerDetails,
+    petDetails,
+    schedule,
+    checkup,
+    wellness
+} from '../Widgets/index'
 import jwt_decode from 'jwt-decode'
 import { api } from 'boot/axios'
 
 export default {
     name: 'RecordList',
+    components: {
+        addPatient,
+        ownerDetails,
+        petDetails,
+        schedule,
+        checkup,
+        wellness
+    },
     data(){
         return {
             // tabs controller
             tab: 'owner',
-            
+            // Context Controller
+            appId: {},
+            openAddPatientModal: false,
 
+            // Others
             isLoading: false,
             filter: '',
             rows: [],
@@ -216,8 +248,16 @@ export default {
     },
     methods:{
         moment,
+        openAddPatient(row){
+            this.appId = row
+            this.openAddPatientModal = true
+        },
+        closePatientModal(){
+            this.openAddPatientModal = false;
+        },
         openFolder(row){
             if(this.tableView === 'clientList'){
+                this.appId = row
                 this.tableView = 'patientList'
                 
                 this.getPatientList(row.id);
