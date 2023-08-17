@@ -143,27 +143,27 @@
                     >
                         <q-tab-panel name="owner">
                             <div class="text-h4 q-mb-md">Pet Owner Details</div>
-                            <ownerDetails />
+                            <!-- <ownerDetails /> -->
                         </q-tab-panel>
 
                         <q-tab-panel name="petdetails">
                             <div class="text-h4 q-mb-md">Pet Details</div>
-                            <petDetails />
+                            <!-- <petDetails /> -->
                         </q-tab-panel>
 
                         <q-tab-panel name="checkup">
                             <div class="text-h4 q-mb-md">Pet Checkups</div>
-                            <checkup />
+                            <!-- <checkup /> -->
                         </q-tab-panel>
 
                         <q-tab-panel name="schedule">
                             <div class="text-h4 q-mb-md">Pet Schedules</div>
-                            <schedule />
+                            <!-- <schedule /> -->
                         </q-tab-panel>
 
                         <q-tab-panel name="wellness">
                             <div class="text-h4 q-mb-md">Pet Wellness</div>
-                            <wellness />
+                            <!-- <wellness /> -->
                         </q-tab-panel>
                     </q-tab-panels>
                 </template>
@@ -185,13 +185,13 @@
 <script>
 import moment from 'moment';
 import addPatient from '../Modals/AddPatient.vue'
-import {
-    ownerDetails,
-    petDetails,
-    schedule,
-    checkup,
-    wellness
-} from '../Widgets/index'
+// import {
+//     ownerDetails,
+//     petDetails,
+//     schedule,
+//     checkup,
+//     wellness
+// } from '../Widgets/index'
 import jwt_decode from 'jwt-decode'
 import { api } from 'boot/axios'
 
