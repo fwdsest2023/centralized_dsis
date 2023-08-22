@@ -188,12 +188,157 @@ class MobileController extends BaseController
                         "key" => $value->id,
                         "storeName" => $value->storeName,
                         "address" => $value->address,
-                        "addressInfo" => $value->addressInfo,
-                        "geoLocation" => $value->geoLocation,
+                        "addressInfo" => json_decode($value->addressInfo),
+                        "geoLocation" => json_decode($value->geoLocation),
                         "contactPerson" => $contact->name,
                         "contactNumber" => $contact->contactNum,
                         "status" => $value->status,
                         "details" => $value
+                    ];
+                }
+            } 
+            
+
+            if($list){
+                return $this->response
+                        ->setStatusCode(200)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($list));
+            } else {
+                $response = [
+                    'title' => 'Error',
+                    'message' => 'No Data Found'
+                ];
+    
+                return $this->response
+                        ->setStatusCode(404)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($response));
+            }
+
+        } catch (\Throwable $th) {
+            print_r($th);
+            throw $th;
+        }
+    }
+
+    public function agentIdClientList(){
+        try {
+            // get the data
+            $payload = $this->request->getJSON();
+            $where = [
+                "createdBy" => $payload->aid
+            ];
+            $list = [];
+
+            $query = $this->mobModel->getAllClientsByCondition($where);
+            if($query){
+                foreach ($query as $key => $value) {
+                    $addInfo = json_decode($value->addressInfo);
+                    $list['list'][$key]['client'] = [
+                        "id" => (int)$value->id,
+                        "storeName" => $value->storeName,
+                        "address" => $value->address,
+                        "addressInfo" => $addInfo,
+                        "geoLocation" => json_decode($value->geoLocation),
+                        "contactPerson" => json_decode($value->contactPerson),
+                        "branch" => $addInfo->region->label,
+                        "categoryId" => (int)$value->category,
+                        "adminAssigned" => (object)[
+                            "label" => "",
+                            "value" => $value->createdBy,
+                        ],
+                        "isAdmin" => boolval((int)$value->isAdminCreated),
+                        "icon" => "play_circle",
+                        "status" => "pending",
+                        "loading" => false,
+                        "color" => "green",
+                        "type" => "client"
+                    ];
+                    $list['list'][$key]['isAdmin'] = (int)$value->isAdminCreated;
+                    $list['list'][$key]['adminAssigned'] = (int)$value->createdBy;
+                    $list['list'][$key]['files'] = "";
+                    $list['list'][$key]['reamrks'] = [];
+                    $list['list'][$key]['booking'] = [];
+                    $list['list'][$key]['attendance'] = [
+                        "endCall" => "",
+                        "startCall" => "",
+                        "geoLocation" => [
+                            "timeIn" => "",
+                            "timeOut" => "",
+                            "coorIn" => (object)[],
+                            "coorOut" => (object)[]
+                        ]
+                    ];
+                }
+            } 
+            
+
+            if($list){
+                return $this->response
+                        ->setStatusCode(200)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($list));
+            } else {
+                $response = [
+                    'title' => 'Error',
+                    'message' => 'No Data Found'
+                ];
+    
+                return $this->response
+                        ->setStatusCode(404)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($response));
+            }
+
+        } catch (\Throwable $th) {
+            print_r($th);
+            throw $th;
+        }
+    }
+    public function adminClientList(){
+        try {
+            // get the data
+            $list = [];
+
+            $query = $this->mobModel->getAllClients();
+            if($query){
+                foreach ($query as $key => $value) {
+                    $addInfo = json_decode($value->addressInfo);
+                    $list['list'][$key]['client'] = [
+                        "id" => (int)$value->id,
+                        "storeName" => $value->storeName,
+                        "address" => $value->address,
+                        "addressDetails" => $addInfo,
+                        "geoLocation" => json_decode($value->geoLocation),
+                        "contactPerson" => json_decode($value->contactPerson),
+                        "branch" => $addInfo->region->label,
+                        "categoryId" => (int)$value->category,
+                        "adminAssigned" => (object)[
+                            "label" => "",
+                            "value" => $value->createdBy,
+                        ],
+                        "isAdmin" => boolval((int)$value->isAdminCreated),
+                        "icon" => "play_circle",
+                        "status" => "pending",
+                        "loading" => false,
+                        "color" => "green",
+                        "type" => "client"
+                    ];
+                    $list['list'][$key]['isAdmin'] = boolval((int)$value->isAdminCreated);
+                    $list['list'][$key]['adminAssigned'] = (int)$value->createdBy;
+                    $list['list'][$key]['files'] = "";
+                    $list['list'][$key]['reamrks'] = [];
+                    $list['list'][$key]['booking'] = [];
+                    $list['list'][$key]['attendance'] = [
+                        "endCall" => "",
+                        "startCall" => "",
+                        "geoLocation" => [
+                            "timeIn" => "",
+                            "timeOut" => "",
+                            "coorIn" => (object)[],
+                            "coorOut" => (object)[]
+                        ]
                     ];
                 }
             } 
@@ -566,6 +711,48 @@ class MobileController extends BaseController
         }
     }
 
+    public function updateClient(){
+        try {
+            // get the data
+            $payload = $this->request->getJSON();
+            $mod = (array)$payload->modified;
+            foreach ($mod as $key => $value) {
+                # code...
+                $mod[$key] = json_encode($value);
+            }
+            // print_r($mod);
+            // exit();
+            $update = $this->mobModel->updateClientData(["id" => $payload->id], $mod);
+            
+            // exit();
+            if($update){
+                $response = [
+                    'title' => 'Success',
+                    'message' => 'Client Update done!'
+                ];
+
+                return $this->response
+                        ->setStatusCode(200)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($response));
+            } else {
+                $response = [
+                    'title' => 'Error',
+                    'message' => 'Something is not right, please check to your administrator'
+                ];
+    
+                return $this->response
+                        ->setStatusCode(404)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($response));
+            }
+
+        } catch (\Throwable $th) {
+            print_r($th);
+            throw $th;
+        }
+    }
+
     public function generateClientData($arr, $id){
         
         $agentId = $id;
@@ -576,11 +763,11 @@ class MobileController extends BaseController
             $isAdmin = $arr->isAdmin ? 1 : 0;
         }
         
-        
         $res = [
             "storeName" => $arr->storeName,
             "address" => $arr->address,
             "addressInfo" => json_encode($arr->addressDetails),
+            "category" => $arr->categoryId,
             "geoLocation" => json_encode($arr->geoLocation),
             "contactPerson" => json_encode($arr->contactPerson),
             "status" => 1,

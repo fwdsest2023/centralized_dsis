@@ -199,11 +199,11 @@ export default {
     name: 'RecordList',
     components: {
         addPatient,
-        ownerDetails,
-        petDetails,
-        schedule,
-        checkup,
-        wellness
+        // ownerDetails,
+        // petDetails,
+        // schedule,
+        // checkup,
+        // wellness
     },
     data(){
         return {

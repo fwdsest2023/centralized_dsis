@@ -3,12 +3,19 @@
 </template>
 <script>
 import { defineComponent } from 'vue';
+import { SessionStorage } from 'quasar'
+import jwt_decode from 'jwt-decode'
 import { Network } from '@capacitor/network';
 import prodJson from './context-data/products.json'
 import {api} from './boot/axios'
 
 export default defineComponent({
   name: 'App',
+  data(){
+    return {
+      userProfile: ''
+    }
+  },
   mounted(){
     Network.addListener('networkStatusChange', status => {
       if(status.connected){
@@ -28,7 +35,14 @@ export default defineComponent({
       }
     });
   },
+  computed:{
+    getUserProfile: function(){
+      let profile = SessionStorage.getItem('userDataLogin');
+      this.userProfile = jwt_decode(profile);
+    },
+  },
   created(){
+    this.getUserProfile
     this.migrateProducts()
   },
   methods:{
@@ -42,13 +56,6 @@ export default defineComponent({
         api.get('mobile/fetch/product/list')
         .then(async (response) => {
             if(response.status <= 200){
-                // this.$q.dialog({
-                //     title: response.data.title,
-                //     message: response.data.message,
-                //     position: 'top'
-                // })
-
-
                 let pList = response.data.list
                 let mappedList = pList.map((el, index) => {
                     let unit = JSON.parse(el.category)

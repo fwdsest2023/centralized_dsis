@@ -104,7 +104,17 @@
                             <q-tr v-if="props.expand" :props="props">
                                 <q-td colspan="100%">
                                     <div class="row">
-                                        testing
+                                        <div class="col col-md-4">
+                                            <q-btn
+                                                class="block full-width q-mt-sm"
+                                                unelevated 
+                                                rounded
+                                                size="sm"
+                                                color="primary" 
+                                                label="Store Relocation"
+                                                @click="updateClientGeoLocation(props.row)"
+                                            />
+                                        </div>
                                     </div>
                                 </q-td>
                             </q-tr>
@@ -183,6 +193,59 @@ export default {
 
             this.isLoading = false;
         },
+        updateClientGeoLocation(row){
+            this.$q.dialog({
+                title: 'Change Store Location?',
+                message: 'Are you sure you want to take this action?',
+                ok: {
+                    label: 'Yes'
+                },
+                cancel: {
+                    label: 'No',
+                    color: 'negative'
+                },
+                persistent: true
+            }).onOk(() => {
+                let modified = {
+                    "geoLocation": {}
+                }
+
+                this.updateClientData(row.key, modified)
+            })
+        },
+        async updateClientData(id, value){
+            this.tableRow = [];
+            this.isLoading = true;
+            let payload = {
+                id: Number(id),
+                modified: value
+            }
+
+            api.post('mobile/client/update', payload).then((response) => {
+                const data = {...response.data};
+                if(!data.error){
+                    this.$q.notify({
+                        color: 'success',
+                        position: 'top-right',
+                        title:data.title,
+                        message: 'Success',
+                        icon: 'check_circle'
+                    })
+                    this.getList()
+                } else {
+                    this.$q.notify({
+                        color: 'negative',
+                        position: 'top-right',
+                        title:data.title,
+                        message: this.$t(`errors.${data.error}`),
+                        icon: 'report_problem'
+                    })
+                }
+
+            })
+
+            this.isLoading = false;
+        } 
         // end
     },
     computed: {
@@ -214,7 +277,6 @@ export default {
                 // { name: 'category', label: 'Category', field: 'category', align: 'left' },
                 { name: 'contactPerson', label: 'Contact Person', field: 'contactPerson', align: 'left' },
                 { name: 'contactNumber', label: 'Contact Number', field: 'contactNumber', align: 'left' },
-                { name: 'status', label: 'Status', field: 'remarks', align: 'left' },
             ]
         }
     }
