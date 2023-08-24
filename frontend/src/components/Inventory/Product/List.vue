@@ -154,8 +154,10 @@ export default {
         },
         parseData(data){
             let res = JSON.parse(data);
-
+            // console.log(data)
+            // console.log(typeof res)
             return res.label
+            
         },
         async getList(){
             this.tableRow = [];
@@ -209,11 +211,58 @@ export default {
                     format: val => `${val}`,
                     sortable: true
                 },
-                { name: 'unit', label: 'Unit', field: 'unit' },
-                { name: 'category', label: 'Category', field: 'category' },
-                { name: 'productCost', label: 'Cost', field: 'productCost' },
-                { name: 'stock', label: 'Stock', field: 'stock' },
-                { name: 'hasPriceGroup', label: 'Price Group', field: 'hasPriceGroup' },
+                // to be edited // parse.data??
+                {
+                    name: 'unit',
+                    required: true,
+                    label: 'Unit',
+                    align: 'left',
+                    field: row => row.unit,
+                    format: val => `${val}`,
+                    sortable: true
+                },
+                // { name: 'unit', label: 'Unit', field: 'unit' },
+                {
+                    name: 'category',
+                    required: true,
+                    label: 'Category',
+                    align: 'left',
+                    field: row => row.unit,
+                    format: val => `${val}`,
+                    sortable: true
+                },
+                // { name: 'category', label: 'Category', field: 'category' },
+                //
+                {
+                    name: 'productCost',
+                    required: true,
+                    label: 'Cost',
+                    align: 'left',
+                    field: row => row.productCost,
+                    format: val => `${val}`,
+                    sortable: true
+                },
+                // { name: 'productCost', label: 'Cost', field: 'productCost' },
+                {
+                    name: 'stock',
+                    required: true,
+                    label: 'Stock',
+                    align: 'left',
+                    field: row => row.stock,
+                    format: val => `${val}`,
+                    sortable: true
+                },
+                {
+                    name: 'storage',
+                    required: true,
+                    label: 'Storage Location',
+                    align: 'left',
+                    field: row => row.hasPriceGroup,
+                    format: val => `${val}`,
+                    sortable: true
+                },
+                
+                
                 { name: 'actions', label: 'Action', field: 'actions' }
             ]
         }

@@ -30,6 +30,7 @@
                         :filter="filter"
                         :columns="tableColumns"
                         row-key="productName"
+                        
                     >
                         <template v-slot:top-right>
                             <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
@@ -181,14 +182,77 @@ export default{
                     format: val => `${val}`,
                     sortable: true
                 },
-                { name: 'unitType', label: 'Unit Type', field: 'unitType' },
-                { name: 'qty', label: 'Quantity', field: 'qty' },
-                { name: 'isLoose', label: 'Is Loose Stock', field: 'isLoose' },
-                { name: 'deliveryDate', label: 'Date Delivered', field: 'deliveryDate' },
-                { name: 'expirationDate', label: 'Date Expiry', field: 'expirationDate' },
-                { name: 'stockNotice', label: 'Stock Notice', field: 'stockNotice' },
-                { name: 'createdDate', label: 'Created Date', field: 'createdDate' },
+                {
+                    name: 'unitType',
+                    required: true,
+                    label: 'Unit Type',
+                    align: 'left',
+                    field: row => row.label,
+                    format: val => `${val}`,
+                    sortable: true
+                },
+                // { name: 'unitType', label: 'Unit Type', field: 'unitType' },
+                { 
+                    name: 'qty',
+                    required: true,
+                    label: 'Quantity', 
+                    align: 'left',
+                    field:  row => row.UnitTotalQuantity,
+                    format: val => `${val}`,
+                    sortable: true
+                },
+                // { 
+                //     name: 'isLoose',
+                //     required: true,
+                //     label: 'Is Loose Stock', 
+                //     align: 'left',
+                //     field:  row => row.,
+                //     format: val => `${val}`,
+                //     sortable: true
+                // },
+                { 
+                    name: 'deliveryDate',
+                    required: true,
+                    label: 'Date Delivered', 
+                    align: 'left',
+                    field:  row => row.deliveryDate,
+                    format: val => `${val}`,
+                    sortable: true
+                },
+                { 
+                    name: 'expirationDate',
+                    required: true,
+                    label: 'expirationDate', 
+                    align: 'left',
+                    field:  row => row.expiryDate,
+                    format: val => `${val}`,
+                    sortable: true
+                },
+                { 
+                    name: 'stockNotice',
+                    required: true,
+                    label: 'Stock Notice', 
+                    align: 'left',
+                    field:  row => row.StockNotice,
+                    format: val => `${val}`,
+                    sortable: true
+                },
                 { name: 'actions', label: 'Action', field: 'actions' }
+                //to be confirmed
+                // { 
+                //     name: 'createdDate',
+                //     required: true,
+                //     label: 'Created Date', 
+                //     align: 'left',
+                //     field:  row => row.createdAt,
+                //     format: val => `${val}`,
+                //     sortable: true
+                // },
+           
+               
+                // { name: 'createdDate', label: 'Created Date', field: 'createdDate' },
+                
+                
             ]
         }
     }
