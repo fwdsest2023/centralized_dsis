@@ -168,8 +168,8 @@ const linksList = [
     ]
   },
   {
-    title: 'Configurations',
-    icon: 'display_settings',
+    title: 'Manage Users',
+    icon: 'manage_accounts',
     link: 'usermanagement',
     code: 106,
     crumbs: [
@@ -178,8 +178,8 @@ const linksList = [
     ]
   },
   {
-    title: 'Manage Users',
-    icon: 'manage_accounts',
+    title: 'Configurations',
+    icon: 'display_settings',
     link: 'crsmanagement',
     code: 107,
     crumbs: [

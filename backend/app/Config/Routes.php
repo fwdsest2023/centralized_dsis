@@ -121,8 +121,10 @@ $routes->group('mlrs/api/v1', function($routes){
 
 		// for Clients
 		$routes->get('fetch/client/list', 'MobileController::clientList');
-		$routes->post('fetch/client/agent', 'MobileController::agentClientList');
+		$routes->post('fetch/client/agent', 'MobileController::agentIdClientList');
+		$routes->get('fetch/client/admin', 'MobileController::adminClientList');
 		$routes->post('client/migrate', 'MobileController::migrateClient');
+		$routes->post('client/update', 'MobileController::updateClient');
 
 		// For Product
 		$routes->post('product/migrate', 'MobileController::migrateProducts');

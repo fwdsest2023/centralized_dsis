@@ -128,7 +128,7 @@ import { LocalStorage } from 'quasar'
 import jwt_decode from 'jwt-decode'
 import { api } from 'boot/axios'
 
-export default{
+export default {
     name: 'PrintModal',
     data(){
         return {
@@ -155,7 +155,8 @@ export default{
         }
     },
     watch:{
-        modalStatus(newVal){
+        modalStatus(newVal, oldVal){
+            console.log(newVal, oldVal)
             this.openModal = newVal
         }
     },
@@ -246,7 +247,7 @@ export default{
             payload.clientId = this.appId.id
             payload.sex = payload.sex.value
             payload.createdBy = this.user.userId
-
+            
             api.post('patient/add/new', payload).then((response) => {
                 const data = {...response.data};
                 if(!data.error){

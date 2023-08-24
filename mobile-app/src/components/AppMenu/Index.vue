@@ -87,7 +87,7 @@ export default {
                         textColor: 'white'
                     },
                     label: 'Update Client Data',
-                    caption: 'Migrate and update the client data from the server and fetch the latest update',
+                    caption: 'Migrate and update the client data from the server ',
                     sides:{
                         icon: 'backup',
                         color: 'blue'
@@ -95,6 +95,22 @@ export default {
                     notSync: false,
                     loading: false,
                     action: () => {return this.uploadFetchClients()}
+                },
+                {
+                    avatar: {
+                        icon: 'store_mall_directory',
+                        color: 'primary',
+                        textColor: 'white'
+                    },
+                    label: 'Download Client',
+                    caption: 'Fetch the latest update of your client',
+                    sides:{
+                        icon: 'cloud_download',
+                        color: 'green'
+                    },
+                    notSync: false,
+                    loading: false,
+                    action: () => {return this.getAgentClients()}
                 },
             ]
         }
@@ -308,7 +324,7 @@ export default {
             api.post('mobile/client/migrate', payload)
             .then(async (response) => {
                 if(response.status <= 200){
-
+                    
                     this.$nextTick(()=>{
                         this.settingList[2].loading = false
                     })
@@ -359,7 +375,69 @@ export default {
                 vm.checkUnsyncData()
             })
             
-        }
+        },
+        async getAgentClients(){
+            let apiURL = Number(this.user.userType) === 1 ?
+            "mobile/fetch/client/admin" : 
+            "mobile/fetch/client/agent";
+
+            if(Number(this.user.userType) === 1){
+                this.fetchAdmin(apiURL)
+            } else {
+                this.fetchAgent(apiURL)
+            }
+        },
+        async fetchAdmin(url){
+            api.get(url)
+            .then(async (response) => {
+                if(response.status <= 200){
+                    let clientData = response.data.list;
+
+                    await Preferences.set({
+                        key: 'clientList',
+                        value: JSON.stringify(clientData)
+                    }).then(() => {
+                        alert("Your Client list is updated")
+                    })
+                } else {
+                    this.$q.dialog({
+                        title: 'Migration Failed',
+                        message: 'Something went wrong. Please contact your administrator',
+                        position: 'top'
+                    })
+                }
+                
+            }).catch((err) => {
+                alert(JSON.stringify(err))
+            })
+        },
+        async fetchAgent(url){
+            let payload = {
+                aid: Number(this.user.userId)
+            }
+            api.post(url, payload)
+            .then(async (response) => {
+                if(response.status <= 200){
+                    let clientData = response.data.list;
+
+                    await Preferences.set({
+                        key: 'clientList',
+                        value: JSON.stringify(clientData)
+                    }).then(() => {
+                        alert("Your Client list is updated")
+                    })
+                } else {
+                    this.$q.dialog({
+                        title: 'Migration Failed',
+                        message: 'Something went wrong. Please contact your administrator',
+                        position: 'top'
+                    })
+                }
+                
+            }).catch((err) => {
+                alert(JSON.stringify(err))
+            })
+        },
     }
 }
 </script>

@@ -29,7 +29,12 @@
                             <div v-for="(item, index) in filterList" :key="index">
                                 <q-item>
                                     <q-item-section avatar top>
-                                        <q-avatar :icon="item.category[0].icon" :color="item.category[0].color" text-color="white" />
+                                        <q-avatar
+                                            @click="checkUpdateLocation(item.client.geoLocation) ? updateLocation(item, index) : ''"
+                                            :icon="checkUpdateLocation(item.client.geoLocation) ? 'fmd_bad' : item.category[0].icon" 
+                                            :color="checkUpdateLocation(item.client.geoLocation) ? 'red' : item.category[0].color" 
+                                            text-color="white" 
+                                        />
                                     </q-item-section>
                                     <q-item-section>
                                         <q-item-label>{{item.client.storeName.toUpperCase()}}</q-item-label>
@@ -40,6 +45,7 @@
 
                                     <q-item-section side top>
                                         <q-btn
+                                            :disable="checkUpdateLocation(item.client.geoLocation)"
                                             @click="addClientToCall(item)"
                                             flat 
                                             round
@@ -76,6 +82,7 @@
 
 <script>
 import { Preferences } from '@capacitor/preferences';
+import { Geolocation } from '@capacitor/geolocation'
 import miscJson from '../../context-data/misc.json'
 import moment from 'moment';
 
@@ -125,6 +132,45 @@ export default {
         }
     },
     methods: {
+        checkUpdateLocation(item){
+            if(item.lat === 0 || item.lng === 0){
+                return true
+            }
+
+            return false
+        },
+        async updateLocation(item, idx){
+            let coordinates = {};
+            const perm = await Geolocation.checkPermissions()
+            if(perm.location !== 'granted' || perm.coarseLocation !== 'granted'){
+                const reqPerm = await Geolocation.requestPermissions();
+                if(reqPerm.location === 'granted' || reqPerm.coarseLocation === 'granted'){
+                    coordinates = await Geolocation.getCurrentPosition();
+                } else {
+                    return false
+                }
+            } else {
+                coordinates = await Geolocation.getCurrentPosition();
+            }
+
+            item.client.geoLocation.lat = coordinates.coords.latitude
+            item.client.geoLocation.lng = coordinates.coords.longitude
+
+            // Update the value
+            const { value } = await Preferences.get({ key: 'clientList' });
+            let data = value !== null && value.length !== 0 ? JSON.parse(value) : []
+            data[idx] = item
+
+            let storeUpdate = data
+
+            await Preferences.set({
+                key: 'clientList',
+                value: JSON.stringify(storeUpdate)
+            }).then(() => {
+                this.clearForm();
+                this.$emit('updateStatus', false);
+            })
+        },
         async addClientToCall(val){
             const { value } = await Preferences.get({ key: this.curDate });
             let data = value !== null ? JSON.parse(value) : []
@@ -155,28 +201,6 @@ export default {
         },
         async closeModal(){
             this.$emit('updateStatus', false);
-        },
-        async addClient(){
-            const { value } = await Preferences.get({ key: 'clientList' });
-            let data = value !== null && value.length !== 0 ? JSON.parse(value) : []
-
-            let frm = this.form
-            frm.client.branch = frm.client.regionId.branch
-            frm.client.regionId = frm.client.regionId.value
-            frm.client.categoryId = frm.client.categoryId.value
-
-            // jsonClient.list.push(frm)
-            // this.$emit('addClientData', frm);
-            data.push(frm)
-            
-            await Preferences.set({
-                key: 'clientList',
-                value: JSON.stringify(data)
-            }).then(() => {
-                this.clearForm();
-                this.$emit('updateStatus', false);
-            })
-            
         },
         
     }
