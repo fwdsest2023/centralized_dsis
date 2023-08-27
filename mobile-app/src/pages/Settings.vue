@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import { Preferences } from '@capacitor/preferences';
 import { SessionStorage } from 'quasar'
 import jwt_decode from 'jwt-decode'
 import settingMenu from '../components/AppMenu/Index.vue'
@@ -30,9 +31,10 @@ export default {
     settingMenu
   },
   computed: {
-    getUserProfile: function(){
-      let profile = SessionStorage.getItem('userDataLogin');
-      this.userProfile = jwt_decode(profile);
+    getUserProfile: async function(){
+      const { value } = await Preferences.get({ key: 'agentToken' });
+      let token = value !== null ? value : null;
+      this.userProfile = jwt_decode(token);
     }
   },
   created(){

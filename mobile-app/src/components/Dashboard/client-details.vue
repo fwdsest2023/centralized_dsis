@@ -204,16 +204,17 @@ export default {
         },
         clientData(newVal){
             const vm = this;
-            this.clientInfo = this.clientData
-            if(this.clientData.activity !== undefined){
+            this.clientInfo = newVal
+            if(newVal.activity !== undefined){
                 this.clientData.activity.forEach((el, index) => {
                     vm.activities[index].active = el.active
                 });
             }
-            this.callDone = this.clientData.status !== undefined ?
+            this.callDone = newVal.status !== undefined ?
             true : false;
-            this.callStarted = this.clientData.attendance.startCall !== '' ?
+            this.callStarted = newVal.attendance.startCall !== '' ?
             true : false;
+            this.remarks = newVal.remarks
         }
     },
     methods: {
@@ -335,6 +336,20 @@ export default {
         async endCall(){
             const vm = this;
             const idx = this.clientIndex;
+
+            let checkTriggers = this.activities.filter((el) => {
+                return el.active === true
+            })
+
+            if(checkTriggers.length === 0){
+                this.$q.dialog({
+                    title: 'Incomplete Call',
+                    message: 'Make sure select activities and have a photo selfie before ending the call.',
+                    cancel: true,
+                    persistent: true,
+                })
+                return false;
+            }
 
             // validate if there was unended call
             try {

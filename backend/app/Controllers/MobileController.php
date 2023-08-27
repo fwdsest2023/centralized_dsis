@@ -23,16 +23,15 @@ class MobileController extends BaseController
             // Check if there was an existing Sync
             $where = [
                 "agentId" => $payload->agentId,
-                "syncDate" => date('Y-m-d')
+                "syncDate" => $payload->currDate
             ];
             $check = $this->mobModel->getAllAgentSyncCalls($where);
-
-
             // Set of Data List Save
             foreach ($dataList as $key => $value) {
 
                 // First Check Client saved to db and migrate
                 $clientList[$key] = [
+                    "id" => (int)$value->client->id,
                     "storeName" => $value->client->storeName,
                     "address" => $value->client->address,
                     "addressDetails" => $value->client->addressDetails,
@@ -127,6 +126,7 @@ class MobileController extends BaseController
                 $attendaces = json_decode($query->attendance);
                 // print_r(gettype($client));
                 // print_r($bookings);
+                // print_r($query);
                 // exit();
                 foreach ($client as $key => $value) {
                     // print_r($value);
@@ -135,6 +135,8 @@ class MobileController extends BaseController
 
                     $list['list'][$key] = [
                         "key" => $key,
+                        "id" => $value->id,
+                        "syncId" => (int)$query->id,
                         "storeName" => $value->storeName,
                         "address" => $value->address,
                         "branch" => $value->branch,
@@ -258,7 +260,7 @@ class MobileController extends BaseController
                     $list['list'][$key]['isAdmin'] = (int)$value->isAdminCreated;
                     $list['list'][$key]['adminAssigned'] = (int)$value->createdBy;
                     $list['list'][$key]['files'] = "";
-                    $list['list'][$key]['reamrks'] = [];
+                    $list['list'][$key]['remarks'] = "";
                     $list['list'][$key]['booking'] = [];
                     $list['list'][$key]['attendance'] = [
                         "endCall" => "",
@@ -328,7 +330,7 @@ class MobileController extends BaseController
                     $list['list'][$key]['isAdmin'] = boolval((int)$value->isAdminCreated);
                     $list['list'][$key]['adminAssigned'] = (int)$value->createdBy;
                     $list['list'][$key]['files'] = "";
-                    $list['list'][$key]['reamrks'] = [];
+                    $list['list'][$key]['remarks'] = "";
                     $list['list'][$key]['booking'] = [];
                     $list['list'][$key]['attendance'] = [
                         "endCall" => "",

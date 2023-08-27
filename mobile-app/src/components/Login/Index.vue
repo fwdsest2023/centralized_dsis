@@ -95,20 +95,7 @@ export default{
             remember: true
         }
     },
-    created(){
-        this.getRememberLogin();
-    },
     methods: {
-        async getRememberLogin(){
-            const { value } = await Preferences.get({ key: 'agentToken' });
-            let token = value !== null ? value : null;
-
-            if(token !== null){
-                LocalStorage.set('userData', token);
-                SessionStorage.set('userDataLogin', token);
-                // this.$router.push('/dashboard')
-            }
-        },
         async submitLogin(){
             this.submitting = true;
             let vm = this;

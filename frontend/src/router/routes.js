@@ -49,6 +49,11 @@ const routes = [
         name: 'productList',
         component: () => import('pages/Inventory/Product.vue') 
       },
+      { 
+        path: 'invoice-list',
+        name: 'invoiceList',
+        component: () => import('pages/Inventory/Invoice.vue') 
+      },
     ]
   },
   {

@@ -72,10 +72,18 @@ $routes->group('mlrs/api/v1', function($routes){
 	$routes->group('stock', function($routes){
 		$routes->post('add/new', 'InventoryController::addStock');
 		$routes->post('get/stocks', 'InventoryController::getStockList');
-
 		// Stock specs
 		$routes->post('get/categories', 'InventoryController::getCategories');
 		$routes->post('get/units', 'InventoryController::getUnits');
+	});
+
+	// Invoice Group
+	$routes->group('invoice', function($routes){
+		$routes->post('create', 'InvoiceController::createInvoice');
+		$routes->post('update', 'InvoiceController::updateInvoice');
+		$routes->post('create/booking', 'InvoiceController::createBookingInvoice');
+		$routes->post('fetch/byId/(:any)', 'InvoiceController::getInvoiceDetails/$1');
+		$routes->get('fetch/list', 'InvoiceController::fetchInvoice');
 
 	});
 

@@ -97,17 +97,18 @@ export default {
     async getRememberLogin(){
       const { value } = await Preferences.get({ key: 'agentToken' });
       let token = value !== null ? value : null;
-
+      console.log(token)
       if(token !== null){
         this.userProfile = jwt_decode(token);
         this.$router.push('/dashboard')
       } else {
-        let profile = SessionStorage.getItem('userDataLogin');
-        if(profile){
-          this.userProfile = jwt_decode(profile);
-        } else {
-          this.$router.push('/')
-        }
+        this.$router.push('/')
+        // let profile = SessionStorage.getItem('userDataLogin');
+        // if(profile){
+        //   this.userProfile = jwt_decode(profile);
+        // } else {
+        //   this.$router.push('/')
+        // }
       }
     },
     toggleLeftDrawer () {

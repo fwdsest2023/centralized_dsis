@@ -4,6 +4,7 @@
 <script>
 import { defineComponent } from 'vue';
 import { SessionStorage } from 'quasar'
+import { Preferences } from '@capacitor/preferences';
 import jwt_decode from 'jwt-decode'
 import { Network } from '@capacitor/network';
 import prodJson from './context-data/products.json'
@@ -36,9 +37,12 @@ export default defineComponent({
     });
   },
   computed:{
-    getUserProfile: function(){
-      let profile = SessionStorage.getItem('userDataLogin');
-      this.userProfile = jwt_decode(profile);
+    getUserProfile: async function(){
+      const { value } = await Preferences.get({ key: 'agentToken' });
+      let token = value !== null ? value : null;
+      if(token !== null){
+        this.userProfile = jwt_decode(token);
+      }
     },
   },
   created(){
@@ -47,11 +51,6 @@ export default defineComponent({
   },
   methods:{
     async migrateProducts(){
-        // Collection of data
-        // Loading part
-        // this.clearFinishData()
-        // return
-
         // Call Sync API
         api.get('mobile/fetch/product/list')
         .then(async (response) => {

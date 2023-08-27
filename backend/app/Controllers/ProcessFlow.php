@@ -147,60 +147,6 @@ class ProcessFlow extends BaseController
         
     } 
 
-    public function updatePreProcessStatus(){
-        // Check Auth header bearer
-        $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
-        if(!$authorization){
-            $response = [
-                'message' => 'Unauthorized Access'
-            ];
-
-            return $this->response
-                    ->setStatusCode(401)
-                    ->setContentType('application/json')
-                    ->setBody(json_encode($response));
-            exit();
-        }
-
-        //Get API Request Data from NuxtJs
-        $data = $this->request->getJSON(); 
-
-        //Variables
-        $where = ['id' => $data->applicationId];
-        $setData = [
-            'testResult' => json_encode($data->testResult),
-        ];
-
-        //Update Query for finding User Information
-        $updateApp = $this->applicationModel->updateApplication($where, $setData);
-
-
-        if($updateApp){
-            //Return to user
-            $response = [
-                'title' => 'Update Specimen Status',
-                'message' => 'Your data successfully updated!'
-            ];
-
-            return $this->response
-                    ->setStatusCode(200)
-                    ->setContentType('application/json')
-                    ->setBody(json_encode($response));
-        } else {
-            $response = [
-                'title' => 'Update Request Status',
-                'message' => 'Your application failed to update!'
-            ];
-
-            return $this->response
-                    ->setStatusCode(400)
-                    ->setContentType('application/json')
-                    ->setBody(json_encode($response));
-        }
-
-        
-    } 
-
     public function updateProcessStatusMultiple(){
         // Check Auth header bearer
         $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
@@ -333,78 +279,6 @@ class ProcessFlow extends BaseController
         } 
 
         return false;
-    }
-
-
-    public function updatePathoProcessStatus(){
-        // Check Auth header bearer
-        $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
-        if(!$authorization){
-            $response = [
-                'message' => 'Unauthorized Access'
-            ];
-
-            return $this->response
-                    ->setStatusCode(401)
-                    ->setContentType('application/json')
-                    ->setBody(json_encode($response));
-            exit();
-        }
-
-        //Get API Request Data from NuxtJs
-        $data = $this->request->getJSON(); 
-
-        //Variables
-        $where = ['id' => $data->applicationId];
-
-
-        $setData = [
-            'status' => $data->nextStatus,
-            'statusDescription' => $data->curStatus,
-            'surgeryResult' => json_encode($data->surgeryResult),
-            'procedureDetails' => json_encode($data->procedureDetails),
-            'specimenCheckList' => json_encode($data->specimenCheckList),
-            'signatory' => $data->signatory
-        ];
-
-        //Update Query for finding User Information
-        $updateApp = $this->pathoModel->updateApplication($where, $setData);
-
-
-        if($updateApp){
-            //save application history action
-            $history = [
-                'appId' => $data->applicationId,
-                'requestData' => json_encode($data),
-                'actionStatus' => $data->action,
-                'userId' => $data->user,
-                'actionTaken' => 'Update Report',
-            ];
-            $this->historyPathoModel->insert($history);
-
-            //Return to user
-            $response = [
-                'title' => 'Update Specimen Report Status',
-                'message' => 'Your data successfully updated!'
-            ];
-
-            return $this->response
-                    ->setStatusCode(200)
-                    ->setContentType('application/json')
-                    ->setBody(json_encode($response));
-        } else {
-            $response = [
-                'title' => 'Update Request Status',
-                'message' => 'Your application failed to update!'
-            ];
-
-            return $this->response
-                    ->setStatusCode(400)
-                    ->setContentType('application/json')
-                    ->setBody(json_encode($response));
-        }
-
-        
     }
 
 }

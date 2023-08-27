@@ -197,6 +197,7 @@
             </div>
         </div>
         <BookingModal
+            :otherDetails="otherDet"
             :bookedList="bookList"
             :modalStatus="openBookModal"
             @updateModalStatus="closeBooking"
@@ -235,6 +236,7 @@ export default {
             openBookModal: false,
             bookList: [],
             appId: 0,
+            otherDet: {},
 
             agentList: [],
             agentId: '',
@@ -312,11 +314,14 @@ export default {
                 date: moment(this.syncDate).format('yyyy-MM-DD'),
                 idx: row.key
             }
-
+            
             api.post('mobile/get/booking', payload).then((response) => {
                 const data = {...response.data};
                 if(!data.error){
                     this.bookList = response.data.booking
+                    payload.cid = row.row.id
+                    payload.sid = row.row.syncId
+                    this.otherDet = payload
                     this.openBookModal = true
                 } else {
                     this.$q.notify({

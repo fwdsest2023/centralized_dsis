@@ -43,6 +43,7 @@ export default {
     data() {
         return {
             curDate: moment().format('MM-DD-YYYY'),
+            syncDate: moment().format('YYYY-MM-DD'),
             tab: 'mails',
             splitterModel: 25,
             expanded: false,
@@ -161,6 +162,7 @@ export default {
             // Collection of data
             let payload = {
                 agentId: Number(this.user.userId),
+                currDate: this.syncDate,
                 category: "CLIENT",
                 listData: JSON.stringify(listData)
             }

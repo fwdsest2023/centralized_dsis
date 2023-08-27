@@ -37,6 +37,7 @@
                     <q-btn 
                         :disable="productList.length === 0"
                         flat 
+                        @click="generateInvoice"
                         label="Generate Invoice" 
                         color="primary" 
                     />
@@ -55,7 +56,7 @@ import { api } from 'boot/axios'
 const dateNow = moment().format('MM/DD/YYYY');
 
 export default{
-    name: 'PrintModal',
+    name: 'BookingModal',
     data(){
         return {
             openModal: false,
@@ -69,6 +70,9 @@ export default{
         }
     },
     props: {
+        otherDetails: {
+            type: Object
+        },
         bookedList: {
             type: Array
         },
@@ -105,6 +109,33 @@ export default{
         async closeModal(){
             this.$emit('updateModalStatus', false);
         },
+        async generateInvoice(){
+            let payload = {
+                agentId: this.otherDetails.aid,
+                syncId: this.otherDetails.sid,
+                customerId: this.otherDetails.cid,
+                orderList: JSON.stringify(this.productList),
+                status: 'DSIS001',
+                createdBy: Number(this.user.userId),
+            }
+            
+            api.post('invoice/create/booking', payload).then((response) => {
+                const data = {...response.data};
+                console.log(response)
+                if(!data.error){
+                    this.$emit('updateModalStatus', false);
+                } else {
+                    this.$q.notify({
+                        color: 'negative',
+                        position: 'top-right',
+                        title:data.title,
+                        message: data.message,
+                        icon: 'report_problem'
+                    })
+                }
+
+            })
+        }
     }
     
 }
