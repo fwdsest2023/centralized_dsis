@@ -65,6 +65,60 @@ class InvoiceController extends BaseController
         }
 
     }
+    public function updateInvoice(){
+        // Check Auth header bearer
+        $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
+        if(!$authorization){
+            $response = [
+                'message' => 'Unauthorized Access'
+            ];
+
+            return $this->response
+                    ->setStatusCode(401)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+            exit();
+        }
+
+        //Get API Request Data from Frontend
+        $payload = $this->request->getJSON();
+        $where = [
+            "id" => $payload->invoiceId
+        ];
+        $payload->invoiceDetails->otherDetails = json_encode($payload->invoiceDetails->otherDetails);
+        $payload->invoiceDetails->termsOfPayment = json_encode($payload->invoiceDetails->termsOfPayment);
+        $data = json_decode(json_encode($payload->invoiceDetails), true);
+        // print_r($data);
+        // exit();
+        // Insert the data
+        $query = $this->invoiceModel->updateInvoiceData($where,$data);
+
+        if($query){
+
+            $response = [
+                'title' => 'Invoice',
+                'message' => 'Invoice updated successfully',
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+            
+        } else {
+            $response = [
+                'error' => 400,
+                'title' => 'Invoice Failed!',
+                'message' => 'Please check your data.'
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
     public function createBookingInvoice(){
         // Check Auth header bearer
         $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
@@ -175,6 +229,49 @@ class InvoiceController extends BaseController
                 ->setStatusCode(200)
                 ->setContentType('application/json')
                 ->setBody(json_encode($list));
+            
+        } else {
+            $response = [
+                'title' => 'Error',
+                'message' => 'No Data Found'
+            ];
+
+            return $this->response
+                    ->setStatusCode(404)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+    }
+
+    public function getInvoiceDetails(){
+        // Check Auth header bearer
+        $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
+        if(!$authorization){
+            $response = [
+                'message' => 'Unauthorized Access'
+            ];
+
+            return $this->response
+                    ->setStatusCode(401)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+            exit();
+        }
+
+        $payload = $this->request->getJSON();
+        $where = [
+            "id" => $payload->invoiceId,
+        ];
+        // Insert the data
+        $query = $this->invoiceModel->getInvoiceDetails($where);
+        // print_r($query);
+        // exit();
+
+        if($query){
+            return $this->response
+                ->setStatusCode(200)
+                ->setContentType('application/json')
+                ->setBody(json_encode($query));
             
         } else {
             $response = [

@@ -82,10 +82,16 @@ $routes->group('mlrs/api/v1', function($routes){
 		$routes->post('create', 'InvoiceController::createInvoice');
 		$routes->post('update', 'InvoiceController::updateInvoice');
 		$routes->post('create/booking', 'InvoiceController::createBookingInvoice');
-		$routes->post('fetch/byId/(:any)', 'InvoiceController::getInvoiceDetails/$1');
+		$routes->post('fetch/byId', 'InvoiceController::getInvoiceDetails');
 		$routes->get('fetch/list', 'InvoiceController::fetchInvoice');
-
 	});
+
+	// Generate PDF's and Reports
+	$routes->group('generate', function($routes){
+		$routes->post('invoice', 'Generate::createInvoice');
+		$routes->get('print/invoice/(:any)', 'Generate::generateInvoicePdf/$1');
+	});
+
 
 
 	// All Users mmodule

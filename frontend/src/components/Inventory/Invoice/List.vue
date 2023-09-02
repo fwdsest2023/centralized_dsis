@@ -50,7 +50,7 @@
                                     size="md"
                                     color="primary" 
                                     label="View Details"
-                                    @click="openProductModal('edit', props.row)"
+                                    @click="openInvoiceModal(props.row)"
                                 />
                             </q-td>
                         </template>
@@ -58,6 +58,13 @@
                 </div>
             </div>
         </div>
+
+        <invoiceDetailsModal
+            :appId="appId"
+            :modalStatus="openAddModal"
+            @updateModalStatus="closeInvoiceModal"
+            @refreshData="getList"
+        />
     </div>
 </template>
 
@@ -65,7 +72,7 @@
 import moment from 'moment';
 import { LocalStorage, SessionStorage } from 'quasar'
 import noData from '../../Templates/NoData.vue';
-import addProductModal from '../Modals/AddProduct.vue'
+import invoiceDetailsModal from '../Modals/InvoiceDetails.vue'
 import jwt_decode from 'jwt-decode'
 import { api } from 'boot/axios'
 
@@ -89,21 +96,19 @@ export default {
     },
     components: {
         noData,
-        addProductModal
+        invoiceDetailsModal
     },
     created(){
         this.getList();
     },
     methods: {
         moment,
-        openProductModal(type, id){
+        openInvoiceModal(row){
             this.openAddModal = true;
-            this.pType = type;
-            this.appId = id;
+            this.appId = row.key;
         },
-        closeProductModal(){
+        closeInvoiceModal(){
             this.openAddModal = false
-            this.pType = 'add'
             this.appId = {}
         },
         parseData(data){

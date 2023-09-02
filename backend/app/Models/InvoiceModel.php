@@ -33,6 +33,10 @@ class InvoiceModel extends Model
         $results = $query->getRow();
         return $results;
     }
+    public function updateInvoiceData($where, $setData){
+        $query = $this->db->table($this->table)->set($setData)->where($where)->update();
+        return $query ? true : false;
+    }
     public function getAllInvoice(){
         $query = $this->db->table($this->table)->get();
         $results = $query->getResult();
@@ -50,5 +54,22 @@ class InvoiceModel extends Model
         }, $results);
 
         return $all;
+    }
+    public function getInvoiceDetails($where){
+        $query = $this->db->table($this->table)->where($where)->get();
+        $result = $query->getRow();
+        $clientInfo = $this->db->table($this->clientsTable)->where('id', $result->customerId)->get();
+        $agentInfo = $this->db->table($this->usersTable)->where('id', $result->agentId)->get();
+        $creatorInfo = $this->db->table($this->usersTable)->where('id', $result->createdBy)->get();
+        // Modify Results
+        $result->orderList = json_decode($result->orderList);
+        $result->otherDetails = json_decode($result->otherDetails);
+        $result->termsOfPayment = json_decode($result->termsOfPayment);
+        $result->customerInfo = $clientInfo->getRow();
+        $result->agentInfo = $agentInfo->getRow();
+        $result->issueInfo = $creatorInfo->getRow();
+        
+
+        return $result;
     }
 }

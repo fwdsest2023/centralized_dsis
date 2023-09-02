@@ -116,6 +116,15 @@ export default{
                 customerId: this.otherDetails.cid,
                 orderList: JSON.stringify(this.productList),
                 status: 'DSIS001',
+                otherDetails: JSON.stringify({
+                    transType: '',
+                    tinNo: '',
+                    businessStyle: '',
+                    checkNo: '',
+                    postdateCheckDate: '',
+                    dueDate: '',
+                    discountPercentage: 0
+                }),
                 createdBy: Number(this.user.userId),
             }
             

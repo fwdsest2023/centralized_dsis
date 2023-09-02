@@ -16,6 +16,7 @@
             
             <q-space />
             <q-btn
+                v-if="showAddClientButton"
                 @click="addClient"
                 round 
                 color="primary" 
@@ -128,6 +129,8 @@ export default {
     data() {
         return {
             curDate: moment().format('MM-DD-YYYY'),
+            baseCurDate: moment().format('MM-DD-YYYY'),
+            showAddClientButton: true,
             renderComponent: true,
             loadClientList: [],
             searchClient: '',
@@ -160,6 +163,7 @@ export default {
 
             if(newVal){
                 this.curDate = formatDate
+                this.showAddClientButton = formatDate === this.baseCurDate;
                 this.getClientListPref();
             }
         }

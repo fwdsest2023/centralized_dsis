@@ -241,7 +241,7 @@ export default{
                 busStyle: 'Bus Style/Name',
                 ccNo: 'Credit Card No.',
                 pwdNo: 'OSCA/PWD ID No.',
-             },
+            },
             transTypeOption: [
                 {label: 'Walk-In', value: 'Walk-In'},
                 {label: 'Delivery', value: 'Delivery'},

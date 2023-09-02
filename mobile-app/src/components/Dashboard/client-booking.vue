@@ -227,7 +227,7 @@ export default {
             let list = {
                 itemId: item.id,
                 itemName: item.productName,
-                price: item.productCost,
+                price: item.productSRP,
                 qty: 0
             }
             
