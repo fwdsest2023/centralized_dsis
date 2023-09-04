@@ -130,8 +130,8 @@ hr {
                 $item .= '<tr>';
                     $item .= '<td style="text-align: center;">'. $value->qty .'</td>';
                     $item .= '<td style="text-align: center;">'. $value->itemName .'</td>';
-                    $item .= '<td style="text-align: center;">'. number_format($value->price) .'</td>';
-                    $item .= '<td style="text-align: center;">'. (floatval($value->price) * floatval($value->qty)) .'</td>';
+                    $item .= '<td style="text-align: center;">'. number_format((float)$value->price, 2, '.', '') .'</td>';
+                    $item .= '<td style="text-align: center;">'. number_format((floatval($value->price) * floatval($value->qty)), 2, '.', '') .'</td>';
                 $item .= '</tr>';
             }
             for ($x = 0; $x <= 1; $x++){
@@ -155,9 +155,9 @@ hr {
                 <strong>NET TOTAL AMOUNT: </strong>
             </td>
             <td style="width: 15%;">
-                <?= $gross ?> <br>
-                <?= $discount ?> <br>
-                <?= $netAmount ?>
+                <?= number_format((float)$gross, 2, '.', '') ?> <br>
+                <?= number_format((float)$discount, 2, '.', '') ?> <br>
+                <?= number_format((float)$netAmount, 2, '.', '') ?>
             </td>
         </tr>
     </table>
