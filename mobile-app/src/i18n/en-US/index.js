@@ -4,6 +4,7 @@
 export default {
   system_name: 'HORTIS',
   system_version: '1.0.1',
+  app_version: '2.10',
   form_labels: {
     user: "Username",
     pass: "Password",

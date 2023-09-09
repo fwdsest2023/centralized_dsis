@@ -4,7 +4,7 @@
       <router-view />
     </q-page-container>
     <q-footer reveal class="bg-grey-5 text-weight-thin text-blue-white-9 text-center q-pt-lg q-pb-lg">
-      <div>{{ `CDSIS App version ${$t('system_version')} ©2023 Created by FWDS` }}</div>
+      <div>{{ `CDSIS App version ${$t('app_version')} ©2023 Created by FWDS` }}</div>
     </q-footer>
   </q-layout>
 </template>

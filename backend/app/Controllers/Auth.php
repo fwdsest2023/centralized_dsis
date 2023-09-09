@@ -113,12 +113,13 @@ class Auth extends BaseController
             
         } else {
             $response = [
+                'error' => 404,
                 'title' => 'Invalid Credentials',
                 'message' => 'Please check your username or password, If its forgotten please contact your adminitrator for more information.'
             ];
 
             return $this->response
-                    ->setStatusCode(404)
+                    ->setStatusCode(200)
                     ->setContentType('application/json')
                     ->setBody(json_encode($response));
         }
@@ -126,7 +127,38 @@ class Auth extends BaseController
 
         // print_r(json_encode($data));
         
-    }  
+    } 
+
+    public function validateAppVersion(){
+        $payload = $this->request->getJSON();
+        $currentVersion = "2.10";
+
+        if($payload->appVersion !== $currentVersion){
+            $response = [
+                'error' => 401,
+                'currVersion' => $currentVersion,
+                'title' => 'Invalid Credentials',
+                'message' => 'Please check your username or password'
+            ];
+
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        } else {
+            $response = [
+                'currVersion' => $currentVersion,
+                'title' => 'Valid Credentials',
+                'message' => 'Version matched'
+            ];
+
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
 
     public function reconnect($uid){
         //Get API Request Data from NuxtJs

@@ -49,7 +49,7 @@
                     <q-btn 
                         type="submit"
                         color="teal-5" 
-                        text-color="white" 
+                        text-color="white"
                         :loading="submitting"
                         class="full-width custom-button-border"
                         :label="$t('form_labels.login')"
@@ -74,6 +74,7 @@ export default{
     name: 'LoginTemplate',
     data(){
         return {
+            isAbleToLog: true,
             form: {
                 username: "",
                 password: "",
@@ -97,13 +98,24 @@ export default{
     },
     methods: {
         async submitLogin(){
+            const {value} = await Preferences.get({key: 'appVersion'})
+            let appVer = this.$t('app_version')
+            if(value !== appVer){
+                this.$q.dialog({
+                    title: 'App Version Mismatched',
+                    message: 'Your app version is not updated, please contact your admin for the latest update.',
+                    persistent: true
+                })
+                return
+            }
+
             this.submitting = true;
             let vm = this;
             let payload = vm.form;
 
             loginapi.post('auth/login', payload).then(async (response) => {
-              
                 const data = {...response.data};
+                
                 if(!data.error){
                     LocalStorage.set('userData', data.jwt);
                     // Session Login with Expiration
@@ -118,12 +130,10 @@ export default{
                     
                     this.$router.push('/dashboard')
                 } else {
-                    this.$q.notify({
-                        color: 'negative',
-                        position: 'top-right',
-                        title:data.title,
-                        message: this.$t(`errors.${data.error}`),
-                        icon: 'report_problem'
+                    this.$q.dialog({
+                        title: data.title,
+                        message: data.message,
+                        persistent: true
                     })
                 }
 

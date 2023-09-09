@@ -37,6 +37,7 @@ $routes->get('/', 'Home::index');
 $routes->group('mlrs/api/v1', function($routes){
 	$routes->group('auth', function($routes){
 		$routes->post('login', 'Auth::login');
+		$routes->post('getVersion', 'Auth::validateAppVersion');
 		$routes->post('firstLoginChange', 'Auth::firstLoginChangePassword');
 	}); 
 

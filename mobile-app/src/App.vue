@@ -48,8 +48,48 @@ export default defineComponent({
   created(){
     this.getUserProfile
     this.migrateProducts()
+    this.checkAppVersion();
   },
   methods:{
+    async checkAppVersion(){
+      let payload = {
+        appVersion: this.$t('app_version')
+      }
+
+      api.post('auth/getVersion', payload)
+      .then(async (response) => {
+          if(response.status <= 200){
+            let data = response.data;
+            if(data.hasOwnProperty('error')){
+              this.$q.dialog({
+                title: 'App Version Mismatched',
+                message: `Your app version is not updated, please contact your admin for the latest version ${data.currVersion}.`,
+                persistent: true
+              }).onOk(async () => {
+                await Preferences.set({
+                  key: 'appVersion',
+                  value: data.currVersion
+                })
+                await Preferences.remove({ key: 'agentToken' });
+                this.$router.push('/')
+              })
+              
+            }
+          } else {
+            this.$q.dialog({
+              title: 'Validation Failed',
+              message: 'Something went wrong. Please contact your administrator',
+              position: 'top'
+            }).onOk(async () => {
+              await Preferences.remove({ key: 'agentToken' });
+              this.$router.push('/')
+            })
+          }
+          
+      }).catch((err) => {
+          alert(JSON.stringify(err))
+      })
+    },
     async migrateProducts(){
         // Call Sync API
         api.get('mobile/fetch/product/list')
