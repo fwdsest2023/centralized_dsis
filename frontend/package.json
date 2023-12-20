@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.0.1",
   "description": "An Surgical record report generator using Quasar framework app",
-  "productName": "Centralize Distribution and Sales Inventory System",
+  "productName": "Veterinary Clinic Management System",
   "author": "Futuristics IT Solutions",
   "private": true,
   "scripts": {

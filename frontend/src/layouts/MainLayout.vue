@@ -3,7 +3,7 @@
     <q-header class="bg-deep-purple-12" elevated>
       <q-toolbar>
         <q-toolbar-title>
-          Centralized Distribution & Inventory
+          Veterinary Clinic Management
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
@@ -11,7 +11,7 @@
       <router-view />
     </q-page-container>
     <q-footer reveal class="bg-grey-5 text-weight-thin text-blue-white-9 text-center q-pt-lg q-pb-lg">
-      <div>{{ `Centralize Distribution and Sales Inventory System ©2023 Created by FWDS` }}</div>
+      <div>{{ `VCMS ©2023 Created by FWDS` }}</div>
     </q-footer>
   </q-layout>
 </template>

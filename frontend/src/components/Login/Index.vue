@@ -7,7 +7,7 @@
                     <q-card-section horizontal>
                         <q-img
                             class="col-md-6"
-                            src="/imgs/dvslogo.png"
+                            src="/imgs/logo2.png"
                         />
 
                         <q-card-actions vertical class="justify-around q-px-md col-md-6">
