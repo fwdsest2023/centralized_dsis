@@ -97,7 +97,7 @@ const linksList = [
   {
     title: 'Inventory Management',
     icon: 'inventory',
-    code: 104,
+    code: 105,
     children: [
       {
         title: 'Stock List',
@@ -123,7 +123,7 @@ const linksList = [
   {
     title: 'Mobile App Management',
     icon: 'devices',
-    code: 104,
+    code: 106,
     children: [
       {
         title: 'Agent Call Sync',
@@ -144,7 +144,7 @@ const linksList = [
   {
     title: 'Reports',
     icon: 'analytics',
-    code: 104,
+    code: 107,
     children: [
       {
         title: 'Agent Call Report',
@@ -181,7 +181,7 @@ const linksList = [
     title: 'Configurations',
     icon: 'display_settings',
     link: 'crsmanagement',
-    code: 107,
+    code: 108,
     crumbs: [
       {label: '', icon: 'home', link: '/'},
       {label: 'Manage CRS', icon: 'dynamic_form', link: 'crsmanagement'}

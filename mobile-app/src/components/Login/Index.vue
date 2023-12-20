@@ -98,17 +98,6 @@ export default{
     },
     methods: {
         async submitLogin(){
-            const {value} = await Preferences.get({key: 'appVersion'})
-            let appVer = this.$t('app_version')
-            if(value !== appVer){
-                this.$q.dialog({
-                    title: 'App Version Mismatched',
-                    message: 'Your app version is not updated, please contact your admin for the latest update.',
-                    persistent: true
-                })
-                return
-            }
-
             this.submitting = true;
             let vm = this;
             let payload = vm.form;

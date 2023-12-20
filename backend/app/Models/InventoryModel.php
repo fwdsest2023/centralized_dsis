@@ -53,7 +53,7 @@ class InventoryModel extends Model
     // Get Stocks
     public function getStockList() {
 
-        $sql = "SELECT * FROM tblstocks a, tblproducts b, tblunits c WHERE a.productId = b.id AND a.unitId = c.id";
+        $sql = "SELECT * FROM tblstocks a, tblproducts b WHERE a.prodId = b.id";
 
         $query = $this->db->query($sql);
         $results = $query->getResult('array');

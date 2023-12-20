@@ -174,7 +174,7 @@ import { api } from 'boot/axios'
 
 const dateNow = moment().format('MM/DD/YYYY');
 
-export default{
+export default {
     name: 'PrintModal',
     data(){
         return {
@@ -227,6 +227,9 @@ export default{
     watch:{
         modalStatus(newVal){
             this.openModal = newVal
+            if(newVal){
+                this.getProducts();
+            }
         }
     },
     computed: {
@@ -234,9 +237,6 @@ export default{
             let profile = LocalStorage.getItem('userData');
             return jwt_decode(profile);
         }
-    },
-    created(){
-        this.getProducts();
     },
     methods: {
         async searchProductsFn(val, update){
@@ -262,24 +262,6 @@ export default{
         },
         async submitModalClick(){
             let vm = this;
-
-        //     {
-        //     "id": "4",
-        //     "productId": "1",
-        //     "unitId": "1",
-        //     "productSerial": "X3XU2g55",
-        //     "deliveryDate": "2023-08-06 21:16:11",
-        //     "expiryDate": "2021-09-23 21:16:11",
-        //     "ProductQuantity": "100",
-        //     "UnitTotalQuantity": "100",
-        //     "StockNotice": "2",
-        //     "Price": "500",
-        //     "IndividualPrice": "50",
-        //     "IndividualItemUnit": "1",
-        //     "StatusId": "1",
-        //     "createdAt": "2023-08-06 21:22:50",
-        //     "updatedAt": null
-        // }
 
             this.$refs.formDetails.validate().then(success => {
                 if(!success){
@@ -315,9 +297,11 @@ export default{
         async addStock(){
             this.$q.loading.show();
             let payload = this.form
+            payload.unitId = payload.prodId.unit.value
             payload.prodId = payload.prodId.value
             payload.status = payload.status.value
 
+            return 
             api.post('stock/add/new', payload).then((response) => {
                 const data = {...response.data};
                 if(!data.error){
@@ -363,6 +347,7 @@ export default{
                     let listVal = data.list;
 
                     this.productOptions = listVal.map((el) => {
+
                         return {
                             label: el.productName,
                             value: el.id
@@ -374,7 +359,6 @@ export default{
                             value: el.id
                         }
                     })
-                    // this.tableRow = response.status < 300 ? data.list : [];
                 } else {
                     this.$q.notify({
                         color: 'negative',
@@ -386,7 +370,11 @@ export default{
                 }
 
             })
-        }
+        },
+        parseData(data){
+            let res = JSON.parse(data);
+            return res
+        },
     }
     
 }

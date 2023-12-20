@@ -135,7 +135,7 @@ class MobileController extends BaseController
 
                     $list['list'][$key] = [
                         "key" => $key,
-                        "id" => $value->id,
+                        "id" => (int)$query->id,
                         "syncId" => (int)$query->id,
                         "storeName" => $value->storeName,
                         "address" => $value->address,

@@ -101,12 +101,13 @@ class Auth extends BaseController
                         ->setBody(json_encode($result));
             } else {
                 $response = [
+                    'error'=>404,
                     'title' => 'Account Deactivated',
                     'message' => 'Please contact your adminitrator for more information'
                 ];
     
                 return $this->response
-                        ->setStatusCode(404)
+                        ->setStatusCode(200)
                         ->setContentType('application/json')
                         ->setBody(json_encode($response));
             }

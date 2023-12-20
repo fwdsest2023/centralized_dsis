@@ -59,17 +59,20 @@ export default defineComponent({
       api.post('auth/getVersion', payload)
       .then(async (response) => {
           if(response.status <= 200){
+            
             let data = response.data;
+            this.$q.notify({
+              color: 'positive',
+              message: 'Application is updated',
+              icon: 'rss_feed',
+              position: 'top'
+            })
             if(data.hasOwnProperty('error')){
               this.$q.dialog({
                 title: 'App Version Mismatched',
                 message: `Your app version is not updated, please contact your admin for the latest version ${data.currVersion}.`,
                 persistent: true
               }).onOk(async () => {
-                await Preferences.set({
-                  key: 'appVersion',
-                  value: data.currVersion
-                })
                 await Preferences.remove({ key: 'agentToken' });
                 this.$router.push('/')
               })
