@@ -93,6 +93,11 @@ $routes->group('mlrs/api/v1', function($routes){
 		$routes->get('print/invoice/(:any)', 'Generate::generateInvoicePdf/$1');
 	});
 
+	// Miscellenious
+	$routes->group('misc', function($routes){
+		$routes->get('userTypes', 'Misc::getUserTypes');
+	});
+
 
 
 	// All Users mmodule

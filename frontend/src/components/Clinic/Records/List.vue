@@ -1,6 +1,8 @@
 <template>
   <div class="q-pa-md">
+    
     <span class="text-h4">Records</span>
+    <q-btn flat label="Add New Customer" color="positive" @click="openAddClientModal = !openAddClientModal" />
     <q-table
         title="Patient Records"
         :rows="rows"
@@ -40,6 +42,7 @@
                     <q-icon name="search" />
                 </template>
             </q-input>
+            
         </template>
 
         <template v-slot:item="props">
@@ -179,31 +182,25 @@
         @updateModalStatus="closePatientModal"
         @refreshData="getList"
     />
+    <addClient
+        :modalStatus="openAddClientModal"
+        @updateModalStatus="openAddClientModal = !openAddClientModal"
+        @refreshData="getList"
+    />
   </div>
 </template>
 
 <script>
 import moment from 'moment';
 import addPatient from '../Modals/AddPatient.vue'
-// import {
-//     ownerDetails,
-//     petDetails,
-//     schedule,
-//     checkup,
-//     wellness
-// } from '../Widgets/index'
-import jwt_decode from 'jwt-decode'
+import addClient from '../Modals/AddClient.vue'
 import { api } from 'boot/axios'
 
 export default {
     name: 'RecordList',
     components: {
         addPatient,
-        // ownerDetails,
-        // petDetails,
-        // schedule,
-        // checkup,
-        // wellness
+        addClient
     },
     data(){
         return {
@@ -212,6 +209,7 @@ export default {
             // Context Controller
             appId: {},
             openAddPatientModal: false,
+            openAddClientModal: false,
 
             // Others
             isLoading: false,

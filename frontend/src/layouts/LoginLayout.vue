@@ -72,7 +72,7 @@ const linksList = [
     title: 'Create Invoice',
     icon: 'receipt',
     link: 'salesForm',
-    code: 101,
+    code: 102,
     crumbs: [
       {label: '', icon: 'home', link: '/'},
       {label: 'OR Forms', icon: 'history_edu', link: 'forms'}
@@ -81,7 +81,7 @@ const linksList = [
   {
     title: 'Patient Management',
     icon: 'pets',
-    code: 104,
+    code: 103,
     children: [
       {
         title: 'Patient Records',
@@ -97,7 +97,7 @@ const linksList = [
   {
     title: 'Inventory Management',
     icon: 'inventory',
-    code: 105,
+    code: 104,
     children: [
       {
         title: 'Stock List',
@@ -123,7 +123,7 @@ const linksList = [
   {
     title: 'Mobile App Management',
     icon: 'devices',
-    code: 106,
+    code: 105,
     children: [
       {
         title: 'Agent Call Sync',
@@ -144,7 +144,7 @@ const linksList = [
   {
     title: 'Reports',
     icon: 'analytics',
-    code: 107,
+    code: 106,
     children: [
       {
         title: 'Agent Call Report',
@@ -171,7 +171,7 @@ const linksList = [
     title: 'Manage Users',
     icon: 'manage_accounts',
     link: 'usermanagement',
-    code: 106,
+    code: 107,
     crumbs: [
       {label: '', icon: 'home', link: '/'},
       {label: 'Manage Users', icon: 'manage_accounts', link: 'usermanagement'}

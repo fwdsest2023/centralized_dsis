@@ -109,7 +109,7 @@ export default{
                 userType: this.user.userType
             }
             
-            api.get('users/getAllUserList').then((response) => {
+            api.get('users/getUsersList').then((response) => {
                 const data = {...response.data};
 
                 if(!data.error){

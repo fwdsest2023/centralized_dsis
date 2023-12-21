@@ -4,12 +4,13 @@ const routes = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Index.vue') }
+      { path: '', component: () => import('pages/Index.vue') },
+      { path: 'admin', component: () => import('pages/Admin.vue') },
     ]
   },
 
   {
-    path: '/',
+    path: '/admin',
     component: () => import('layouts/LoginLayout.vue'),
     children: [
       { path: 'dashboard', name: 'dashboard', component: () => import('pages/Dashboard.vue') },

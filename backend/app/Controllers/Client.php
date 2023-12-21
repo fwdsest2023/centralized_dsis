@@ -30,7 +30,7 @@ class Client extends BaseController
 
         //Get API Request Data from NuxtJs
         $n = 5;
-        $defaultPassword = "dvspet123";
+        $defaultPassword = "123456";
         $payload = $this->request->getJSON();
         $payload->username = $this->getUserName($n);
         $payload->password = sha1($defaultPassword);

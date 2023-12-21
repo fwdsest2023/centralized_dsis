@@ -149,7 +149,7 @@ export default defineComponent({
         logout(){
             localStorage.removeItem('userData');
             SessionStorage.remove('userDataLogin');
-            this.$router.push('/')
+            this.$router.push('/admin')
         },
         async submitChangePass(){
             let vm = this;
