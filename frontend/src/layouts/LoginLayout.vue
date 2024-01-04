@@ -88,6 +88,11 @@ const linksList = [
         icon: 'source',
         link: 'patientRecords',
       },
+      {
+        title: 'Announcement',
+        icon: 'source',
+        link: 'announcements',
+      },
     ],
     crumbs: [
       {label: '', icon: 'home', link: '/'},

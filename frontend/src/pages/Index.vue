@@ -103,7 +103,7 @@
               <q-card-section class="q-pt-none">
                 <div class="text-subtitle1 text-black ellipsis" v-html="item.content"></div>
                 <div class="text-caption text-grey">
-                  {{`By ${item.createdBy}`}}・{{item.tag.join(', ')}}
+                  {{`By ${item.createdBy}`}}・{{item.tags.join(', ')}}
                 </div>
                 <div class="col-auto text-grey text-caption q-pt-md row no-wrap items-center">
                   <q-icon name="event" /> {{item.createdDate}}
@@ -133,6 +133,7 @@
 
 <script>
 import { defineComponent } from 'vue';
+import { api } from 'boot/axios'
 
 export default defineComponent({
   name: 'PageIndex',
@@ -167,45 +168,32 @@ export default defineComponent({
           value: 'Etiam risus neque, volutpat vel laoreet a, finibus volutpat non',
         },
       ],
-      announcements: [
-        {
-          image: '/imgs/logo1.png',
-          subject: {
-            icon: 'campaign',
-            label: 'Announcement'
-          },
-          createdDate: '12/16/2023',
-          createdBy: 'Admin',
-          tag: ['customers', 'clients', 'paw parents'],
-          title: 'Test Announcement',
-          content: 'test test test test test test test test test',
-        },
-        {
-          image: '/imgs/logo1.png',
-          subject: {
-            icon: 'campaign',
-            label: 'Announcement'
-          },
-          createdDate: '12/16/2023',
-          createdBy: 'Admin',
-          tag: ['customers', 'clients', 'paw parents'],
-          title: 'Test Announcement',
-          content: 'test test test test test test test test test',
-        },
-        {
-          image: '/imgs/logo1.png',
-          subject: {
-            icon: 'campaign',
-            label: 'Announcement'
-          },
-          createdDate: '12/16/2023',
-          createdBy: 'Admin',
-          tag: ['customers', 'clients', 'paw parents'],
-          title: 'Test Announcement',
-          content: 'test test test test test test test test test',
-        },
-      ],
+      announcements: [],
     }
+  },
+  created(){
+    this.getAnnouncements();
+  },
+  methods:{
+    async getAnnouncements(){
+      let vm = this;
+      
+      api.get('announcement/public/getList').then((response)=>{
+          let data = {...response.data}
+
+          if(!data.error){
+            this.announcements = response.status < 300 ? data.list : [];
+          } else {
+              this.$q.notify({
+                  color: 'negative',
+                  position: 'top-right',
+                  title:data.title,
+                  message: this.$t(`errors.${data.error}`),
+                  icon: 'report_problem'
+              })
+          }
+      });
+    },
   }
 })
 </script>

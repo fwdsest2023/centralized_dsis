@@ -152,6 +152,20 @@ $routes->group('mlrs/api/v1', function($routes){
 	});
 
 
+	// Announcement mmodule
+	$routes->group('announcement', function($routes){
+		$routes->post('create', 'Announcement::saveAnnouncement');
+		$routes->post('update', 'Users::registerUser');
+		$routes->post('delete', 'Users::registerUser');
+		$routes->get('getList', 'Announcement::getAnnouncementList');
+		$routes->get('public/getList', 'Announcement::getAnnouncementListPublic');
+	});
+	// Program mmodule
+	$routes->group('program', function($routes){
+		$routes->get('public/getList', 'Announcement::getProgramListPublic');
+	});
+
+
 });
 
 

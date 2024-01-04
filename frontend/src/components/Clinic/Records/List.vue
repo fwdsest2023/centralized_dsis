@@ -82,15 +82,6 @@
                                     </q-item-section>
                                     <q-item-section> Open</q-item-section>
                                 </q-item>
-                                <q-item 
-                                    clickable 
-                                    v-close-popup
-                                >
-                                    <q-item-section side>
-                                        <q-icon name="help" size="xs" />
-                                    </q-item-section>
-                                    <q-item-section>Show Details</q-item-section>
-                                </q-item>
                                 <q-separator />
                                 <q-item 
                                     clickable
@@ -119,23 +110,19 @@
             v-if="tableView === 'patientInfo'"
             v-slot:bottom
         >
-            <q-splitter>
-
-                <template v-slot:before>
+            <div class="row" style="width: 100%;">
+                <div class="col col-12">
                     <q-tabs
                         v-model="tab"
-                        vertical
                         class="text-primary"
                     >
-                        <q-tab name="owner" icon="contact_emergency" label="Owner" />
-                        <q-tab name="petdetails" icon="pets" label="Pet Details" />
+                        <q-tab name="owner" icon="contact_emergency" label="Owner and Pet Details" />
                         <q-tab name="checkup" icon="pending_actions" label="Check Up" />
                         <q-tab name="schedule" icon="event" label="Schedules" />
                         <q-tab name="wellness" icon="vaccines" label="Wellness" />
                     </q-tabs>
-                </template>
-
-                <template v-slot:after>
+                </div>
+                <div class="col col-12">
                     <q-tab-panels
                         v-model="tab"
                         animated
@@ -145,23 +132,15 @@
                         transition-next="jump-up"
                     >
                         <q-tab-panel name="owner">
-                            <div class="text-h4 q-mb-md">Pet Owner Details</div>
-                            <!-- <ownerDetails /> -->
-                        </q-tab-panel>
-
-                        <q-tab-panel name="petdetails">
-                            <div class="text-h4 q-mb-md">Pet Details</div>
-                            <!-- <petDetails /> -->
+                            <ownerDetails :row="patientInfo" />
                         </q-tab-panel>
 
                         <q-tab-panel name="checkup">
-                            <div class="text-h4 q-mb-md">Pet Checkups</div>
-                            <!-- <checkup /> -->
+                            <checkupDetails :petId="openId" />
                         </q-tab-panel>
 
                         <q-tab-panel name="schedule">
-                            <div class="text-h4 q-mb-md">Pet Schedules</div>
-                            <!-- <schedule /> -->
+                            <scheduleDetails />
                         </q-tab-panel>
 
                         <q-tab-panel name="wellness">
@@ -169,9 +148,8 @@
                             <!-- <wellness /> -->
                         </q-tab-panel>
                     </q-tab-panels>
-                </template>
-
-            </q-splitter>
+                </div>
+            </div>
         </template>
 
     </q-table>
@@ -194,13 +172,19 @@
 import moment from 'moment';
 import addPatient from '../Modals/AddPatient.vue'
 import addClient from '../Modals/AddClient.vue'
+import ownerDetails from '../Widgets/OwnerDetails.vue'
+import checkupDetails from '../Widgets/Checkup.vue'
+import scheduleDetails from '../Widgets/Schedule.vue'
 import { api } from 'boot/axios'
 
 export default {
     name: 'RecordList',
     components: {
         addPatient,
-        addClient
+        addClient,
+        ownerDetails,
+        checkupDetails,
+        scheduleDetails
     },
     data(){
         return {
@@ -232,13 +216,6 @@ export default {
                     action: () => { return this.breadCrumbsClick('clientList', []) }
                 },
             ]
-        }
-    },
-    watch:{
-        tab(newVal){
-            if(newVal){
-                this.getTabCallDetails(newVal)
-            }
         }
     },
     created(){
@@ -363,26 +340,6 @@ export default {
 
             this.isLoading = false;
         },
-        getTabCallDetails(tab){
-            let payload = {
-                pid: this.openId
-            }
-
-            api.post(`patient/get/${tab}`, payload).then((response) => {
-                const data = {...response.data};
-                if(!data.error){
-                    console.log(data)
-                } else {
-                    this.$q.notify({
-                        color: 'negative',
-                        position: 'top-right',
-                        title:data.title,
-                        message: this.$t(`errors.${data.error}`),
-                        icon: 'report_problem'
-                    })
-                }
-            })
-        }
     }
 }
 </script>
