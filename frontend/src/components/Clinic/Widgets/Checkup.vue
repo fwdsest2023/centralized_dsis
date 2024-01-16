@@ -173,7 +173,7 @@ import jwt_decode from 'jwt-decode'
 import { LocalStorage } from 'quasar'
 import { api } from 'boot/axios'
 
-export default{
+export default {
     name: 'CheckUpDetails',
     props: {
         petId: {

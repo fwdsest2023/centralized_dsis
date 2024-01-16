@@ -1,7 +1,7 @@
 <template>
     <div class="q-pa-md" style="width: 100%;">
         <div class="row">
-            <div class="col col-md-3">
+            <!-- <div class="col col-md-6 q-pa-sm">
                 <q-card class="my-card" flat bordered>
                     <q-card-section>
 
@@ -10,17 +10,17 @@
                                 Current Schedule or appointment
                             </div>
                         </div>
-
-                        <!-- <q-rating v-model="stars" :max="5" size="32px" /> -->
                     </q-card-section>
 
                     <q-card-section class="q-pt-none">
-                        <div class="text-subtitle1">
-                        Contact: 
-                        </div>
-                        <div class="text-caption text-grey">
-                        -------
-                        </div>
+                        <q-form
+                            ref="formDetails"
+                            class="row"
+                        >
+                            <div class="col col-md-12 q-pa-sm">
+                                
+                            </div>
+                        </q-form>
                     </q-card-section>
 
                     <q-separator />
@@ -32,7 +32,65 @@
                     </q-card-actions>
                 </q-card>
             </div>
-            <div class="col col-md-9 q-pl-md">
+            <div class="col col-md-6 q-pa-sm">
+                <q-card class="my-card" flat bordered>
+
+                    <q-card-section class="q-pt-none">
+                        
+                    </q-card-section>
+                </q-card>
+            </div> -->
+            <div class="col col-md-12 q-mt-md">
+                <!-- <q-date
+                    v-model="form.scheduleDate"
+                    landscape
+                    :options="optionsFn"
+                /> -->
+                <q-splitter
+                    v-model="splitterModel"
+                    style="height: 450px"
+                >
+
+                    <template v-slot:before>
+                        <div class="q-pa-md">
+                        <q-date
+                            v-model="form.scheduleDate"
+                            landscape
+                            :options="optionsFn"
+                        />
+                        </div>
+                    </template>
+
+                    <template v-slot:after>
+                        <q-tab-panels
+                        v-model="date"
+                        animated
+                        transition-prev="jump-up"
+                        transition-next="jump-up"
+                        >
+                        <q-tab-panel name="2019/02/01">
+                            <div class="text-h4 q-mb-md">2019/02/01</div>
+                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
+                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
+                        </q-tab-panel>
+
+                        <q-tab-panel name="2019/02/05">
+                            <div class="text-h4 q-mb-md">2019/02/05</div>
+                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
+                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
+                        </q-tab-panel>
+
+                        <q-tab-panel name="2019/02/06">
+                            <div class="text-h4 q-mb-md">2019/02/06</div>
+                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
+                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
+                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
+                        </q-tab-panel>
+                        </q-tab-panels>
+                    </template>
+                </q-splitter>
+            </div>
+            <div class="col col-md-12 q-mt-md">
                 <q-table
                     :rows="tableRow"
                     :filter="filter"
@@ -97,22 +155,40 @@
 
 <script>
 import moment from 'moment'
+import jwt_decode from 'jwt-decode'
+import { LocalStorage } from 'quasar'
+import { api } from 'boot/axios'
 
-export default{
+export default {
     name: 'ScheduleDetails',
     props: {
         petId: {
-            type: Object,
-            default: {}
+            type: Number,
+            default: 0
         }
     },
     data(){
         return {
             tableRow: [],
             filter: '',
+            splitterModel: 45,
+            form: {
+                patientId: '',
+                clientId: '',
+                scheduleDate: moment().add(1, 'd').format('YYYY/MM/DD'),
+                checkupForm: '',
+                vaccineForm: '',
+                schedType: '',
+                createdBy: '',
+                remarks: '',
+            }
         }
     },
     computed:{
+        user: function(){
+            let profile = LocalStorage.getItem('userData');
+            return jwt_decode(profile);
+        },
         tableColumns: function(){
             return [
                 {
@@ -147,8 +223,14 @@ export default{
             ]
         }
     },
+    created(){
+        this.getList();
+    },
     methods: {
         moment,
+        optionsFn (date) {
+            return date > moment().format('YYYY/MM/DD')
+        },
         async getList(){
             this.tableRow = [];
             this.isLoading = true;
@@ -156,7 +238,7 @@ export default{
                 pid: this.petId
             }
 
-            api.post('patient/get/checkup', payload).then((response) => {
+            api.post('patient/get/schedule', payload).then((response) => {
                 const data = {...response.data};
                 if(!data.error){
                     this.tableRow = response.status < 300 ? data.list : [];

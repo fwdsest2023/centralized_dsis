@@ -114,6 +114,7 @@
                 <div class="col col-12">
                     <q-tabs
                         v-model="tab"
+                        inline-label
                         class="text-primary"
                     >
                         <q-tab name="owner" icon="contact_emergency" label="Owner and Pet Details" />
@@ -140,7 +141,7 @@
                         </q-tab-panel>
 
                         <q-tab-panel name="schedule">
-                            <scheduleDetails />
+                            <scheduleDetails :petId="openId" />
                         </q-tab-panel>
 
                         <q-tab-panel name="wellness">
