@@ -145,8 +145,7 @@
                         </q-tab-panel>
 
                         <q-tab-panel name="wellness">
-                            <div class="text-h4 q-mb-md">Pet Wellness</div>
-                            <!-- <wellness /> -->
+                            <petWellness :petId="openId" />
                         </q-tab-panel>
                     </q-tab-panels>
                 </div>
@@ -176,6 +175,7 @@ import addClient from '../Modals/AddClient.vue'
 import ownerDetails from '../Widgets/OwnerDetails.vue'
 import checkupDetails from '../Widgets/Checkup.vue'
 import scheduleDetails from '../Widgets/Schedule.vue'
+import petWellness from '../Widgets/Wellness.vue'
 import { api } from 'boot/axios'
 
 export default {
@@ -185,7 +185,8 @@ export default {
         addClient,
         ownerDetails,
         checkupDetails,
-        scheduleDetails
+        scheduleDetails,
+        petWellness
     },
     data(){
         return {

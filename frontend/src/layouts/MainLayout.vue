@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="lHh Lpr lFf" @scroll="scrollHandler">
     <q-header elevated class="bg-white">
       <q-toolbar class="text-black q-pa-md">
         <!-- Logo -->
@@ -7,8 +7,9 @@
         <!-- <span class="text-h5 text-bold q-ml-md"> Wesleyan University-Philippines  </span> -->
         <q-space />
         <!-- contact sections -->
-
-        <q-list
+        <q-input rounded outlined stack-label v-model="text" placeholder="Search" style="width: 30%;"/>
+        <q-btn to="admin" flat color="primary">Login</q-btn>
+        <!-- <q-list
           v-for="(item, index) in contacts"
           :key="index"
         >
@@ -22,14 +23,19 @@
               <q-item-label caption lines="2">{{item.value}}</q-item-label>
             </q-item-section>
           </q-item>
-        </q-list>
+        </q-list> -->
       </q-toolbar>
-      <q-toolbar class="bg-red" inset>
+      <q-toolbar class="bg-deep-purple-6" inset>
+        <q-space />
         <q-tabs v-model="menuSelected">
-          <q-tab name="home" label="Home" />
-          <q-tab name="about" label="About" />
-          <q-tab name="contact" label="Contact Us" />
+          <q-tab  name="home" label="Home" />
+          <q-tab name="slides" label="Slider" />
+          <q-tab name="portfolio" label="Portfolio" />
+          <q-tab name="doctors" label="Our Doctors" />
+          <q-tab name="gallery" label="Gallery" />
+          <q-route-tab to="#announcements" exact name="announce" label="Announcement" />
         </q-tabs>
+        <q-space />
       </q-toolbar>
     </q-header>
 
@@ -81,6 +87,11 @@ export default defineComponent({
       this.$router.push('/admin/dashboard')
     } else {
       this.$router.push('/')
+    }
+  },
+  methods: {
+    scrollHandler(val){
+      // some actiom
     }
   }
 })

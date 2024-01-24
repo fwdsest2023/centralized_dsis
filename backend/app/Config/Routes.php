@@ -54,8 +54,10 @@ $routes->group('mlrs/api/v1', function($routes){
 		$routes->post('add/new', 'Client::registerPet');
 		$routes->post('add/schedule', 'Client::addSchedule');
 		$routes->post('add/checkup', 'Client::addCheckup');
+		$routes->post('add/wellness', 'Client::addWellness');
 		$routes->post('details', 'Client::getPatientDetails');
 		$routes->post('get/schedule', 'Client::getPatientSchedule');
+		$routes->post('update/schedule', 'Client::updatePatientSchedule');
 		$routes->post('get/checkup', 'Client::getPatientCheckups');
 		$routes->post('get/wellness', 'Client::getPatientWellnes');
 		$routes->get('details/schedule/(:num)', 'Client::getPatientScheduleDetail/$1');
@@ -122,7 +124,7 @@ $routes->group('mlrs/api/v1', function($routes){
 	
 	// Dashboard
 	$routes->group('dashboard', function($routes){
-		$routes->get('getScheduleList', 'DashboardController::fetchScheduleList');
+		$routes->post('getScheduleList', 'DashboardController::fetchScheduleList');
 		$routes->get('getDashboard', 'DashboardController::fetchDashboard');
 	});
 

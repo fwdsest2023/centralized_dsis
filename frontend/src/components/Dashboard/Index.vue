@@ -46,21 +46,63 @@
                 </q-list>
             </div>
             <div class="col col-md-3 q-pa-sm"> 
-                Booking / Schedule Details
+                <q-toolbar class="bg-primary text-white shadow-2">
+                    <q-toolbar-title>Schedule for Today</q-toolbar-title>
+                </q-toolbar>
+
+                <q-list bordered>
+                    <q-item 
+                        v-for="item in eventList" 
+                        :key="item.id" 
+                        class="q-my-sm text-left"
+                        @click="eventClick(item)" 
+                        clickable 
+                        v-ripple
+                    >
+                        <q-item-section avatar>
+                            <q-icon :name="item.details.schedType === 'vaccine' ? 'vaccines' : 'fact_check'" />
+                        </q-item-section>
+
+                        <q-item-section>
+                            <q-item-label>{{ item.title }}</q-item-label>
+                            <q-item-label caption lines="3">{{ item.details.remarks }}</q-item-label>
+                        </q-item-section>
+
+                        <q-item-section side top>
+                            <q-item-label caption>{{item.details.scheduleTime}}</q-item-label>
+                            <q-badge
+                                class="q-mt-xs"
+                                :color="item.details.status === '0' ? 'primary':'green'" 
+                                :label="item.details.status === '0' ? 'Pending':'Done'" 
+                            />
+                        </q-item-section>
+                    </q-item>
+                </q-list>
             </div>
             <!-- Cards -->
             <div class="col col-md-6 q-pa-sm">
                 <FullCalendar 
                     :options="calendarOptions"
-                >
-                    <!-- <template v-slot:eventContent='arg'>
-                        <b>{{ arg.event.title }}</b>
-                    </template> -->
-                </FullCalendar>
+                />
             </div>
             
             
         </div>
+
+
+        <!-- Modal -->
+        <checkupModal
+            :appDetails="selectedModalData"
+            :modalStatus="openCheckupModal"
+            @updateModalStatus="closeModals"
+            @refreshData="getSchedules"
+        />
+        <wellnessModal
+            :appDetails="selectedModalData"
+            :modalStatus="openWellnessModal"
+            @updateModalStatus="closeModals"
+            @refreshData="getSchedules"
+        />
     </div>
 </template>
 
@@ -70,27 +112,34 @@ import { api } from 'boot/axios'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
+import moment from 'moment'
+import checkupModal from './CheckupModal.vue'
+import wellnessModal from './WellnessModal.vue'
 
 export default{
-    name: 'CardWidgets',
+    name: 'Dashboard',
     components: {
-        FullCalendar
+        FullCalendar,
+        checkupModal,
+        wellnessModal
     },
     data(){
         return {
+            selectedModalData: {},
+            openCheckupModal: false,
+            openWellnessModal: false,
+
+
+
             calendarOptions: {
                 plugins: [ dayGridPlugin, interactionPlugin ],
                 dayMaxEvents: true,
                 initialView: 'dayGridMonth',
                 // Date Action Handler
-                dateClick: (args) => { return this.handleDateClick(args.event) },
                 selectable: true,
 
                 events: [],
-                eventContent: 'Show Details',
-                // eventClick: this.eventClick,
-
-
+                eventContent: 'Patient Schedules',
             },
             activities: [
                 {
@@ -119,20 +168,27 @@ export default{
         this.getSchedules()
     },
     methods: {
+        moment,
         eventClick(val){
-            console.log(val)
+            this.selectedModalData = val.details
+            if(val.details.schedType === 'vaccine' && val.details.status === "0"){
+                this.openWellnessModal = true
+            } else if(val.details.schedType === 'checkup' && val.details.status === "0") {
+                this.openCheckupModal = true
+            }
         },
-        handleDateClick(val){
-            console.log(val)
-            console.log(val.dayEl)
+        closeModals(){
+            this.openCheckupModal = false
+            this.openWellnessModal = false
         },
         getSchedules(){
             this.calendarOptions.events = [];
             this.$q.loading.show();
-            api.get('dashboard/getScheduleList').then((response) => {
+            api.post('dashboard/getScheduleList', { currDate: moment().format('YYYY-MM-DD')}).then((response) => {
                 const data = {...response.data};
                 if(!data.error){
                     this.calendarOptions.events = response.status < 300 ? data.list : [];
+                    this.eventList = data.list
                 } else {
                     this.$q.notify({
                         color: 'negative',

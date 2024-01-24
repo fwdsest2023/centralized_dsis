@@ -134,7 +134,7 @@ class Client extends BaseController
 
         // conversion of dateTime
         $payload->scheduleDate = date('c', strtotime($payload->scheduleDate));
-        $payload->chckupForm = json_encode($payload->chckupForm);
+        $payload->vaccineForm = json_encode($payload->vaccineForm);
         $payload = json_decode(json_encode($payload), true);
         
         // Insert the data
@@ -197,6 +197,103 @@ class Client extends BaseController
             $response = [
                 'title' => 'Checkup information',
                 'message' => 'Pet checkup has been successfully save.',
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+            
+        } else {
+            $response = [
+                'error' => 404,
+                'title' => 'Save Failed!',
+                'message' => 'Please check your data.'
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
+
+    public function addWellness(){
+        // Check Auth header bearer
+        $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
+        if(!$authorization){
+            $response = [
+                'message' => 'Unauthorized Access'
+            ];
+
+            return $this->response
+                    ->setStatusCode(401)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+            exit();
+        }
+
+        //Get API Request Data from Frontend
+        $payload = $this->request->getJSON();
+        $payload = json_decode(json_encode($payload), true);
+        
+        // Insert the data
+        $query = $this->userModel->insertWellnessDetails($payload);
+
+        if($query){
+            $response = [
+                'title' => 'Wellness information',
+                'message' => 'Pet wellness has been successfully save.',
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+            
+        } else {
+            $response = [
+                'error' => 404,
+                'title' => 'Save Failed!',
+                'message' => 'Please check your data.'
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
+
+    public function updatePatientSchedule(){
+        // Check Auth header bearer
+        $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
+        if(!$authorization){
+            $response = [
+                'message' => 'Unauthorized Access'
+            ];
+
+            return $this->response
+                    ->setStatusCode(401)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+            exit();
+        }
+
+        //Get API Request Data from Frontend
+        $payload = $this->request->getJSON();
+        $where = ['id' => $payload->schedId];
+        $updateData = ['status' => 1];
+        
+        // Insert the data
+        $query = $this->userModel->updateScheduleStatus($updateData, $where);
+
+        if($query){
+            $response = [
+                'title' => 'Schedule information',
+                'message' => 'Pet schedule updated',
             ];
  
             return $this->response

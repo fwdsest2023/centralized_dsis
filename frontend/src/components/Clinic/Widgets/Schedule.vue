@@ -1,51 +1,7 @@
 <template>
     <div class="q-pa-md" style="width: 100%;">
         <div class="row">
-            <!-- <div class="col col-md-6 q-pa-sm">
-                <q-card class="my-card" flat bordered>
-                    <q-card-section>
-
-                        <div class="row no-wrap items-center">
-                            <div class="col text-h6 ellipsis">
-                                Current Schedule or appointment
-                            </div>
-                        </div>
-                    </q-card-section>
-
-                    <q-card-section class="q-pt-none">
-                        <q-form
-                            ref="formDetails"
-                            class="row"
-                        >
-                            <div class="col col-md-12 q-pa-sm">
-                                
-                            </div>
-                        </q-form>
-                    </q-card-section>
-
-                    <q-separator />
-
-                    <q-card-actions>
-                        <q-btn flat color="primary">
-                            Submit Checkup Details
-                        </q-btn>
-                    </q-card-actions>
-                </q-card>
-            </div>
-            <div class="col col-md-6 q-pa-sm">
-                <q-card class="my-card" flat bordered>
-
-                    <q-card-section class="q-pt-none">
-                        
-                    </q-card-section>
-                </q-card>
-            </div> -->
             <div class="col col-md-12 q-mt-md">
-                <!-- <q-date
-                    v-model="form.scheduleDate"
-                    landscape
-                    :options="optionsFn"
-                /> -->
                 <q-splitter
                     v-model="splitterModel"
                     style="height: 450px"
@@ -53,40 +9,101 @@
 
                     <template v-slot:before>
                         <div class="q-pa-md">
-                        <q-date
-                            v-model="form.scheduleDate"
-                            landscape
-                            :options="optionsFn"
-                        />
+                            <q-date
+                                v-model="form.scheduleDate"
+                                landscape
+                                :options="optionsFn"
+                            />
                         </div>
                     </template>
 
                     <template v-slot:after>
-                        <q-tab-panels
-                        v-model="date"
-                        animated
-                        transition-prev="jump-up"
-                        transition-next="jump-up"
-                        >
-                        <q-tab-panel name="2019/02/01">
-                            <div class="text-h4 q-mb-md">2019/02/01</div>
-                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
-                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
-                        </q-tab-panel>
+                        <q-card class="my-card q-ma-md" flat bordered>
+                            <q-card-section>
+                                <div class="row no-wrap items-center">
+                                    <div class="col text-h6 ellipsis">
+                                        Schedule Form
+                                    </div>
+                                </div>
+                            </q-card-section>
 
-                        <q-tab-panel name="2019/02/05">
-                            <div class="text-h4 q-mb-md">2019/02/05</div>
-                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
-                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
-                        </q-tab-panel>
+                            <q-card-section class="q-pt-none">
+                                <q-form
+                                    ref="formDetails"
+                                    class="row"
+                                >
+                                    <div class="col col-md-6 q-pa-sm">
+                                        <q-select
+                                            v-model="form.scheduleTime" 
+                                            :options="timeOptions" 
+                                            label="Schedule Time"
+                                            dense 
+                                            :options-dense="true"
+                                        >
+                                        </q-select>
+                                    </div>
+                                    <div class="col col-md-6 q-pa-sm">
+                                        <q-select
+                                            v-model="form.schedType" 
+                                            :options="schedTypeOptions" 
+                                            label="Type of Schedule"
+                                            dense 
+                                            :options-dense="true"
+                                        >
+                                        </q-select>
+                                    </div>
+                                    
+                                    <div v-if="form.schedType.value === 'checkup'" class="col col-md-12 q-pa-sm">
+                                        <q-input
+                                            
+                                            type="textarea"
+                                            outlined 
+                                            v-model="form.chckupForm" 
+                                            label="Checkup Purpose" 
+                                            stack-label 
+                                            dense
+                                        />
+                                    </div>
+                                    <div  v-if="form.schedType.value === 'vaccine'" class="col col-md-12 q-pa-sm">
+                                        <q-select
+                                            v-model="form.vaccineForm.type" 
+                                            :options="vaccineTypeOptions" 
+                                            label="Type of Vacine"
+                                            dense 
+                                            :options-dense="true"
+                                        >
+                                        </q-select>
 
-                        <q-tab-panel name="2019/02/06">
-                            <div class="text-h4 q-mb-md">2019/02/06</div>
-                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
-                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
-                            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
-                        </q-tab-panel>
-                        </q-tab-panels>
+                                        <q-input
+                                            class="q-mt-sm"
+                                            outlined 
+                                            v-model="form.vaccineForm.medicine" 
+                                            label="Medicine" 
+                                            stack-label 
+                                            dense
+                                        />
+                                    </div>
+                                    <div class="col col-md-12 q-pa-sm">
+                                        <q-input
+                                            type="textarea"
+                                            outlined 
+                                            v-model="form.remarks" 
+                                            label="Reason of Visit" 
+                                            stack-label 
+                                            dense
+                                        />
+                                    </div>
+                                </q-form>
+                            </q-card-section>
+
+                            <q-separator />
+
+                            <q-card-actions>
+                                <q-btn @click="submitForm" flat color="primary">
+                                    Submit Checkup Details
+                                </q-btn>
+                            </q-card-actions>
+                        </q-card>
                     </template>
                 </q-splitter>
             </div>
@@ -138,6 +155,16 @@
                                 :props="props"
                             >
                                 {{ col.value }}
+                                <!-- <div v-if="col.name === 'action'">
+                                    <q-btn 
+                                        size="sm" 
+                                        color="primary"
+                                        dense
+                                        label="View"
+                                        @click="viewSchedule" 
+                                    />
+                                </div> -->
+                                
                             </q-td>
                         </q-tr>
 
@@ -171,13 +198,17 @@ export default {
         return {
             tableRow: [],
             filter: '',
-            splitterModel: 45,
+            splitterModel: 35,
             form: {
                 patientId: '',
                 clientId: '',
                 scheduleDate: moment().add(1, 'd').format('YYYY/MM/DD'),
-                checkupForm: '',
-                vaccineForm: '',
+                scheduleTime: '',
+                chckupForm: '',
+                vaccineForm: {
+                    type: '',
+                    medicine: '',
+                },
                 schedType: '',
                 createdBy: '',
                 remarks: '',
@@ -189,37 +220,74 @@ export default {
             let profile = LocalStorage.getItem('userData');
             return jwt_decode(profile);
         },
+        timeOptions: function(){
+            let res = [];
+
+            for (let index = 8; index < 17; index++) {
+                let time = `${this.form.scheduleDate} ${index}:00`;
+                let mins = moment(time).add(30, 'm').format('h:mm');
+                res.push({label: moment(time).format('h:mm'), value: moment(time).format('h:mm')})
+                res.push({label: mins, value: mins})
+            }
+
+            return res
+        },
+        schedTypeOptions: function(){
+            let res = [
+                { label: "Vaccine", value: "vaccine"},
+                { label: "Checkup", value: "checkup"}
+            ];
+            return res
+        },
+        vaccineTypeOptions: function(){
+            let res = [
+                { label: "Treatment", value: "treatment"},
+                { label: "Tick and Flea", value: "tickAndFlea"},
+                { label: "Vaccination", value: "vaccination"},
+                { label: "Deworm", value: "deworm"},
+            ];
+            return res
+        },
         tableColumns: function(){
             return [
                 {
-                    name: 'createdDate',
+                    name: 'scheduleDate',
                     required: true,
-                    label: 'Checkup Date',
+                    label: 'Schedule Date',
                     align: 'left',
-                    field: row => row.createdDate,
+                    field: row => row.scheduleDate,
                     format: val => `${val}`,
                     sortable: true
                 },
                 {
-                    name: 'complain',
+                    name: 'scheduleTime',
                     required: true,
-                    label: 'Complain',
+                    label: 'Schedule Time',
                     align: 'left',
-                    field: row => row.complain,
+                    field: row => row.scheduleTime,
                     format: val => `${val}`,
                     sortable: true
                 },
                 {
-                    name: 'diagnosis',
+                    name: 'remarks',
                     required: true,
-                    label: 'Diagnosis',
+                    label: 'Reason of Visit',
                     align: 'left',
-                    field: row => row.diagnosis,
+                    field: row => row.remarks,
                     format: val => `${val}`,
                     sortable: true
                 },
-                { name: 'treatment', label: 'Treatment', field: 'treatment', align: 'left' },
-                { name: 'action', label: '', field: 'action', align: 'left' },
+                {
+                    name: 'schedType',
+                    required: true,
+                    label: 'Schedule Type',
+                    align: 'left',
+                    field: row => row.schedType,
+                    format: val => `${val}`,
+                    sortable: true
+                },
+                { name: 'createdDate', label: 'Date Created', field: 'createdDate', align: 'left' },
+                // { name: 'action', label: '', field: 'action', align: 'left' },
             ]
         }
     },
@@ -228,6 +296,7 @@ export default {
     },
     methods: {
         moment,
+        viewSchedule(){},
         optionsFn (date) {
             return date > moment().format('YYYY/MM/DD')
         },
@@ -295,13 +364,15 @@ export default {
             });
             this.btnLoading = true;
 
+            this.form.scheduleTime = this.form.scheduleTime.value;
+            this.form.schedType = this.form.schedType.value;
             let payload = {
                 ...this.form,
                 patientId: this.petId,
                 createdBy: this.user.userId,
             }
 
-            api.post('patient/add/checkup', payload).then((response) => {
+            api.post('patient/add/schedule', payload).then((response) => {
                 const data = {...response.data};
                 if(!data.error){
                     this.$q.notify({

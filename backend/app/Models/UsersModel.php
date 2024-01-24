@@ -20,7 +20,21 @@ class UsersModel extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = false;
 
-    protected $allowedFields = ['username', 'password', 'firstName', 'lastName', 'middleName', 'suffix','userType', 'contact', 'address', 'branchId', 'profilePhoto', 'eSignature', 'status'];
+    protected $allowedFields = [
+        'username', 
+        'password', 
+        'firstName', 
+        'lastName', 
+        'middleName', 
+        'suffix',
+        'userType', 
+        'contact', 
+        'address', 
+        'branchId', 
+        'profilePhoto', 
+        'eSignature', 
+        'status'
+    ];
 
     protected $useTimestamps = false;
     protected $createdField  = 'createdDate';
@@ -123,6 +137,10 @@ class UsersModel extends Model
         $query = $this->db->table($this->checkupTable)->insert($data);
         return $query ? true : false;
     }
+    public function insertWellnessDetails($data){
+        $query = $this->db->table($this->wellnessTable)->insert($data);
+        return $query ? true : false;
+    }
     
     public function updateScheduleStatus($setData, $where){
         $query = $this->db->table($this->scheduleTable)->set($setData)->where($where)->update();
@@ -131,9 +149,9 @@ class UsersModel extends Model
 
 
     // Get Patients Schedules
-    public function getAllSchedules() {
+    public function getAllSchedules($where) {
 
-        $query = $this->db->table($this->scheduleTable)->get();
+        $query = $this->db->table($this->scheduleTable)->where($where)->get();
         $results = $query->getResult('array');
 
         $all = array_map(function($el){
@@ -156,6 +174,7 @@ class UsersModel extends Model
         $results = $query->getResult('array');
 
         $all = array_map(function($el){
+            $el['vaccineForm'] = json_decode($el['vaccineForm']);
             foreach($el as $key => $val){
                 $owner = $this->db->table($this->table)->where('id', $el['clientId'])->get()->getRow();
                 $el['patientOwner'] = $owner;
@@ -207,11 +226,10 @@ class UsersModel extends Model
 
         $all = array_map(function($el){
             foreach($el as $key => $val){
-                $owner = $this->db->table($this->table)->where('id', $el['clientId'])->get()->getRow();
-                $el['patientOwner'] = $owner;
-
                 $pet = $this->db->table($this->patientTable)->where('id', $el['patientId'])->get()->getRow();
                 $el['patientDetails'] = $pet;
+                $vet = $this->db->table($this->table)->where('id', $el['vetId'])->get()->getRow();
+                $el['vetDetails'] = $vet;
             }
             return $el;
         }, $results);

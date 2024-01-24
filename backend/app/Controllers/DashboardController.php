@@ -14,11 +14,29 @@ class DashboardController extends BaseController
     }
 
     public function fetchScheduleList(){
+        // Check Auth header bearer
+        $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
+        if(!$authorization){
+            $response = [
+                'message' => 'Unauthorized Access'
+            ];
+
+            return $this->response
+                    ->setStatusCode(401)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+            exit();
+        }
+
+        //Get API Request Data from Frontend
+        $payload = $this->request->getJSON();
+
         $list = [];
 
-        $query = $this->userModel->getAllSchedules();
+        $query = $this->userModel->getAllSchedules(["scheduleDate"=>$payload->currDate]);
 
         foreach ($query as $key => $value) {
+            $value['vaccineForm'] = json_decode($value['vaccineForm']);
             $list['list'][$key] = [
                 "id" => $value['id'],
                 "title" => $value['patientDetails']->petName,

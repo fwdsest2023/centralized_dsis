@@ -3,14 +3,16 @@
     
     <div class="row q-mb-xl" style="height: 60vh;">
       <div class="col col-md-12"></div>
-      <div class="col col-md-6"></div>
+      <div class="col col-md-2"></div>
       <div class="col col-xs-12 col-sm-12 col-md-4 flex items-center" style="z-index:999;">
         <span class="text-h2 text-bold">The Smarter Way to Keep your Paws <span class="text-orange">Healthy</span></span>
-        <span class="text-subtitle1">Your pets deserve the finest in veterinary care!</span>
-      
-        <q-input rounded outlined stack-label v-model="text" placeholder="Search" style="width: 100%;"/>
+        <span class="text-subtitle1">Trust your pet's health to a reliable clinic. Regular check-ups, vaccination, and emergency care ensure their well-being. Choose quality veterinary services.</span>
+        
+        <q-btn color="red" size="xl" icon-right="app_registration" label="Sign Up Now!" />
+        <!-- <q-input rounded outlined stack-label v-model="text" placeholder="Search" style="width: 100%;"/> -->
       </div>
-      <div class="col col-md-2"></div>
+      <div class="col col-md-6"></div>
+
       <div class="backgroundHeader"></div>
     </div>
 
@@ -62,7 +64,7 @@
       <div class="col col-md-2 flex items-center"></div>
     </div>
 
-    <div class="row q-mt-xl">
+    <div class="row q-mt-xl" id="#announcements">
       <div class="col col-md-2 flex items-center"></div>
       <div class="col col-xs-12 col-sm-12 col-md-8">
         <div class="row">
