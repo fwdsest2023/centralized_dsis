@@ -12,18 +12,18 @@ class Misc extends BaseController
 
     public function getUserTypes(){
         // Check Auth header bearer
-        $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
-        if(!$authorization){
-            $response = [
-                'message' => 'Unauthorized Access'
-            ];
+        // $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
+        // if(!$authorization){
+        //     $response = [
+        //         'message' => 'Unauthorized Access'
+        //     ];
 
-            return $this->response
-                    ->setStatusCode(401)
-                    ->setContentType('application/json')
-                    ->setBody(json_encode($response));
-            exit();
-        }
+        //     return $this->response
+        //             ->setStatusCode(401)
+        //             ->setContentType('application/json')
+        //             ->setBody(json_encode($response));
+        //     exit();
+        // }
 
         //Select Query for finding User Information
         $categories = [];
@@ -51,18 +51,18 @@ class Misc extends BaseController
 
     public function getBranches(){
         // Check Auth header bearer
-        $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
-        if(!$authorization){
-            $response = [
-                'message' => 'Unauthorized Access'
-            ];
+        // $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
+        // if(!$authorization){
+        //     $response = [
+        //         'message' => 'Unauthorized Access'
+        //     ];
 
-            return $this->response
-                    ->setStatusCode(401)
-                    ->setContentType('application/json')
-                    ->setBody(json_encode($response));
-            exit();
-        }
+        //     return $this->response
+        //             ->setStatusCode(401)
+        //             ->setContentType('application/json')
+        //             ->setBody(json_encode($response));
+        //     exit();
+        // }
 
         //Select Query for finding User Information
         $unitareas = [];

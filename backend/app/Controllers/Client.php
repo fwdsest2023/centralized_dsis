@@ -116,18 +116,18 @@ class Client extends BaseController
     
     public function addSchedule(){
         // Check Auth header bearer
-        $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
-        if(!$authorization){
-            $response = [
-                'message' => 'Unauthorized Access'
-            ];
+        // $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
+        // if(!$authorization){
+        //     $response = [
+        //         'message' => 'Unauthorized Access'
+        //     ];
 
-            return $this->response
-                    ->setStatusCode(401)
-                    ->setContentType('application/json')
-                    ->setBody(json_encode($response));
-            exit();
-        }
+        //     return $this->response
+        //             ->setStatusCode(401)
+        //             ->setContentType('application/json')
+        //             ->setBody(json_encode($response));
+        //     exit();
+        // }
 
         //Get API Request Data from Frontend
         $payload = $this->request->getJSON();
@@ -168,18 +168,18 @@ class Client extends BaseController
 
     public function addCheckup(){
         // Check Auth header bearer
-        $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
-        if(!$authorization){
-            $response = [
-                'message' => 'Unauthorized Access'
-            ];
+        // $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
+        // if(!$authorization){
+        //     $response = [
+        //         'message' => 'Unauthorized Access'
+        //     ];
 
-            return $this->response
-                    ->setStatusCode(401)
-                    ->setContentType('application/json')
-                    ->setBody(json_encode($response));
-            exit();
-        }
+        //     return $this->response
+        //             ->setStatusCode(401)
+        //             ->setContentType('application/json')
+        //             ->setBody(json_encode($response));
+        //     exit();
+        // }
 
         //Get API Request Data from Frontend
         $payload = $this->request->getJSON();
@@ -221,18 +221,18 @@ class Client extends BaseController
 
     public function addWellness(){
         // Check Auth header bearer
-        $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
-        if(!$authorization){
-            $response = [
-                'message' => 'Unauthorized Access'
-            ];
+        // $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
+        // if(!$authorization){
+        //     $response = [
+        //         'message' => 'Unauthorized Access'
+        //     ];
 
-            return $this->response
-                    ->setStatusCode(401)
-                    ->setContentType('application/json')
-                    ->setBody(json_encode($response));
-            exit();
-        }
+        //     return $this->response
+        //             ->setStatusCode(401)
+        //             ->setContentType('application/json')
+        //             ->setBody(json_encode($response));
+        //     exit();
+        // }
 
         //Get API Request Data from Frontend
         $payload = $this->request->getJSON();
@@ -269,18 +269,18 @@ class Client extends BaseController
 
     public function updatePatientSchedule(){
         // Check Auth header bearer
-        $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
-        if(!$authorization){
-            $response = [
-                'message' => 'Unauthorized Access'
-            ];
+        // $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
+        // if(!$authorization){
+        //     $response = [
+        //         'message' => 'Unauthorized Access'
+        //     ];
 
-            return $this->response
-                    ->setStatusCode(401)
-                    ->setContentType('application/json')
-                    ->setBody(json_encode($response));
-            exit();
-        }
+        //     return $this->response
+        //             ->setStatusCode(401)
+        //             ->setContentType('application/json')
+        //             ->setBody(json_encode($response));
+        //     exit();
+        // }
 
         //Get API Request Data from Frontend
         $payload = $this->request->getJSON();
