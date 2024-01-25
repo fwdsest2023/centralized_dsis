@@ -1,7 +1,7 @@
 <template>
     <div class="q-pa-md" style="width: 100%;">
         <div class="row">
-            <div class="col col-md-3">
+            <div class="col col-xs-12 col-sm-12 col-md-3 q-pa-sm">
                 <q-card class="my-card" flat bordered>
                     <q-card-section>
 
@@ -19,7 +19,7 @@
                             ref="formDetails"
                             class="row"
                         >
-                            <div class="col col-md-12 q-pa-sm">
+                            <div class="col col-xs-12 col-sm-12 col-md-12 q-pa-sm">
                                 <q-input
                                     outlined 
                                     v-model="form.weight" 
@@ -32,7 +32,7 @@
                                     </template>
                                 </q-input>
                             </div>
-                            <div class="col col-md-12 q-pa-sm">
+                            <div class="col col-xs-12 col-sm-12 col-md-12 q-pa-sm">
                                 <q-input
                                     outlined 
                                     v-model="form.temperature" 
@@ -45,7 +45,7 @@
                                     </template>
                                 </q-input>
                             </div>
-                            <div class="col col-md-12 q-pa-sm">
+                            <div class="col col-xs-12 col-sm-12 col-md-12 q-pa-sm">
                                 <q-input
                                     outlined 
                                     v-model="form.complain" 
@@ -54,7 +54,7 @@
                                     dense
                                 />
                             </div>
-                            <div class="col col-md-12 q-pa-sm">
+                            <div class="col col-xs-12 col-sm-12 col-md-12 q-pa-sm">
                                 <q-input
                                     outlined 
                                     v-model="form.history" 
@@ -63,7 +63,7 @@
                                     dense
                                 />
                             </div>
-                            <div class="col col-md-12 q-pa-sm">
+                            <div class="col col-xs-12 col-sm-12 col-md-12 q-pa-sm">
                                 <q-input
                                     outlined 
                                     v-model="form.treatment" 
@@ -72,7 +72,7 @@
                                     dense
                                 />
                             </div>
-                            <div class="col col-md-12 q-pa-sm">
+                            <div class="col col-xs-12 col-sm-12 col-md-12 q-pa-sm">
                                 <q-input
                                     type="textarea"
                                     outlined 
@@ -82,7 +82,7 @@
                                     dense
                                 />
                             </div>
-                            <div class="col col-md-12 q-pa-sm">
+                            <div class="col col-xs-12 col-sm-12 col-md-12 q-pa-sm">
                                 <q-input
                                     type="textarea"
                                     outlined 
@@ -104,7 +104,7 @@
                     </q-card-actions>
                 </q-card>
             </div>
-            <div class="col col-md-9 q-pl-md">
+            <div class="col col-xs-12 col-sm-12 col-md-9 q-pa-sm">
                 <q-table
                     :rows="tableRow"
                     :filter="filter"

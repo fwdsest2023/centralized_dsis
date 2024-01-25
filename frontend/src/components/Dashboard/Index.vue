@@ -1,7 +1,7 @@
 <template>
     <div class="q-pa-md" style="width: 100%;">
         <div class="row">
-            <div class="col col-md-3 q-pa-sm">
+            <div class="col col-xs-12 col-sm-12 col-md-3 q-pa-sm">
                 <q-list >
                     <q-item 
                         class="shadow-2 bg-white custom-item-border q-mb-md q-pa-md" 
@@ -45,7 +45,7 @@
                     </q-item>
                 </q-list>
             </div>
-            <div class="col col-md-3 q-pa-sm"> 
+            <div class="col col-xs-12 col-sm-12 col-md-3 q-pa-sm"> 
                 <q-toolbar class="bg-primary text-white shadow-2">
                     <q-toolbar-title>Schedule for Today</q-toolbar-title>
                 </q-toolbar>
@@ -80,7 +80,7 @@
                 </q-list>
             </div>
             <!-- Cards -->
-            <div class="col col-md-6 q-pa-sm">
+            <div class="col col-xs-12 col-sm-12 col-md-6 q-pa-sm">
                 <FullCalendar 
                     :options="calendarOptions"
                 />

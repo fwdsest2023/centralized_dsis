@@ -1,113 +1,103 @@
 <template>
     <div class="q-pa-md" style="width: 100%;">
         <div class="row">
-            <div class="col col-md-12 q-mt-md">
-                <q-splitter
-                    v-model="splitterModel"
-                    style="height: 450px"
-                >
-
-                    <template v-slot:before>
-                        <div class="q-pa-md">
-                            <q-date
-                                v-model="form.scheduleDate"
-                                landscape
-                                :options="optionsFn"
-                            />
-                        </div>
-                    </template>
-
-                    <template v-slot:after>
-                        <q-card class="my-card q-ma-md" flat bordered>
-                            <q-card-section>
-                                <div class="row no-wrap items-center">
-                                    <div class="col text-h6 ellipsis">
-                                        Schedule Form
-                                    </div>
-                                </div>
-                            </q-card-section>
-
-                            <q-card-section class="q-pt-none">
-                                <q-form
-                                    ref="formDetails"
-                                    class="row"
-                                >
-                                    <div class="col col-md-6 q-pa-sm">
-                                        <q-select
-                                            v-model="form.scheduleTime" 
-                                            :options="timeOptions" 
-                                            label="Schedule Time"
-                                            dense 
-                                            :options-dense="true"
-                                        >
-                                        </q-select>
-                                    </div>
-                                    <div class="col col-md-6 q-pa-sm">
-                                        <q-select
-                                            v-model="form.schedType" 
-                                            :options="schedTypeOptions" 
-                                            label="Type of Schedule"
-                                            dense 
-                                            :options-dense="true"
-                                        >
-                                        </q-select>
-                                    </div>
-                                    
-                                    <div v-if="form.schedType.value === 'checkup'" class="col col-md-12 q-pa-sm">
-                                        <q-input
-                                            
-                                            type="textarea"
-                                            outlined 
-                                            v-model="form.chckupForm" 
-                                            label="Checkup Purpose" 
-                                            stack-label 
-                                            dense
-                                        />
-                                    </div>
-                                    <div  v-if="form.schedType.value === 'vaccine'" class="col col-md-12 q-pa-sm">
-                                        <q-select
-                                            v-model="form.vaccineForm.type" 
-                                            :options="vaccineTypeOptions" 
-                                            label="Type of Vacine"
-                                            dense 
-                                            :options-dense="true"
-                                        >
-                                        </q-select>
-
-                                        <q-input
-                                            class="q-mt-sm"
-                                            outlined 
-                                            v-model="form.vaccineForm.medicine" 
-                                            label="Medicine" 
-                                            stack-label 
-                                            dense
-                                        />
-                                    </div>
-                                    <div class="col col-md-12 q-pa-sm">
-                                        <q-input
-                                            type="textarea"
-                                            outlined 
-                                            v-model="form.remarks" 
-                                            label="Reason of Visit" 
-                                            stack-label 
-                                            dense
-                                        />
-                                    </div>
-                                </q-form>
-                            </q-card-section>
-
-                            <q-separator />
-
-                            <q-card-actions>
-                                <q-btn @click="submitForm" flat color="primary">
-                                    Submit Checkup Details
-                                </q-btn>
-                            </q-card-actions>
-                        </q-card>
-                    </template>
-                </q-splitter>
+            <div class="col col-xs-12 col-sm-12 col-md-4 q-pa-sm">
+                <q-date
+                    style="width: 100%;"
+                    v-model="form.scheduleDate"
+                    landscape
+                    :options="optionsFn"
+                />
             </div>
-            <div class="col col-md-12 q-mt-md">
+            <div class="col col-xs-12 col-sm-12 col-md-8 q-pa-sm">
+                <q-card class="my-card q-ma-md" flat bordered>
+                    <q-card-section>
+                        <div class="row no-wrap items-center">
+                            <div class="col text-h6 ellipsis">
+                                Schedule Form
+                            </div>
+                        </div>
+                    </q-card-section>
+
+                    <q-card-section class="q-pt-none">
+                        <q-form
+                            ref="formDetails"
+                            class="row"
+                        >
+                            <div class="col col-xs-12 col-sm-12 col-md-6 q-pa-sm">
+                                <q-select
+                                    v-model="form.scheduleTime" 
+                                    :options="timeOptions" 
+                                    label="Schedule Time"
+                                    dense 
+                                    :options-dense="true"
+                                >
+                                </q-select>
+                            </div>
+                            <div class="col col-xs-12 col-sm-12 col-md-6 q-pa-sm">
+                                <q-select
+                                    v-model="form.schedType" 
+                                    :options="schedTypeOptions" 
+                                    label="Type of Schedule"
+                                    dense 
+                                    :options-dense="true"
+                                >
+                                </q-select>
+                            </div>
+                            
+                            <div v-if="form.schedType.value === 'checkup'" class="col col-xs-12 col-sm-12 col-md-12 q-pa-sm">
+                                <q-input
+                                    
+                                    type="textarea"
+                                    outlined 
+                                    v-model="form.chckupForm" 
+                                    label="Checkup Purpose" 
+                                    stack-label 
+                                    dense
+                                />
+                            </div>
+                            <div  v-if="form.schedType.value === 'vaccine'" class="col col-xs-12 col-sm-12 col-md-12 q-pa-sm">
+                                <q-select
+                                    v-model="form.vaccineForm.type" 
+                                    :options="vaccineTypeOptions" 
+                                    label="Type of Vacine"
+                                    dense 
+                                    :options-dense="true"
+                                >
+                                </q-select>
+
+                                <q-input
+                                    class="q-mt-sm"
+                                    outlined 
+                                    v-model="form.vaccineForm.medicine" 
+                                    label="Medicine" 
+                                    stack-label 
+                                    dense
+                                />
+                            </div>
+                            <div class="col col-xs-12 col-sm-12 col-md-12 q-pa-sm">
+                                <q-input
+                                    type="textarea"
+                                    outlined 
+                                    v-model="form.remarks" 
+                                    label="Reason of Visit" 
+                                    stack-label 
+                                    dense
+                                />
+                            </div>
+                        </q-form>
+                    </q-card-section>
+
+                    <q-separator />
+
+                    <q-card-actions>
+                        <q-btn @click="submitForm" flat color="primary">
+                            Submit Checkup Details
+                        </q-btn>
+                    </q-card-actions>
+                </q-card>
+            </div>
+            <div class="col col-xs-12 col-sm-12 col-md-12 q-pa-sm">
                 <q-table
                     :rows="tableRow"
                     :filter="filter"

@@ -1,7 +1,7 @@
 <template>
     <div class="q-pa-md" style="width: 100%;">
         <div class="row">
-            <div class="col col-md-3">
+            <div class="col col-xs-12 col-sm-12 col-md-3">
                 <q-card class="my-card" flat bordered>
                     <q-img src="/imgs/logo1.png" />
 
@@ -64,7 +64,7 @@
                     </q-card-actions>
                 </q-card>
             </div>
-            <div class="col col-md-4 q-pl-sm">
+            <div class="col col-xs-12 col-sm-12 col-md-4 q-pl-sm">
                 <q-card class="my-card" flat bordered>
                     <q-img src="/imgs/image2.jpg" />
 
@@ -107,7 +107,7 @@
                     </q-card-actions>
                 </q-card>
             </div>
-            <div class="col col-md-5 q-pl-md" style="max-height: 60vh; overflow: auto;">
+            <div class="col col-xs-12 col-sm-12 col-md-5 q-pl-md" style="max-height: 60vh; overflow: auto;">
                 <q-timeline color="secondary">
                     <q-timeline-entry heading body="Pet History" />
 
