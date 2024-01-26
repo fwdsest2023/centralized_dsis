@@ -4,7 +4,7 @@
             <div
                 v-for="(item, index) in vaccineTableList"
                 :key="index"
-                class="col col-sm-12 col-md-4 col-lg-3 q-pa-sm"
+                class="col col-xs-12 col-sm-12 col-md-4 col-lg-3 q-pa-sm"
             >
                 <q-card flat bordered class="my-card">
                     <q-card-section class="text-center">

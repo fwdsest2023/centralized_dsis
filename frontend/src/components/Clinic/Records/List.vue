@@ -127,7 +127,7 @@
                     <q-tab-panels
                         v-model="tab"
                         animated
-                        swipeable
+                        :swipeable="false"
                         vertical
                         transition-prev="jump-up"
                         transition-next="jump-up"
