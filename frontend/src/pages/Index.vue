@@ -5,7 +5,7 @@
       <div class="col col-xs-12 col-md-12"></div>
       <div class="col col-xs-2 col-sm-2 col-md-2"></div>
       <div class="col col-xs-10 col-sm-10 col-md-4 flex items-center" style="z-index:999;">
-        <span class="text-h2 text-bold">The Smarter Way to Keep your Paws <span class="text-orange">Healthy</span></span>
+        <span class="text-bold" :class="$q.screen.xs ? 'text-h3' : 'text-h2' ">The Smarter Way to Keep your Paws <span class="text-orange">Healthy</span></span>
         <span class="text-subtitle1">Trust your pet's health to a reliable clinic. Regular check-ups, vaccination, and emergency care ensure their well-being. Choose quality veterinary services.</span>
         
         <q-btn color="red" size="xl" icon-right="app_registration" label="Sign Up Now!" />
@@ -201,6 +201,12 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.adjustableFontHeader {
+  font-size-adjust: 0.3 !important;
+}
+.adjustableFont {
+  font-size-adjust: 0.58;
+}
 .backgroundHeader{
   position: absolute;
   background: url('/imgs/background.svg') no-repeat;

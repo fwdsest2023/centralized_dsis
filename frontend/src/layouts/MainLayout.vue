@@ -3,27 +3,12 @@
     <q-header elevated class="bg-white">
       <q-toolbar class="text-black q-pa-md">
         <!-- Logo -->
-        <img src="/imgs/logo1.png" style="width: 10%;">
+        <img src="/imgs/logo1.png" :class="$q.screen.xs ? 'imageMedium' : 'imageSmall'">
         <!-- <span class="text-h5 text-bold q-ml-md"> Wesleyan University-Philippines  </span> -->
         <q-space />
         <!-- contact sections -->
-        <q-input rounded outlined stack-label v-model="text" placeholder="Search" style="width: 30%;"/>
+        <q-input rounded outlined stack-label v-model="text" placeholder="Search" :class="$q.screen.xs ? 'searchMedium' : 'searchSmall'"/>
         <q-btn to="admin" flat color="primary">Login</q-btn>
-        <!-- <q-list
-          v-for="(item, index) in contacts"
-          :key="index"
-        >
-          <q-item>
-            <q-item-section top avatar>
-              <q-icon :name="item.icon" :color="item.iconColor" size="md" />
-            </q-item-section>
-
-            <q-item-section>
-              <q-item-label class="text-bold">{{item.title}}</q-item-label>
-              <q-item-label caption lines="2">{{item.value}}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list> -->
       </q-toolbar>
       <q-toolbar class="bg-deep-purple-6" inset>
         <q-space />
@@ -96,3 +81,18 @@ export default defineComponent({
   }
 })
 </script>
+
+<style scoped>
+.imageSmall{
+  width: 10%;
+}
+.imageMedium{
+  width: 50%;
+}
+.searchSmall{
+  width: 30%;
+}
+.searchMedium{
+  width: 70%;
+}
+</style>
