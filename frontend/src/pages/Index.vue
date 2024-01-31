@@ -103,7 +103,7 @@
               </q-card-section>
 
               <q-card-section class="q-pt-none">
-                <div class="text-subtitle1 text-black ellipsis" v-html="item.content"></div>
+                <div class="text-subtitle1 text-black" v-html="item.content"></div>
                 <div class="text-caption text-grey">
                   {{`By ${item.createdBy}`}}・{{item.tags.join(', ')}}
                 </div>
@@ -111,10 +111,6 @@
                   <q-icon name="event" /> {{item.createdDate}}
                 </div>
               </q-card-section>
-
-              <q-card-actions>
-                <q-btn style="width: 100px;" outline rounded color="primary" label="Read" size="sm" />
-              </q-card-actions>
             </q-card>
           </div>
         </div>

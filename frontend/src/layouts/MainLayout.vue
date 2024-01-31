@@ -11,8 +11,14 @@
         <q-btn to="admin" flat color="primary">Login</q-btn>
       </q-toolbar>
       <q-toolbar class="bg-deep-purple-6" inset>
-        <q-space />
-        <q-tabs v-model="menuSelected">
+        <q-space v-if="!$q.screen.xs" />
+        <q-tabs
+          :class="$q.screen.xs ? 'mobileViewMenu' : ''" 
+          inline-label 
+          mobile-arrows 
+          outside-arrows
+          v-model="menuSelected"
+        >
           <q-tab  name="home" label="Home" />
           <q-tab name="slides" label="Slider" />
           <q-tab name="portfolio" label="Portfolio" />
@@ -20,7 +26,7 @@
           <q-tab name="gallery" label="Gallery" />
           <q-route-tab to="#announcements" exact name="announce" label="Announcement" />
         </q-tabs>
-        <q-space />
+        <q-space v-if="!$q.screen.xs" />
       </q-toolbar>
     </q-header>
 
@@ -95,4 +101,9 @@ export default defineComponent({
 .searchMedium{
   width: 70%;
 }
+.mobileViewMenu{
+  width: 85%;
+}
+
+
 </style>
