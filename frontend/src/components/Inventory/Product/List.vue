@@ -159,6 +159,13 @@ export default {
             return res.label
             
         },
+        convertCurrency(value){
+            let amount = Number(value);
+            return amount.toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'PHP',
+            })
+        },
         async getList(){
             this.tableRow = [];
             this.isLoading = true;
@@ -192,78 +199,43 @@ export default {
         },
         tableColumns: function(){
             // "SKU", "Products", "Unit Type", "Unit Price", "Category ID", "Total Stock", "Action"
-            return [
-                {
-                    name: 'sku',
-                    required: true,
-                    label: 'SKU',
-                    align: 'left',
-                    field: row => row.sku,
-                    format: val => `${val}`,
-                    sortable: true
-                },
+            return  [
                 {
                     name: 'productName',
                     required: true,
-                    label: 'Product Name',
+                    label: 'Product',
                     align: 'left',
                     field: row => row.productName,
                     format: val => `${val}`,
                     sortable: true
                 },
-                // to be edited // parse.data??
                 {
-                    name: 'unit',
+                    name: 'supplier',
                     required: true,
-                    label: 'Unit',
+                    label: 'Company',
                     align: 'left',
-                    field: row => row.unit,
-                    format: val => `${val}`,
-                    sortable: true
-                },
-                // { name: 'unit', label: 'Unit', field: 'unit' },
-                {
-                    name: 'category',
-                    required: true,
-                    label: 'Category',
-                    align: 'left',
-                    field: row => row.unit,
-                    format: val => `${val}`,
-                    sortable: true
-                },
-                // { name: 'category', label: 'Category', field: 'category' },
-                //
-                {
-                    name: 'productCost',
-                    required: true,
-                    label: 'Cost',
-                    align: 'left',
-                    field: row => row.productCost,
-                    format: val => `${val}`,
-                    sortable: true
-                },
-                // { name: 'productCost', label: 'Cost', field: 'productCost' },
-                {
-                    name: 'stock',
-                    required: true,
-                    label: 'Stock',
-                    align: 'left',
-                    field: row => row.stock,
+                    field: row => row.supplier,
                     format: val => `${val}`,
                     sortable: true
                 },
                 {
-                    name: 'storage',
+                    name: 'productSRP',
                     required: true,
-                    label: 'Storage Location',
+                    label: 'SRP (PHP)',
                     align: 'left',
-                    field: row => row.hasPriceGroup,
-                    format: val => `${val}`,
+                    field: row => row.productSRP,
+                    format: val => `${this.convertCurrency(val)}`,
                     sortable: true
                 },
-                
-                
-                { name: 'actions', label: 'Action', field: 'actions' }
+                {
+                    name: 'netCost',
+                    required: true,
+                    label: 'NET PRICE (PHP)',
+                    align: 'left',
+                    field: row => row.netCost,
+                    format: val => `${this.convertCurrency(val)}`,
+                    sortable: true
+                },
             ]
         }
     }

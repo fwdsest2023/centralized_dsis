@@ -3,15 +3,15 @@
     <q-header elevated class="bg-white">
       <q-toolbar class="text-black q-pa-md">
         <!-- Logo -->
-        <img src="/imgs/logo1.png" :class="$q.screen.xs ? 'imageMedium' : 'imageSmall'">
+        <img src="/imgs/tenmei2.png" :class="$q.screen.xs ? 'imageMedium' : 'imageSmall'">
         <!-- <span class="text-h5 text-bold q-ml-md"> Wesleyan University-Philippines  </span> -->
         <q-space />
         <!-- contact sections -->
-        <q-input rounded outlined stack-label v-model="text" placeholder="Search" :class="$q.screen.xs ? 'searchMedium' : 'searchSmall'"/>
-        <q-btn to="admin" flat color="primary">Login</q-btn>
+        <!-- <q-input rounded outlined stack-label v-model="text" placeholder="Search" :class="$q.screen.xs ? 'searchMedium' : 'searchSmall'"/> -->
+        <!-- <q-btn to="admin" flat color="primary">Login</q-btn> -->
       </q-toolbar>
-      <q-toolbar class="bg-deep-purple-6" inset>
-        <q-space v-if="!$q.screen.xs" />
+      <q-toolbar class="bg-green-6" inset>
+        <!-- <q-space v-if="!$q.screen.xs" />
         <q-tabs
           :class="$q.screen.xs ? 'mobileViewMenu' : ''" 
           inline-label 
@@ -26,7 +26,7 @@
           <q-tab name="gallery" label="Gallery" />
           <q-route-tab to="#announcements" exact name="announce" label="Announcement" />
         </q-tabs>
-        <q-space v-if="!$q.screen.xs" />
+        <q-space v-if="!$q.screen.xs" /> -->
       </q-toolbar>
     </q-header>
 

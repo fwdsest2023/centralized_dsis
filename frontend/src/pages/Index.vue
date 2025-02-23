@@ -5,10 +5,10 @@
       <div class="col col-xs-12 col-md-12"></div>
       <div class="col col-xs-2 col-sm-2 col-md-2"></div>
       <div class="col col-xs-10 col-sm-10 col-md-4 flex items-center" style="z-index:999;">
-        <span class="text-bold" :class="$q.screen.xs ? 'text-h3' : 'text-h2' ">The Smarter Way to Keep your Paws <span class="text-orange">Healthy</span></span>
+        <span class="text-bold" :class="$q.screen.xs ? 'text-h3' : 'text-h2' ">WELCOME TO <span class="text-green">TENMEI BACKOFFICE</span></span>
         <span class="text-subtitle1">Trust your pet's health to a reliable clinic. Regular check-ups, vaccination, and emergency care ensure their well-being. Choose quality veterinary services.</span>
         
-        <q-btn color="red" size="xl" icon-right="app_registration" label="Sign Up Now!" />
+        <q-btn to="admin" color="green" size="xl" icon-right="app_registration" label="Login Now!" />
         <!-- <q-input rounded outlined stack-label v-model="text" placeholder="Search" style="width: 100%;"/> -->
       </div>
       <div class="col col-xs-6 col-sm-6 col-md-6"></div>
@@ -17,9 +17,6 @@
     </div>
 
     <div class="row q-mt-xl">
-      <div class="col col-xs-12 col-sm-12 col-md-12 text-center">
-        <span class="text-h4 text-bold">Welcome to <span class="text-orange">PRIMPING PAWS</span></span>
-      </div>
       <div class="col col-xs-12 col-sm-12 col-md-2 flex items-center"></div>
       <div class="col col-xs-12 col-sm-12 col-md-8">
         <div class="row">
@@ -45,7 +42,7 @@
       </div>
       <div class="col col-md-2 flex items-center"></div>
     </div>
-    <div class="row q-mt-lg">
+    <!-- <div class="row q-mt-lg">
       <div class="col col-xs-1 col-sm-1 col-md-2 flex items-center"></div>
       <div class="col col-xs-10 col-sm-10 col-md-8">
         <q-carousel
@@ -62,9 +59,9 @@
         </q-carousel>
       </div>
       <div class="col col-xs-1 col-sm-1 col-md-2 flex items-center"></div>
-    </div>
+    </div> -->
 
-    <div class="row q-mt-xl" id="#announcements">
+    <!-- <div class="row q-mt-xl" id="#announcements">
       <div class="col col-xs-1 col-sm-1 col-md-2 flex items-center"></div>
       <div class="col col-xs-10 col-sm-10 col-md-8">
         <div class="row">
@@ -116,7 +113,7 @@
         </div>
       </div>
       <div class="col col-xs-1 col-sm-1 col-md-2 flex items-center"></div>
-    </div>
+    </div> -->
     
     <!-- Footer -->
     <!-- <div class="row footerBackground bg-green-10 text-white" style="z-index:999;">

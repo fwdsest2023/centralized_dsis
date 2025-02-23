@@ -120,8 +120,8 @@ export default{
                     format: val => `${val}`,
                     sortable: true
                 },
-                { name: 'unitType', label: 'Unit Type', field: 'unitType' },
-                { name: 'qty', label: 'Quantity', field: 'qty' },
+                { name: 'supplier', label: 'Company', field: 'supplier' },
+                { name: 'productSRP', label: 'Price', field: 'productSRP' },
                 { name: 'actions', label: 'Action', field: 'actions' }
             ]
         }

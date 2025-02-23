@@ -25,6 +25,8 @@
     "autocompleter": "^6.1.2",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "dotenv": "^16.4.7",
+    "firebase": "^11.3.1",
     "google-maps": "^4.3.3",
     "jwt-decode": "^3.1.2",
     "moment": "^2.29.1",

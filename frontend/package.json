@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.0.1",
   "description": "An Surgical record report generator using Quasar framework app",
-  "productName": "Veterinary Clinic Management System",
+  "productName": "Tenmei Backoffice Admin",
   "author": "Futuristics IT Solutions",
   "private": true,
   "scripts": {
@@ -19,6 +19,9 @@
     "autocompleter": "^6.1.2",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "d3": "^7.9.0",
+    "dotenv": "^16.4.7",
+    "firebase": "^11.3.1",
     "jwt-decode": "^3.1.2",
     "moment": "^2.29.1",
     "pdf-lib": "^1.17.1",

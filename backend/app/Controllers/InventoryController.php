@@ -14,35 +14,24 @@ class InventoryController extends BaseController
     }
     
     public function addProduct(){
-        // Check Auth header bearer
-        // $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
-        // if(!$authorization){
-        //     $response = [
-        //         'message' => 'Unauthorized Access'
-        //     ];
-
-        //     return $this->response
-        //             ->setStatusCode(401)
-        //             ->setContentType('application/json')
-        //             ->setBody(json_encode($response));
-        //     exit();
-        // }
-
+        
         //Get API Request Data from Frontend
         $payload = $this->request->getJSON();
 
         // conversion of dateTime
-        // $payload->scheduleDate = date('c', strtotime($payload->scheduleDate));
-        $payload->costGroup = json_encode($payload->costGroup);
-        $payload->category = json_encode($payload->category);
-        $payload->unit = json_encode($payload->unit);
-        $payload = json_decode(json_encode($payload), true);
-
+        // $payload = json_decode(json_encode($payload), true);
+        $i = 0;
+        foreach($payload->list as $key => $value){
+            $req = json_decode(json_encode($value), true);
+            $this->inventoryModel->insertProduct($req);
+            $i++;
+        }
+        
         
         // Insert the data
-        $query = $this->inventoryModel->insertProduct($payload);
+        // $query = $this->inventoryModel->insertProduct($payload);
 
-        if($query){
+        if($i === sizeof($payload->list)){
 
             $response = [
                 'title' => 'Product added',
@@ -67,6 +56,7 @@ class InventoryController extends BaseController
         }
 
     }
+
 
     public function updateProduct(){
         // Check Auth header bearer
@@ -162,6 +152,33 @@ class InventoryController extends BaseController
         // ];
         $list = [];
         $list['list'] = $this->inventoryModel->getProductList();
+
+        if($list){
+            $list['message'] = "successfully fetch product list";
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($list));
+        } else {
+            $response = [
+                'title' => 'Error',
+                'message' => 'No Data Found'
+            ];
+
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
+    public function getProductSearchList(){
+       
+        $payload = $this->request->getJSON();
+        $searchTerm = $payload->searchParam ?? '';
+
+        $list = [];
+        $list['list'] = $this->inventoryModel->getProductListSearch($searchTerm);
 
         if($list){
             $list['message'] = "successfully fetch product list";
@@ -406,6 +423,135 @@ class InventoryController extends BaseController
 
             return $this->response
                     ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
+
+
+
+    // Temporary Tranasactions
+    public function temporaryTransactions(){
+        $list = [];
+        $list['list'] = $this->inventoryModel->getStoreList();
+
+        if($list){
+            $list['message'] = "successfully fetch product list";
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($list));
+        } else {
+            $response = [
+                'title' => 'Error',
+                'message' => 'No Data Found'
+            ];
+
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
+    public function temporaryOrderCreate(){
+        
+        //Get API Request Data from Frontend
+        $payload = $this->request->getJSON();
+
+        // conversion of dateTime
+        // $payload->scheduleDate = date('c', strtotime($payload->scheduleDate));
+        $payload->orderItem = json_encode($payload->orderItem);
+        $payload = json_decode(json_encode($payload), true);
+
+        
+        // Insert the data
+        $query = $this->inventoryModel->insertToTemporaryOrder($payload);
+
+        if($query){
+
+            $response = [
+                'title' => 'Product added',
+                'message' => 'Product added successfully',
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+            
+        } else {
+            $response = [
+                'title' => 'Registration Failed!',
+                'message' => 'Please check your data.'
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
+
+    public function getStoreInfoSearch(){
+       
+        $payload = $this->request->getJSON();
+        $searchTerm = $payload->searchParam ?? '';
+
+        $list = [];
+        $list['list'] = $this->inventoryModel->getStores($searchTerm);
+
+        if($list){
+            $list['message'] = "successfully fetch product list";
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($list));
+        } else {
+            $response = [
+                'title' => 'Error',
+                'message' => 'No Data Found'
+            ];
+
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
+
+    public function getReferenceContinues(){
+        //Get API Request Data from UI
+        $payload = $this->request->getJSON();
+
+        // Check if there was starting loan application on the user
+        $result = 'TRA-COM'. sprintf('%06d',  1);
+        $query = $this->inventoryModel->getStoreList();
+
+        // if the series is not yet started
+        if($query){
+            $result = sprintf('TRA-COM%06d', $query[0]['id'] + 1);
+        }
+        
+        if($result){
+            $response = [
+                "reference" => $result
+            ];
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        } else {
+            $response = [
+                'error' => 404,
+                'message' => 'No Data Found'
+            ];
+
+            return $this->response
+                    ->setStatusCode(200)
                     ->setContentType('application/json')
                     ->setBody(json_encode($response));
         }

@@ -9,6 +9,8 @@ class MobileModel extends Model
     protected $table      = 'tblmobile_sync';
     protected $clientTable = 'tblclients';
     protected $productTable = 'tblproducts';
+    protected $orderTable = 'tblorder';
+    protected $orderProdTable = 'tblorder_products';
     protected $primaryKey = 'id';
 
     protected $useAutoIncrement = true;
@@ -87,6 +89,20 @@ class MobileModel extends Model
     public function getAllClientsByCondition($where){
         $query = $this->db->table($this->clientTable)->where($where)->get();
         $results = $query->getResult();
+        return $results;
+    }
+
+
+    // Order
+    public function getOrderList($params){
+
+        $sql = "SELECT a.*, b.storeName, b.address, b.contactPerson  FROM ". $this->orderTable ." a 
+        INNER JOIN ". $this->clientTable ." b ON a.clientId = b.id
+        WHERE a.createdBy = :aid: AND DATE_FORMAT(a.createdDate, '%m-%d-%Y') BETWEEN :dateOrder: AND :dateOrder: ORDER BY a.createdDate DESC";
+       
+        $query = $this->db->query($sql, $params);
+        $results = $query->getResult();
+
         return $results;
     }
 

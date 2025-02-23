@@ -562,6 +562,93 @@ class MobileController extends BaseController
         }
     }
 
+
+    public function OrderList(){
+        try {
+            // get the data
+            $payload = $this->request->getJSON();
+            $list = [];
+            $params = [
+                "aid" => $payload->aid,
+                "dateOrder" => $payload->orderDate,
+            ];
+
+            $query = $this->mobModel->getOrderList($params);
+
+            if($query){
+                foreach ($query as $key => $value) {
+                    $list['list'][$key] = [
+                        "terms" => $value->terms,
+                        "paymentMode" => $value->paymentMode,
+                        "storeName" => $value->storeName,
+                        "address" => $value->address,
+                        // "addressInfo" => json_decode($value->addressInfo),
+                        "contactPerson" => json_decode($value->contactPerson),
+                    ];
+                }
+            } 
+            
+
+            if($list){
+                return $this->response
+                        ->setStatusCode(200)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($list));
+            } else {
+                $response = [
+                    'title' => 'Error',
+                    'message' => 'No Data Found'
+                ];
+    
+                return $this->response
+                        ->setStatusCode(404)
+                        ->setContentType('application/json')
+                        ->setBody(json_encode($response));
+            }
+
+        } catch (\Throwable $th) {
+            print_r($th);
+            throw $th;
+        }
+    }
+
+    public function createOrder(){
+        try {
+            // get the data
+            $payload = $this->request->getJSON();
+            
+            // Set of Data List Save
+            
+            
+            // if($query){
+
+            //     $response = [
+            //         'title' => 'Sync Complete',
+            //         'message' => 'data hasbeen successfully sync to database'
+            //     ];
+    
+            //     return $this->response
+            //             ->setStatusCode(200)
+            //             ->setContentType('application/json')
+            //             ->setBody(json_encode($response));
+                
+            // } else {
+            //     $response = [
+            //         'title' => 'Sync Failed!',
+            //         'message' => 'Something is went wrong',
+            //         'error' => $query
+            //     ];
+    
+            //     return $this->response
+            //             ->setStatusCode(400)
+            //             ->setContentType('application/json')
+            //             ->setBody(json_encode($response));
+            // }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
     public function segregateClient($arr, $val){
         $clist = [];
         $client = json_decode($arr);

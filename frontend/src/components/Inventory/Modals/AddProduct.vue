@@ -14,7 +14,23 @@
                         <q-tooltip class="bg-white text-primary">Close</q-tooltip>
                     </q-btn>
                 </q-bar>
-
+                <q-card-section class="row items-center no-wrap" >
+                    <div>
+                        <div class="text-h6 ">Upload product capacity details: </div>
+                    </div>
+                    <q-space />
+                    <div>
+                        <q-file 
+                            outlined 
+                            v-model="csvFile"
+                            dense
+                        >
+                            <template v-slot:prepend>
+                                <q-icon name="attach_file" />
+                            </template>
+                        </q-file>
+                    </div>
+                </q-card-section>
                 <q-card-section style="max-height: 70vh; height: 70vh;" class="q-pt-none scroll">
                     <q-form
                         ref="formDetails"
@@ -24,111 +40,38 @@
                             <span class="text-h5">Product Details</span>
                             <q-separator />
                         </div>
-                        <div class="col col-md-4 q-pa-sm">
-                            <q-input
-                                :disable="processType === 'edit'"
-                                outlined 
-                                v-model="form.sku" 
-                                label="Product SKU" 
-                                stack-label 
-                                dense
-                            />
-                        </div>
-                        <div class="col col-md-4 q-pa-sm">
-                            <q-input 
-                                outlined 
-                                v-model="form.productName" 
-                                label="Product Name" 
-                                stack-label 
-                                dense
-                            />
-                        </div>
-                        <div class="col col-md-4 q-pa-sm">
-                            <q-input 
-                                outlined 
-                                v-model="form.productCost" 
-                                label="Product Cost" 
-                                stack-label 
-                                dense
-                            />
-                        </div>
-                        <div class="col col-md-4 q-pa-sm">
-                            <q-input 
-                                outlined 
-                                v-model="form.productSRP" 
-                                label="Product SRP" 
-                                stack-label 
-                                dense
-                            />
-                        </div>
-                        <div class="col col-md-4 q-pa-sm">
-                            <q-select 
-                                outlined 
-                                v-model="form.unit" 
-                                :options="uTypeOptions" 
-                                label="Unit Type" 
-                                stack-label 
-                                dense
-                                options-dense
-                            />
-                        </div>
-                        <div class="col col-md-4 q-pa-sm">
-                            <q-select 
-                                outlined 
-                                v-model="form.category" 
-                                :options="catOptions" 
-                                label="Category" 
-                                stack-label 
-                                dense
-                                options-dense
-                            />
-                        </div>
-                        <div class="col col-md-12 q-pa-sm">
-                            <q-input 
-                                outlined 
-                                type="textarea"
-                                v-model="form.description" 
-                                label="Product Description" 
-                                stack-label 
-                                dense
-                            />
-                        </div>
-                        <div class="col col-md-4 q-pa-sm"></div>
-
-                        
-                        <div class="col col-md-12 q-mt-md">
-                            <q-toolbar>
-                                <span class="text-h5">Price Group Details</span>
-                                <q-space />
-                                <q-toggle v-model="form.hasPriceGroup" />
-                            </q-toolbar>
-                            
-                            <q-separator />
-                        </div>
-                        <div 
-                            v-for="(item, index) in groupBrnach" 
-                            :key="index" 
-                            class="col col-md-12 q-pa-sm"
-                        >
-                            <div v-if="form.hasPriceGroup" class="row">
-                            <q-input 
-                                class="col col-md-6 q-pa-sm"
-                                outlined 
-                                v-model="item.regionName"
-                                label="Branch"
-                                stack-label 
-                                disable
-                                dense
-                            />
-                            <q-input 
-                                class="col col-md-6 q-pa-sm"
-                                outlined 
-                                v-model="item.price" 
-                                label="Price"
-                                stack-label 
-                                dense
-                            />
-                            </div>
+                        <div class="col-12">
+                            <q-table
+                                flat bordered
+                                :rows="productList"
+                                wrap-cells
+                                :columns="capacityColumns"
+                                row-key="capacity"
+                                separator="cell"
+                            >  
+                                <template v-slot:header="props">
+                                    <q-tr :props="props">
+                                        <q-th
+                                            v-for="col in props.cols"
+                                            :key="col.name"
+                                            :props="props"
+                                        >
+                                            {{ col.label }}
+                                        </q-th>
+                                    </q-tr>
+                                </template>
+                                <template v-slot:body="props">
+                                    <q-tr :props="props">
+                                        <q-td
+                                            v-for="col in props.cols"
+                                            :key="col.name"
+                                            :props="props"
+                                        >
+                                            {{ col.value }}
+                                        </q-td>
+                                    </q-tr>
+                                </template>
+                            </q-table>
                         </div>
                     </q-form>
                 </q-card-section>
@@ -157,6 +100,7 @@
 </template>
 <script>
 import moment from 'moment';
+import * as d3 from "d3"
 import { LocalStorage } from 'quasar'
 import jwt_decode from 'jwt-decode'
 import { api } from 'boot/axios'
@@ -168,6 +112,8 @@ export default{
     data(){
         return {
             openModal: false,
+            productList: [],
+            csvFile: null,
             form: {
                 sku: '',
                 productName: '',
@@ -210,6 +156,9 @@ export default{
         }
     },
     watch:{
+        csvFile(newVal){
+            this.getFile(newVal)
+        },
         modalStatus(newVal){
             this.openModal = newVal
             if(this.processType === 'edit'){
@@ -232,10 +181,73 @@ export default{
         user: function(){
             let profile = LocalStorage.getItem('userData');
             return jwt_decode(profile);
+        },
+        capacityColumns(){
+            return [
+                {
+                    name: 'productName',
+                    required: true,
+                    label: 'Product',
+                    align: 'left',
+                    field: row => row.productName,
+                    format: val => `${val}`,
+                    sortable: true
+                },
+                {
+                    name: 'supplier',
+                    required: true,
+                    label: 'Company',
+                    align: 'left',
+                    field: row => row.supplier,
+                    format: val => `${val}`,
+                    sortable: true
+                },
+                {
+                    name: 'productSRP',
+                    required: true,
+                    label: 'SRP (PHP)',
+                    align: 'left',
+                    field: row => row.productSRP,
+                    format: val => `${this.convertCurrency(val)}`,
+                    sortable: true
+                },
+                {
+                    name: 'netCost',
+                    required: true,
+                    label: 'NET PRICE (PHP)',
+                    align: 'left',
+                    field: row => row.netCost,
+                    format: val => `${this.convertCurrency(val)}`,
+                    sortable: true
+                },
+            ]
         }
     },
 
     methods: {
+        async getFile(data){
+			// console.log(file)
+			// return
+			var reader = new FileReader();
+			// let filePath = data.file.originFileObj
+			let filePath = data
+			reader.readAsText(new Blob(
+				[filePath],
+				{"type": filePath.type}
+			))
+			const fileContent = await new Promise(resolve => {
+				reader.onloadend = (event) => {
+                    console.log(event.target)
+				    resolve(event.target.result)
+				}
+			})
+			let csvData = d3.csvParse(fileContent)
+			
+
+            this.productList = csvData
+
+			return false
+		},
         fillTheDetails(){
             this.form = {
                 sku: this.appId.sku,
@@ -290,14 +302,8 @@ export default{
 
         async addNewProduct(){
             this.$q.loading.show();
-            let payload = this.form
-            payload.createdBy = this.user.userId
-
-            // check if group pricing
-            if(payload.hasPriceGroup){
-                payload.costGroup = this.groupBrnach
-            }
-
+            let payload = { list: this.productList}
+            
             api.post('product/add/new', payload).then((response) => {
                 const data = {...response.data};
                 if(!data.error){
@@ -345,7 +351,13 @@ export default{
 
             this.$q.loading.hide();
         },
-
+        convertCurrency(value){
+            let amount = Number(value);
+            return amount.toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'PHP',
+            })
+        },
         clearForm(){
             this.form = {
                 sku: '',

@@ -97,7 +97,6 @@ export default {
     async getRememberLogin(){
       const { value } = await Preferences.get({ key: 'agentToken' });
       let token = value !== null ? value : null;
-      console.log(token)
       if(token !== null){
         this.userProfile = jwt_decode(token);
         this.$router.push('/dashboard')

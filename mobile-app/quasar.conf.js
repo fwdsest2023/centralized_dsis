@@ -9,6 +9,9 @@
 const { configure } = require('quasar/wrappers');
 
 module.exports = configure(function (ctx) {
+  const envFile = `.env.${process.env.PROFILE || 'local'}`
+  const envConfig = require('dotenv').config({ path: envFile }).parsed
+
   return {
     // https://quasar.dev/quasar-cli/supporting-ts
     supportTS: false,
@@ -48,7 +51,11 @@ module.exports = configure(function (ctx) {
     build: {
       vueRouterMode: 'hash', // available values: 'hash', 'history'
       env: {
-        API_BASE: ctx.dev ? 'http://localhost:8080/index.php/mlrs/api/v1' : 'http://119.8.28.151:8080/index.php/mlrs/api/v1'
+        ...Object.keys(envConfig).reduce((env, key) =>{
+          env[key] = envConfig[key]
+          return env
+        },{}),
+        API_BASE: ctx.dev ? 'http://localhost:8080/index.php/mlrs/api/v1' : 'https://distribution.tenmei.shop/backend/public/index.php/mlrs/api/v1'
       },
       // transpile: false,
       // publicPath: '/',

@@ -47,6 +47,7 @@ $routes->group('mlrs/api/v1', function($routes){
 		$routes->post('generate', 'Client::registerClient');
 		$routes->get('clientList', 'Client::getAllClientList');
 		$routes->post('get/patient/list', 'Client::getClientPatientList');
+		$routes->post('search/store', 'InventoryController::getStoreInfoSearch');
 	});
 
 	// Patient Group
@@ -68,7 +69,15 @@ $routes->group('mlrs/api/v1', function($routes){
 		$routes->post('add/new', 'InventoryController::addProduct');
 		$routes->post('update/details', 'InventoryController::updateProduct');
 		$routes->post('get/products', 'InventoryController::getProductList');
+		$routes->post('get/products/search', 'InventoryController::getProductSearchList');
 		$routes->post('get/detail', 'InventoryController::getProductDetail');
+	});
+
+	$routes->group('transaction', function($routes){
+		$routes->post('temp/list', 'InventoryController::temporaryTransactions');
+		$routes->post('temp/create/order', 'InventoryController::temporaryOrderCreate');
+		$routes->post('temp/reference', 'InventoryController::getReferenceContinues');
+
 	});
 
 	// Stock Group
@@ -137,6 +146,10 @@ $routes->group('mlrs/api/v1', function($routes){
 		$routes->post('get/photo', 'MobileController::agentClientPhoto');
 		$routes->post('get/booking', 'MobileController::agentClientBooking');
 		$routes->post('agent/callSummary', 'MobileController::agentCallSummaryList');
+
+		// Get Order List
+		$routes->post('fetch/order/list', 'MobileController::OrderList');
+		$routes->post('create/order', 'MobileController::createOrder');
 
 		// Mobile Fetch Updated Products
 		$routes->get('fetch/product/list', 'MobileController::migrateProductsToMobile');

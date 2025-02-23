@@ -78,37 +78,37 @@ const linksList = [
       {label: 'OR Forms', icon: 'history_edu', link: 'forms'}
     ]
   },
-  {
-    title: 'Patient Management',
-    icon: 'pets',
-    code: 103,
-    children: [
-      {
-        title: 'Patient Records',
-        icon: 'source',
-        link: 'patientRecords',
-      },
-      {
-        title: 'Announcement',
-        icon: 'source',
-        link: 'announcements',
-      },
-    ],
-    crumbs: [
-      {label: '', icon: 'home', link: '/'},
-      {label: 'Patient List', icon: 'view_list', link: 'mylist'}
-    ]
-  },
+  // {
+  //   title: 'Patient Management',
+  //   icon: 'pets',
+  //   code: 103,
+  //   children: [
+  //     {
+  //       title: 'Patient Records',
+  //       icon: 'source',
+  //       link: 'patientRecords',
+  //     },
+  //     {
+  //       title: 'Announcement',
+  //       icon: 'source',
+  //       link: 'announcements',
+  //     },
+  //   ],
+  //   crumbs: [
+  //     {label: '', icon: 'home', link: '/'},
+  //     {label: 'Patient List', icon: 'view_list', link: 'mylist'}
+  //   ]
+  // },
   {
     title: 'Inventory Management',
     icon: 'inventory',
     code: 104,
     children: [
-      {
-        title: 'Stock List',
-        icon: 'view_list',
-        link: 'stockList',
-      },
+      // {
+      //   title: 'Stock List',
+      //   icon: 'view_list',
+      //   link: 'stockList',
+      // },
       {
         title: 'Product List',
         icon: 'sell',
@@ -125,73 +125,73 @@ const linksList = [
       {label: 'Patient List', icon: 'view_list', link: 'mylist'}
     ]
   },
-  {
-    title: 'Mobile App Management',
-    icon: 'devices',
-    code: 105,
-    children: [
-      {
-        title: 'Agent Call Sync',
-        icon: 'contact_phone',
-        link: 'agentCallSync',
-      },
-      {
-        title: 'Client List',
-        icon: 'storefront',
-        link: 'clientList',
-      },
-    ],
-    crumbs: [
-      {label: '', icon: 'home', link: '/'},
-      {label: 'Patient List', icon: 'view_list', link: 'mylist'}
-    ]
-  },
-  {
-    title: 'Reports',
-    icon: 'analytics',
-    code: 106,
-    children: [
-      {
-        title: 'Agent Call Report',
-        icon: 'contact_phone',
-        link: 'mobileSync',
-      },
-      {
-        title: 'Summary Report',
-        icon: 'contact_phone',
-        link: 'mobileSync',
-      },
-      {
-        title: 'Sales Report',
-        icon: 'storefront',
-        link: 'salesReport',
-      },
-    ],
-    crumbs: [
-      {label: '', icon: 'home', link: '/'},
-      {label: 'Patient List', icon: 'view_list', link: 'mylist'}
-    ]
-  },
-  {
-    title: 'Manage Users',
-    icon: 'manage_accounts',
-    link: 'usermanagement',
-    code: 107,
-    crumbs: [
-      {label: '', icon: 'home', link: '/'},
-      {label: 'Manage Users', icon: 'manage_accounts', link: 'usermanagement'}
-    ]
-  },
-  {
-    title: 'Configurations',
-    icon: 'display_settings',
-    link: 'crsmanagement',
-    code: 108,
-    crumbs: [
-      {label: '', icon: 'home', link: '/'},
-      {label: 'Manage CRS', icon: 'dynamic_form', link: 'crsmanagement'}
-    ]
-  },
+  // {
+  //   title: 'Mobile App Management',
+  //   icon: 'devices',
+  //   code: 105,
+  //   children: [
+  //     {
+  //       title: 'Agent Call Sync',
+  //       icon: 'contact_phone',
+  //       link: 'agentCallSync',
+  //     },
+  //     {
+  //       title: 'Client List',
+  //       icon: 'storefront',
+  //       link: 'clientList',
+  //     },
+  //   ],
+  //   crumbs: [
+  //     {label: '', icon: 'home', link: '/'},
+  //     {label: 'Patient List', icon: 'view_list', link: 'mylist'}
+  //   ]
+  // },
+  // {
+  //   title: 'Reports',
+  //   icon: 'analytics',
+  //   code: 106,
+  //   children: [
+  //     {
+  //       title: 'Agent Call Report',
+  //       icon: 'contact_phone',
+  //       link: 'mobileSync',
+  //     },
+  //     {
+  //       title: 'Summary Report',
+  //       icon: 'contact_phone',
+  //       link: 'mobileSync',
+  //     },
+  //     {
+  //       title: 'Sales Report',
+  //       icon: 'storefront',
+  //       link: 'salesReport',
+  //     },
+  //   ],
+  //   crumbs: [
+  //     {label: '', icon: 'home', link: '/'},
+  //     {label: 'Patient List', icon: 'view_list', link: 'mylist'}
+  //   ]
+  // },
+  // {
+  //   title: 'Manage Users',
+  //   icon: 'manage_accounts',
+  //   link: 'usermanagement',
+  //   code: 107,
+  //   crumbs: [
+  //     {label: '', icon: 'home', link: '/'},
+  //     {label: 'Manage Users', icon: 'manage_accounts', link: 'usermanagement'}
+  //   ]
+  // },
+  // {
+  //   title: 'Configurations',
+  //   icon: 'display_settings',
+  //   link: 'crsmanagement',
+  //   code: 108,
+  //   crumbs: [
+  //     {label: '', icon: 'home', link: '/'},
+  //     {label: 'Manage CRS', icon: 'dynamic_form', link: 'crsmanagement'}
+  //   ]
+  // },
 ];
 
 export default {

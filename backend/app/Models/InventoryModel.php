@@ -10,6 +10,7 @@ class InventoryModel extends Model
     protected $tableStocks    = 'tblstocks';
     protected $tableCategories    = 'tblcategory';
     protected $tableUnits    = 'tblunits';
+    protected $tableTempOrder    = 'tbltemp_transaction';
 
     protected $primaryKey = 'id';
 
@@ -34,7 +35,7 @@ class InventoryModel extends Model
         $query = $this->db->table($this->tableProducts)->insert($data);
         return $query ? true : false;
     }
-
+    
     public function updateProduct($where, $setData){
 
         $query = $this->db->table($this->tableProducts)->set($setData)->where($where)->update();
@@ -46,6 +47,12 @@ class InventoryModel extends Model
     public function getProductList() {
 
         $query = $this->db->table($this->tableProducts)->get();
+        $results = $query->getResult('array');
+        return $results;
+    }
+    public function getProductListSearch($searchParam) {
+
+        $query = $this->db->table($this->tableProducts)->like('productName', $searchParam)->get();
         $results = $query->getResult('array');
         return $results;
     }
@@ -77,6 +84,27 @@ class InventoryModel extends Model
     public function getUnits() {
 
         $query = $this->db->table($this->tableUnits)->get();
+        $results = $query->getResult('array');
+        return $results;
+    }
+
+
+    // Temporary Order
+    public function insertToTemporaryOrder($data){
+        $query = $this->db->table($this->tableTempOrder)->insert($data);
+        return $query ? true : false;
+    }
+    public function getStoreList() {
+        $query = $this->db->table($this->tableTempOrder)->orderBy('id', 'DESC')->get();
+        $results = $query->getResult('array');
+        foreach($results as $key => $value){
+            $results[$key]['orderItem'] = json_decode($results[$key]['orderItem'], true);
+        }
+        return $results;
+    }
+    public function getStores($searchParam) {
+
+        $query = $this->db->table($this->tableTempOrder)->like('storeName', $searchParam)->get();
         $results = $query->getResult('array');
         return $results;
     }

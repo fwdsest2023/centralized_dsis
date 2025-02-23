@@ -31,6 +31,44 @@
                         :rows="tableRow"
                         :filter="filter"
                         :columns="tableColumns"
+                        row-key="referenceNumber"
+                        flat bordered
+                        wrap-cells
+                        separator="cell"
+                    >  
+                        <template v-slot:header="props">
+                            <q-tr :props="props">
+                                <q-th
+                                    v-for="col in props.cols"
+                                    :key="col.name"
+                                    :props="props"
+                                >
+                                    {{ col.label }}
+                                </q-th>
+                                <q-th>
+                                    Action
+                                </q-th>
+                            </q-tr>
+                        </template>
+                        <template v-slot:body="props">
+                            <q-tr :props="props">
+                                <q-td
+                                    v-for="col in props.cols"
+                                    :key="col.name"
+                                    :props="props"
+                                >
+                                    {{ col.value }}
+                                </q-td>
+                                <q-td>
+                                    <q-btn @click="printInvoice(props.row)" size="sm" class="full-width" color="primary" icon="print" />
+                                </q-td>
+                            </q-tr>
+                        </template>
+                    </q-table>
+                    <!-- <q-table
+                        :rows="tableRow"
+                        :filter="filter"
+                        :columns="tableColumns"
                         row-key="productName"
                     >
                         <template v-slot:top-right>
@@ -54,7 +92,7 @@
                                 />
                             </q-td>
                         </template>
-                    </q-table>
+                    </q-table> -->
                 </div>
             </div>
         </div>
@@ -65,6 +103,11 @@
             @updateModalStatus="closeInvoiceModal"
             @refreshData="getList"
         />
+        <printInvoiceModal
+            :modalStatus="printModal"
+            :appData="appId"
+            @updatePrintStatus="closePrintReceipt"
+        />
     </div>
 </template>
 
@@ -73,6 +116,7 @@ import moment from 'moment';
 import { LocalStorage, SessionStorage } from 'quasar'
 import noData from '../../Templates/NoData.vue';
 import invoiceDetailsModal from '../Modals/InvoiceDetails.vue'
+import printInvoiceModal from '../Modals/PrintInvoice.vue';
 import jwt_decode from 'jwt-decode'
 import { api } from 'boot/axios'
 
@@ -80,6 +124,7 @@ export default {
     name: 'ProductList',
     data(){
         return {
+            printModal: false,
             isContinueEdit: false,
             isPwd: true,
             isLoading: false,
@@ -96,13 +141,22 @@ export default {
     },
     components: {
         noData,
-        invoiceDetailsModal
+        invoiceDetailsModal,
+        printInvoiceModal
     },
     created(){
         this.getList();
     },
     methods: {
         moment,
+        printInvoice(row){
+            // show preview
+            this.appId = row
+            this.printModal = true
+        },
+        closePrintReceipt(){
+            this.printModal = false
+        },
         openInvoiceModal(row){
             this.openAddModal = true;
             this.appId = row.key;
@@ -123,7 +177,7 @@ export default {
             this.isLoading = true;
             let vm = this;
             
-            api.get('invoice/fetch/list').then((response) => {
+            api.post('transaction/temp/list').then((response) => {
                 const data = {...response.data};
                 if(!data.error){
                     this.tableRow = response.status < 300 ? data.list : [];
@@ -150,32 +204,31 @@ export default {
             return jwt_decode(profile);
         },
         tableColumns: function(){
-            // "SKU", "Products", "Unit Type", "Unit Price", "Category ID", "Total Stock", "Action"
             return [
                 {
-                    name: 'key',
+                    name: 'id',
                     required: true,
                     label: 'ID',
                     align: 'left',
-                    field: row => row.key,
+                    field: row => row.id,
                     format: val => `${val}`,
                     sortable: true
                 },
                 {
-                    name: 'invoiceNumber',
+                    name: 'referenceNumber',
                     required: true,
                     label: 'Invoice No.',
                     align: 'left',
-                    field: row => row.invoiceNumber,
+                    field: row => row.referenceNumber,
                     format: val => `${val}`,
                     sortable: true
                 },
                 {
-                    name: 'customer',
+                    name: 'storeName',
                     required: true,
                     label: 'Customer',
                     align: 'left',
-                    field: row => row.customer,
+                    field: row => row.storeName,
                     format: val => `${val}`,
                     sortable: true
                 },
@@ -187,28 +240,7 @@ export default {
                     field: row => row.orderDate,
                     format: val => `${val}`,
                     sortable: true
-                },
-                {
-                    name: 'itemCount',
-                    required: true,
-                    label: 'No. of Items',
-                    align: 'left',
-                    field: row => row.itemCount,
-                    format: val => `${val}`,
-                    sortable: true
-                },
-                {
-                    name: 'createdBy',
-                    required: true,
-                    label: 'Created By',
-                    align: 'left',
-                    field: row => row.createdBy,
-                    format: val => `${val}`,
-                    sortable: true
-                },
-               
-                
-                { name: 'actions', label: 'Action', field: 'actions' }
+                }
             ]
         }
     }

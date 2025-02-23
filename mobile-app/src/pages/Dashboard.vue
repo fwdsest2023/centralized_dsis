@@ -1,11 +1,11 @@
 <template>
   <q-page >
-    <q-card flat class="my-card">
-      <q-img src="imgs/home_background.jpg" fit="fill">
+    <q-card flat class="my-card q-pt-lg">
+      <!-- <q-img src="imgs/home_background.jpg" fit="fill">
         <div class="absolute-bottom">
           <div class="text-h6">{{userProfile.fullName}}</div>
         </div>
-      </q-img>
+      </q-img> -->
 
       <q-card-actions>
         <q-btn 
@@ -41,7 +41,7 @@
           <q-tab :ripple="false" name="adminWorks" icon="admin_panel_settings" label="Admin" />
         </q-tabs> -->
       </q-card-actions>
-      <q-card-actions>
+      <!-- <q-card-actions>
         <q-select 
           class="col col-xs-6 col-md-6 q-pa-sm"
           outlined 
@@ -59,10 +59,14 @@
           label="Area" 
           dense 
         />
-      </q-card-actions>
+      </q-card-actions> -->
     </q-card>
     <q-separator />
-    <client-list 
+    <!-- <client-list 
+      :filteredList="filterListArea"
+      :curCallDate="dateToday"
+    /> -->
+    <order-list 
       :filteredList="filterListArea"
       :curCallDate="dateToday"
     />
@@ -95,6 +99,7 @@ import { SessionStorage } from 'quasar'
 import { Preferences } from '@capacitor/preferences';
 import jwt_decode from 'jwt-decode'
 import clientList from '../components/Dashboard/client-list.vue'
+import orderList from '../components/Dashboard/order-list.vue'
 import moment from 'moment';
 
 
@@ -123,7 +128,8 @@ export default {
     }
   },
   components: {
-    clientList
+    clientList,
+    orderList
   },
   computed: {
     getUserProfile: async function(){
