@@ -51,25 +51,37 @@ class InventoryModel extends Model
         return $results;
     }
     public function getProductListSearch($searchParam) {
+        $sql = "SELECT * FROM tblproducts a, tblstocks b  WHERE a.id = b.productId AND a.productName LIKE '%".$searchParam."%' AND b.quantity > 0";
 
-        $query = $this->db->table($this->tableProducts)->like('productName', $searchParam)->get();
+        $query = $this->db->query($sql);
         $results = $query->getResult('array');
         return $results;
+        // $query = $this->db->table($this->tableProducts)->like('productName', $searchParam)->get();
+        // $results = $query->getResult('array');
+        // return $results;
     }
 
     // Get Stocks
     public function getStockList() {
 
-        $sql = "SELECT * FROM tblstocks a, tblproducts b WHERE a.prodId = b.id";
+        $sql = "SELECT * FROM tblstocks a, tblproducts b WHERE a.productId = b.id";
 
         $query = $this->db->query($sql);
         $results = $query->getResult('array');
         return $results;
     }
 
-    // Insert Stock
+    // Stock
     public function insertStock($data){
         $query = $this->db->table($this->tableStocks)->insert($data);
+        return $query ? true : false;
+    }
+    public function addStockItem($where, $qty){
+        $query = $this->db->table($this->tableStocks)->set('quantity', 'quantity+'.$qty, false)->where($where)->update();
+        return $query ? true : false;
+    }
+    public function updateStockItems($where, $qty){
+        $query = $this->db->table($this->tableStocks)->set('quantity', 'quantity-'.$qty, false)->where($where)->update();
         return $query ? true : false;
     }
 

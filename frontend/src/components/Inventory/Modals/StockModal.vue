@@ -15,21 +15,21 @@
                     </q-btn>
                 </q-bar>
 
-                <q-card-section style="max-height: 70vh; height: 70vh;" class="q-pt-none scroll">
+                <q-card-section style="max-height: 70vh;" class="q-pt-none scroll">
                     <q-form
                         ref="formDetails"
                         class="row"
                     >   
                         <div class="col col-md-12">
-                            <span class="text-h5">Product Details</span>
+                            <span class="text-h5">Inventory Details</span>
                             <q-separator />
                         </div>
-                        <div class="col col-md-4 q-pa-sm">
+                        <div class="col col-md-12 q-pa-sm">
                             <q-select 
                                 outlined
                                 use-input
                                 input-debounce="0"
-                                v-model="form.prodId" 
+                                v-model="form.productId" 
                                 :options="productOptions" 
                                 label="Product" 
                                 stack-label 
@@ -46,58 +46,11 @@
                                 </template>
                             </q-select>
                         </div>
-                        <!-- <div class="col col-md-4 q-pa-sm">
-                            <q-select 
-                                outlined 
-                                v-model="form.unitType" 
-                                :options="uTypeOptions" 
-                                label="Unit Type" 
-                                stack-label 
-                                dense
-                                options-dense
-                            />
-                        </div> -->
                         <div class="col col-md-4 q-pa-sm">
                             <q-input 
+                                type="number"
                                 outlined 
-                                v-model="form.prodSerial" 
-                                label="Product Serial" 
-                                stack-label 
-                                dense
-                            />
-                        </div>
-                        <div class="col col-md-4 q-pa-sm">
-                            <q-input 
-                                outlined 
-                                type="date"
-                                v-model="form.deliveryDate" 
-                                label="Delivery Date" 
-                                stack-label 
-                                dense
-                            />
-                        </div>
-                        <div class="col col-md-4 q-pa-sm">
-                            <q-input 
-                                outlined 
-                                type="date"
-                                v-model="form.expirationDate" 
-                                label="Expiry Date" 
-                                stack-label 
-                                dense
-                            />
-                        </div>
-                        <div class="col col-md-4 q-pa-sm"></div>
-
-                        
-                        <div class="col col-md-12 q-mt-md">
-                            <span class="text-h5">Inventory Details</span>
-                            <q-separator />
-                        </div>
-
-                        <div class="col col-md-4 q-pa-sm">
-                            <q-input 
-                                outlined 
-                                v-model="form.qty" 
+                                v-model="form.quantity" 
                                 label="Product Quantity" 
                                 stack-label 
                                 dense
@@ -105,6 +58,7 @@
                         </div>
                         <div class="col col-md-4 q-pa-sm">
                             <q-input 
+                                type="number"
                                 outlined 
                                 v-model="form.stockNotice" 
                                 label="Stock Notice" 
@@ -133,7 +87,7 @@
                             />
                         </div> -->
                         
-                        <div class="col col-md-12"></div>
+                        <!-- <div class="col col-md-12"></div>
                         <div
                             v-for="(el, index) in form.otherDetails"
                             class="col col-md-4 q-pa-sm"
@@ -146,7 +100,7 @@
                                 stack-label 
                                 dense 
                             />
-                        </div>
+                        </div> -->
                         
                     </q-form>
                 </q-card-section>
@@ -180,21 +134,10 @@ export default {
         return {
             openModal: false,
             form: {
-                prodId: { label: '', value: '' },
-                // unitId: { label: '', value: '' },
-                prodSerial: '',
-                deliveryDate: '',
-                expirationDate: '',
-                isLoose: 'No',
-                qty: '',
-                itemPrice: '',
-                otherDetails: {
-                    totalQty: '',
-                    pricePerItem: '',
-                    perItemType: '',
-                },
-                stockNotice: '',
-                status: {label: '', value: '' },
+                productId: { label: '', value: '' },
+                quantity: 0,
+                stockNotice: 0,
+                status: {label: 'In Stock', value: 'In Stock'},
             },
             otherDetailsLabels: {
                 totalQty: 'Unit Total Quantity',
@@ -253,7 +196,6 @@ export default {
             update(() => {
 
                 const needle = val.toLowerCase()
-                console.log(vm.stringProductOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1))
                 vm.productOptions = vm.stringProductOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
             })
         },
@@ -297,11 +239,9 @@ export default {
         async addStock(){
             this.$q.loading.show();
             let payload = this.form
-            payload.unitId = payload.prodId.unit.value
-            payload.prodId = payload.prodId.value
+            payload.productId = Number(payload.productId.value)
             payload.status = payload.status.value
 
-            return 
             api.post('stock/add/new', payload).then((response) => {
                 const data = {...response.data};
                 if(!data.error){
@@ -324,20 +264,10 @@ export default {
         },
         clearForm(){
             this.form = {
-                prodId: { label: '', value: '' },
-                unitId: { label: '', value: '' },
-                prodSerial: '',
-                deliveryDate: '',
-                expirationDate: '',
-                isLoose: 'No',
-                qty: '',
-                otherDetails: {
-                    totalQty: '',
-                    pricePerItem: '',
-                    perItemType: '',
-                },
-                stockNotice: '',
-                status: {label: '', value: '' },
+                productId: { label: '', value: '' },
+                quantity: 0,
+                stockNotice: 0,
+                status: {label: 'In Stock', value: 'In Stock'},
             }
         },
         getProducts(){

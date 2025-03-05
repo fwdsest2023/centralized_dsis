@@ -47,8 +47,8 @@
                                     outline
                                     size="md"
                                     color="primary" 
-                                    label="Edit"
-                                    @click="getSavedDetails(props.row.key)"
+                                    label="Add Stock"
+                                    @click="addStock(props.row)"
                                 />
                                 <q-btn 
                                     dense
@@ -57,7 +57,7 @@
                                     size="md"
                                     color="red" 
                                     label="Delete"
-                                    @click="deleleSaveData(props.row.key)"
+                                    @click="deleleSaveData(props.row)"
                                 />
                             </q-td>
                         </template>
@@ -69,7 +69,7 @@
         <stockModal
             :modalStatus="openModal" 
             @updateModalStatus="closeAddModal"
-            @submitModalClick="submitData"
+            @refreshData="getList"
         />
     </div>
 </template>
@@ -112,6 +112,50 @@ export default{
         },
         closeAddModal(val){
             this.openModal = val
+        },
+        async addStock(info){
+            console.log(info)
+            this.$q.dialog({
+                title: 'Add Stock',
+                message: 'Quantity of Stocks to Add',
+                prompt: {
+                    model: 0,
+                    type: 'number' // optional
+                },
+                cancel: true,
+                persistent: true
+            }).onOk(data => {
+                // console.log('>>>> OK, received', data)
+                let payload = {
+                    id: info.id,
+                    quantity: Number(data),
+                }
+
+                api.post('stock/add', payload).then((response) => {
+                    const data = {...response.data};
+                    if(!data.error){
+                        this.$q.notify({
+                            color: 'positive',
+                            position: 'top-right',
+                            title:data.title,
+                            message: data.message,
+                            icon: 'report_problem'
+                        })
+                        this.getList();
+                    } else {
+                        this.$q.notify({
+                            color: 'negative',
+                            position: 'top-right',
+                            title: data.title,
+                            message: data.message,
+                            icon: 'report_problem'
+                        })
+                    }
+
+                })
+
+            })
+           
         },
         async submitData(frmData){
             this.openModal = false;
@@ -182,49 +226,12 @@ export default{
                     format: val => `${val}`,
                     sortable: true
                 },
-                {
-                    name: 'unitType',
-                    required: true,
-                    label: 'Unit Type',
-                    align: 'left',
-                    field: row => row.label,
-                    format: val => `${val}`,
-                    sortable: true
-                },
-                // { name: 'unitType', label: 'Unit Type', field: 'unitType' },
                 { 
-                    name: 'qty',
+                    name: 'quantity',
                     required: true,
                     label: 'Quantity', 
                     align: 'left',
-                    field:  row => row.UnitTotalQuantity,
-                    format: val => `${val}`,
-                    sortable: true
-                },
-                // { 
-                //     name: 'isLoose',
-                //     required: true,
-                //     label: 'Is Loose Stock', 
-                //     align: 'left',
-                //     field:  row => row.,
-                //     format: val => `${val}`,
-                //     sortable: true
-                // },
-                { 
-                    name: 'deliveryDate',
-                    required: true,
-                    label: 'Date Delivered', 
-                    align: 'left',
-                    field:  row => row.deliveryDate,
-                    format: val => `${val}`,
-                    sortable: true
-                },
-                { 
-                    name: 'expirationDate',
-                    required: true,
-                    label: 'expirationDate', 
-                    align: 'left',
-                    field:  row => row.expiryDate,
+                    field:  row => row.quantity,
                     format: val => `${val}`,
                     sortable: true
                 },
@@ -233,24 +240,14 @@ export default{
                     required: true,
                     label: 'Stock Notice', 
                     align: 'left',
-                    field:  row => row.StockNotice,
+                    field:  row => row.stockNotice,
                     format: val => `${val}`,
                     sortable: true
                 },
+                { name: 'createdDate', label: 'Date Created', field: 'createdDate' },
                 { name: 'actions', label: 'Action', field: 'actions' }
-                //to be confirmed
-                // { 
-                //     name: 'createdDate',
-                //     required: true,
-                //     label: 'Created Date', 
-                //     align: 'left',
-                //     field:  row => row.createdAt,
-                //     format: val => `${val}`,
-                //     sortable: true
-                // },
-           
                
-                // { name: 'createdDate', label: 'Created Date', field: 'createdDate' },
+                
                 
                 
             ]

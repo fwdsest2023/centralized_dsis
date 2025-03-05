@@ -81,51 +81,51 @@ export default {
             const { width, height } = fpage.getSize()
             // console.log(data)
             fpage.drawText(`${data.storeName}`, {
-              x: 80,
-              y: height - 80,
-              size: 10,
+              x: 95,
+              y: height - 75,
+              size: 8,
               font: fontBold,
               color: rgb(0, 0, 0),
             })
-            fpage.drawText(`${data.address}`, {
-              x: 80,
-              y: height - 95,
-              size: 10,
+            fpage.drawText(`${data.address.toUpperCase()}`, {
+              x: 95,
+              y: height - 90,
+              size: 7,
               color: rgb(0, 0, 0),
             })
             fpage.drawText(`${data.ownerName}`, {
               x: 335,
-              y: height - 80,
-              size: 10,
+              y: height - 75,
+              size: 8,
               color: rgb(0, 0, 0),
             })
             fpage.drawText(`${data.contact}`, {
               x: 335,
-              y: height - 95,
-              size: 10,
+              y: height - 90,
+              size: 9,
               color: rgb(0, 0, 0),
             })
             fpage.drawText(`${data.terms}`, {
               x: 515,
-              y: height - 80,
-              size: 10,
+              y: height - 75,
+              size: 9,
               font: fontBold,
               color: rgb(0, 0, 0),
             })
             fpage.drawText(`${moment(data.orderDate).format('LL')}`, {
-              x: 510,
-              y: height - 95,
-              size: 10,
+              x: 500,
+              y: height - 90,
+              size: 9,
               font: fontBold,
               color: rgb(0, 0, 0),
             })
 
-            let stdTextHeight = height - 143;
+            let stdTextHeight = height - 133;
             let totalAmount = 0
             data.orderItem.forEach(el => {
 
                 fpage.drawText(`${el.quantity}`, {
-                    x: 35,
+                    x: 55,
                     y: stdTextHeight,
                     size: 9,
                     font: fontBold,
@@ -134,9 +134,9 @@ export default {
                 })
 
                 fpage.drawText(`${el.product}`, {
-                    x: 70,
+                    x: 85,
                     y: stdTextHeight,
-                    size: 9,
+                    size: 7,
                     font: fontBold,
                     maxWidth: 355,
                     color: rgb(0, 0, 0),
@@ -147,18 +147,18 @@ export default {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2
                     })}`, {
-                    x: 275,
+                    x: 280,
                     y: stdTextHeight,
-                    size: 9,
+                    size: 7,
                     font: fontBold,
                     maxWidth: 355,
                     color: rgb(0, 0, 0),
                 })
 
                 fpage.drawText(`${el.discount}`, {
-                    x: 330,
+                    x: 320,
                     y: stdTextHeight,
-                    size: 9,
+                    size: 7,
                     font: fontBold,
                     maxWidth: 355,
                     color: rgb(0, 0, 0),
@@ -172,7 +172,7 @@ export default {
                     })}`, {
                     x: 367,
                     y: stdTextHeight,
-                    size: 9,
+                    size: 7,
                     font: fontBold,
                     maxWidth: 355,
                     color: rgb(0, 0, 0),
@@ -183,8 +183,8 @@ export default {
             })
             
             fpage.drawText(`C/O ${data.agentName}`, {
-                x: 80,
-                y: height - 290,
+                x: 90,
+                y: height - 270,
                 size: 9,
                 font: fontBold,
                 color: rgb(0, 0, 0),
@@ -196,7 +196,7 @@ export default {
                 maximumFractionDigits: 2
                 })}`, {
                 x: 340,
-                y: height - 290,
+                y: height - 270,
                 size: 9,
                 font: fontBold,
                 color: rgb(0, 0, 0),
@@ -207,31 +207,31 @@ export default {
 
             fpage.drawText(`${data.bank}`, {
                 x: 490,
-                y: height - 193,
+                y: height - 180,
                 size: 10,
                 color: rgb(0, 0, 0),
             })
             fpage.drawText(`${data.postDated}`, {
                 x: 490,
-                y: height - 210,
+                y: height - 195,
                 size: 10,
                 color: rgb(0, 0, 0),
             })
             fpage.drawText(`${data.notes}`, {
                 x: 490,
-                y: height - 258,
+                y: height - 240,
                 size: 10,
                 color: rgb(0, 0, 0),
             })
             fpage.drawText(`${data.checkNo}`, {
                 x: 490,
-                y: height - 273,
+                y: height - 256,
                 size: 10,
                 color: rgb(0, 0, 0),
             })
             fpage.drawText(`${data.referenceNumber}`, {
                 x: 490,
-                y: height - 290,
+                y: height - 273,
                 size: 11,
                 font: fontBold,
                 color: rgb(1, 0, 0),
@@ -243,15 +243,22 @@ export default {
 
 
             fpage.drawText(`${data.ownerName}`, {
-              x: 20,
-              y: height - 305,
-              size: 8,
+              x: 40,
+              y: height - 287,
+              size: 7,
               color: rgb(0, 0, 0),
             })
             fpage.drawText(`${data.address}`, {
               x: 275,
-              y: height - 305,
-              size: 8,
+              y: height - 287,
+              size: 7,
+              color: rgb(0, 0, 0),
+            })
+            fpage.drawText(`${data.storeName}`, {
+              x: 298,
+              y: height - 355,
+              font: fontBold,
+              size: 7,
               color: rgb(0, 0, 0),
             })
 

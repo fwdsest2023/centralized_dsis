@@ -63,6 +63,23 @@ const routes = [
     ]
   },
   {
+    path: '/voucher-management/',
+    component: () => import('layouts/LoginLayout.vue'),
+    children: [
+      // Inventory Management
+      { 
+        path: 'voucher-list',
+        name: 'voucherList',
+        component: () => import('pages/Vouchers/Index.vue') 
+      },
+      { 
+        path: 'postdated-list',
+        name: 'postdatedList',
+        component: () => import('pages/Vouchers/Postdated.vue') 
+      }
+    ]
+  },
+  {
     path: '/mobile-app-management/',
     component: () => import('layouts/LoginLayout.vue'),
     children: [

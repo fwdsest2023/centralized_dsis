@@ -83,7 +83,9 @@ $routes->group('mlrs/api/v1', function($routes){
 	// Stock Group
 	$routes->group('stock', function($routes){
 		$routes->post('add/new', 'InventoryController::addStock');
+		$routes->post('add', 'InventoryController::addUpdateStock');
 		$routes->post('get/stocks', 'InventoryController::getStockList');
+		
 		// Stock specs
 		$routes->post('get/categories', 'InventoryController::getCategories');
 		$routes->post('get/units', 'InventoryController::getUnits');
@@ -109,6 +111,13 @@ $routes->group('mlrs/api/v1', function($routes){
 		$routes->get('userTypes', 'Misc::getUserTypes');
 	});
 
+	// Voucher Management
+	$routes->group('voucher', function($routes){
+		$routes->get('reference', 'Voucher::createVoucherNumber');
+		$routes->post('add', 'Voucher::addVoucher');
+		$routes->get('list', 'Voucher::getVoucherList');
+		$routes->get('list/postdated', 'Voucher::getVoucherListPostdated');
+	});
 
 
 	// All Users mmodule

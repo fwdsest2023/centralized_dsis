@@ -175,7 +175,7 @@
                             >
                             </q-input>
                         </div>
-                        <div class="col-12 col-md-6 q-pa-sm">
+                        <div class="col-12 col-md-12 q-pa-sm">
                             <q-input
                                 outlined
                                 v-model="form.notes" 
@@ -185,7 +185,7 @@
                             >
                             </q-input>
                         </div>
-                        <div class="col-12 col-md-6 q-pa-sm">
+                        <!-- <div class="col-12 col-md-6 q-pa-sm">
                             <q-input
                                 outlined 
                                 type="date"
@@ -195,7 +195,7 @@
                                 dense
                             >
                             </q-input>
-                        </div>
+                        </div> -->
                     </div>
                     
                 </q-card-section>
@@ -227,7 +227,7 @@
             <div class="col-12 col-md-7 q-pa-xs">
             <div class="row">
                 <div class="col col-12 q-mb-sm">
-                    <q-input v-model="selectedScan" dense rounded outlined placeholder="Search to add Product" @keypress.enter="getProducts(selectedScan)" >
+                    <q-input v-model="selectedScan" dense round outlined placeholder="Search to add Product" @keypress.enter="getProducts(selectedScan)" >
                     
                         <template v-slot:append>
                             <q-icon
@@ -266,6 +266,7 @@
                         </q-popup-proxy>
                     </q-input>
                     <q-table
+                        class="q-mt-sm"
                         v-if="this.form.orderItem.length > 0"
                         flat bordered
                         :rows="this.form.orderItem"
@@ -282,6 +283,9 @@
                                     :props="props"
                                 >
                                     {{ col.label }}
+                                </q-th>
+                                <q-th>
+                                    Price
                                 </q-th>
                                 <q-th>
                                     Discount
@@ -477,15 +481,15 @@ import printInvoiceModal from '../Modals/PrintInvoice.vue';
                     format: val => `${val}`,
                     sortable: true
                 },
-                {
-                    name: 'supplier',
-                    required: true,
-                    label: 'Company',
-                    align: 'left',
-                    field: row => row.supplier,
-                    format: val => `${val}`,
-                    sortable: true
-                },
+                // {
+                //     name: 'supplier',
+                //     required: true,
+                //     label: 'Company',
+                //     align: 'left',
+                //     field: row => row.supplier,
+                //     format: val => `${val}`,
+                //     sortable: true
+                // },
                 // {
                 //     name: 'srp',
                 //     required: true,

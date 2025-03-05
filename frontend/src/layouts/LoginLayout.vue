@@ -104,11 +104,11 @@ const linksList = [
     icon: 'inventory',
     code: 104,
     children: [
-      // {
-      //   title: 'Stock List',
-      //   icon: 'view_list',
-      //   link: 'stockList',
-      // },
+      {
+        title: 'Stock List',
+        icon: 'view_list',
+        link: 'stockList',
+      },
       {
         title: 'Product List',
         icon: 'sell',
@@ -119,6 +119,32 @@ const linksList = [
         icon: 'point_of_sale',
         link: 'invoiceList',
       },
+    ],
+    crumbs: [
+      {label: '', icon: 'home', link: '/'},
+      {label: 'Patient List', icon: 'view_list', link: 'mylist'}
+    ]
+  },
+  {
+    title: 'Voucher Management',
+    icon: 'assured_workload',
+    code: 104,
+    children: [
+      {
+        title: 'Check Voucher',
+        icon: 'fact_check',
+        link: 'voucherList',
+      },
+      {
+        title: 'Post Dated Checks',
+        icon: 'approval',
+        link: 'postdatedList',
+      },
+      // {
+      //   title: 'Invoice',
+      //   icon: 'point_of_sale',
+      //   link: 'invoiceList',
+      // },
     ],
     crumbs: [
       {label: '', icon: 'home', link: '/'},

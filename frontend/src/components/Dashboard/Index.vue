@@ -1,108 +1,49 @@
 <template>
     <div class="q-pa-md" style="width: 100%;">
         <div class="row">
-            <div class="col col-xs-12 col-sm-12 col-md-3 q-pa-sm">
-                <q-list >
-                    <q-item 
-                        class="shadow-2 bg-white custom-item-border q-mb-md q-pa-md" 
-                        v-ripple
-                    >
-                        <q-item-section avatar>
-                            <q-avatar rounded class="generatedIconDash" text-color="white" icon="admin_panel_settings" size="xl" />
-                        </q-item-section>
-                        <q-item-section>
-                            <!-- <q-item-label caption style="font-size: 7pt;">Monthly</q-item-label> -->
-                            <q-item-label lines="2" class="text-bold">Customers</q-item-label>
-                            <!-- <q-item-label class="text-bold text-grey-9 text-h6" lines="2">0</q-item-label> -->
-                        </q-item-section>
-                        <q-item-section side top >
-                            <q-chip
-                                color="blue"
-                                text-color="white"
-                                size="lg"
+            <!-- Users Count Overview -->
+            <div class="col-12 col-xs-12 col-sm-12 col-md-12 q-pa-sm">
+                <q-card
+                    flat
+                    class="my-card bg-white"
+                >
+                    <q-card-section>
+                        <span class="text-h6 text-bold">Check Voucher Overview</span><br/>
+                        <!-- <span class="text-caption text-grey">Invoice & Check summary</span><br/> -->
+
+                        <div class="row">
+                            <div
+                                v-for="(item, idx) in dashCards"
+                                :key="idx"
+                                class="col-3 col-xs-12 col-sm-4 col-md-3 q-pa-xs"
                             >
-                                <q-avatar color="red"  text-color="white" icon="people" >
-                                    <!-- <img src="https://cdn.quasar.dev/img/boy-avatar.png"> -->
-                                </q-avatar>
-                                <div class="ellipsis">
-                                0
-                                </div>
-                            </q-chip>
+                                <q-card
+                                    flat
+                                    class="my-card-item "
+                                    :class="item.color"
+                                >
 
-                            <q-chip
-                                color="blue"
-                                text-color="white"
-                                size="lg"
-                            >
-                                <q-avatar color="red"  text-color="white" icon="pets" >
-                                    <!-- <img src="https://cdn.quasar.dev/img/boy-avatar.png"> -->
-                                </q-avatar>
-                                <div class="ellipsis">
-                                0
-                                </div>
-                            </q-chip>
-                        </q-item-section>
-                    </q-item>
-                </q-list>
+                                    <q-card-section>
+                                        <q-avatar
+                                            size="md"
+                                            :color="item.iconBg"
+                                            text-color="white"
+                                            :icon="item.icon"
+                                        />
+                                        <br/>
+                                        <span class="text-bold text-h6 text-blue-grey-9" >{{item.value}}</span>
+                                        <br/>
+                                        <span class="text-subtitle text-blue-grey-9" >{{item.title}}</span>
+                                        <br/>
+                                        <span class="text-caption ellipsis" :class="item.captionColor" >{{item.captions}}</span>
+                                    </q-card-section>
+                                </q-card>
+                            </div>
+                        </div>
+                    </q-card-section>
+                </q-card>
             </div>
-            <div class="col col-xs-12 col-sm-12 col-md-3 q-pa-sm"> 
-                <q-toolbar class="bg-primary text-white shadow-2">
-                    <q-toolbar-title>Schedule for Today</q-toolbar-title>
-                </q-toolbar>
-
-                <q-list bordered>
-                    <q-item 
-                        v-for="item in eventList" 
-                        :key="item.id" 
-                        class="q-my-sm text-left"
-                        @click="eventClick(item)" 
-                        clickable 
-                        v-ripple
-                    >
-                        <q-item-section avatar>
-                            <q-icon :name="item.details.schedType === 'vaccine' ? 'vaccines' : 'fact_check'" />
-                        </q-item-section>
-
-                        <q-item-section>
-                            <q-item-label>{{ item.title }}</q-item-label>
-                            <q-item-label caption lines="3">{{ item.details.remarks }}</q-item-label>
-                        </q-item-section>
-
-                        <q-item-section side top>
-                            <q-item-label caption>{{item.details.scheduleTime}}</q-item-label>
-                            <q-badge
-                                class="q-mt-xs"
-                                :color="item.details.status === '0' ? 'primary':'green'" 
-                                :label="item.details.status === '0' ? 'Pending':'Done'" 
-                            />
-                        </q-item-section>
-                    </q-item>
-                </q-list>
-            </div>
-            <!-- Cards -->
-            <div class="col col-xs-12 col-sm-12 col-md-6 q-pa-sm">
-                <FullCalendar 
-                    :options="calendarOptions"
-                />
-            </div>
-            
-            
         </div>
-
-
-        <!-- Modal -->
-        <checkupModal
-            :appDetails="selectedModalData"
-            :modalStatus="openCheckupModal"
-            @updateModalStatus="closeModals"
-            @refreshData="getSchedules"
-        />
-        <wellnessModal
-            :appDetails="selectedModalData"
-            :modalStatus="openWellnessModal"
-            @updateModalStatus="closeModals"
-            @refreshData="getSchedules"
-        />
     </div>
 </template>
 
@@ -161,7 +102,69 @@ export default{
                     action: () => { return false }
                 },
             ],
-            eventList: []
+            eventList: [],
+            dashCards: [
+              {
+                  key: 'applicants',
+                  title: 'New Check Voucher',
+                  value: 0,
+                  subVal: '',
+                  type: '',
+                  info: '',
+                  icon: 'contact_emergency',
+                  valueType: 'Count',
+                  chartType: '',
+                  color: 'bg-amber-2',
+                  iconBg: 'amber-5',
+                  captions: 'All check vouchers recorded and realeased',
+                  captionColor: 'text-blue-14',
+              },
+              {
+                  key: 'totalLoans',
+                  title: 'For Entry',
+                  value: 0,
+                  subVal: '',
+                  type: '',
+                  info: '',
+                  icon: 'devices_other',
+                  valueType: 'Count',
+                  chartType: '',
+                  color: 'bg-light-green-2',
+                  iconBg: 'light-green-5',
+                  captions: 'Checks for Entry to be release',
+                  captionColor: 'text-blue-14',
+              },
+              {
+                  key: 'totalRedeem',
+                  title: 'Cancelled',
+                  value: 0,
+                  subVal: '',
+                  type: '',
+                  info: '',
+                  icon: 'fact_check',
+                  valueType: 'Count',
+                  chartType: '',
+                  color: 'bg-blue-grey-2',
+                  iconBg: 'blue-grey-5',
+                  captions: 'Cancelled checks & vouchers',
+                  captionColor: 'text-blue-14',
+              },
+              {
+                  key: 'totalSales',
+                  title: 'Late Entry',
+                  value: 0.00,
+                  subVal: '',
+                  type: '',
+                  info: '',
+                  icon: 'attach_money',
+                  valueType: 'Number',
+                  chartType: '',
+                  color: 'bg-red-2',
+                  iconBg: 'red-5',
+                  captions: 'Late Entry Checks',
+                  captionColor: 'text-blue-14',
+              },
+            ],
         }
     },
     mounted(){
@@ -215,5 +218,22 @@ export default{
 .generatedIconDash{
   background: rgb(0,177,250);
   background: linear-gradient(148deg, rgb(0 61 250) 0%, rgb(241 48 48) 98%);
+}
+.my-card{
+    border-radius: 15px;
+    box-shadow: 0px 0px 3px -2px !important;
+}
+.my-card-item{
+    border-radius: 10px;
+}
+.generatedDash{
+  color: white;
+  background: rgb(0,177,250);
+  background: linear-gradient(122deg, rgb(255 251 176) 0%, rgb(0 55 255 / 61%) 89%);
+}
+.generatedDash2{
+  color: white;
+  background: rgb(0,177,250);
+  background: linear-gradient(122deg, rgb(38 148 243) 0%, rgb(45 253 215 / 61%) 89%);
 }
 </style>

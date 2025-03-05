@@ -298,6 +298,41 @@ class InventoryController extends BaseController
         }
 
     }
+    public function addUpdateStock(){
+
+        //Get API Request Data from Frontend
+        $payload = $this->request->getJSON();
+        
+        $where = ['productId' => $payload->id];
+        
+        // Insert the data
+        $query = $this->inventoryModel->addStockItem($where, $payload->quantity);
+
+        if($query){
+
+            $response = [
+                'title' => 'Stock added',
+                'message' => 'Stock added successfully',
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+            
+        } else {
+            $response = [
+                'title' => 'Registration Failed!',
+                'message' => 'Please check your data.'
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
 
     public function getStockList(){
         // Check Auth header bearer
@@ -470,6 +505,16 @@ class InventoryController extends BaseController
         $query = $this->inventoryModel->insertToTemporaryOrder($payload);
 
         if($query){
+            // Foreach the Items
+            $items = json_decode($payload['orderItem'], true);
+            $i = 0;
+            foreach($items as $key => $value){
+                $req = [
+                    'productId' => $value['id']
+                ];
+                $this->inventoryModel->updateStockItems($req, $value['quantity']);
+                $i++;
+            }
 
             $response = [
                 'title' => 'Product added',
