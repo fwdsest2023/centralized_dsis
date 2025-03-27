@@ -14,7 +14,7 @@
                         <q-tooltip class="bg-white text-primary">Close</q-tooltip>
                     </q-btn>
                 </q-bar>
-                <q-card-section class="row items-center no-wrap" >
+                <q-card-section v-if="processType === 'add'" class="row items-center no-wrap" >
                     <div>
                         <div class="text-h6 ">Upload product capacity details: </div>
                     </div>
@@ -33,6 +33,82 @@
                 </q-card-section>
                 <q-card-section style="max-height: 70vh; height: 70vh;" class="q-pt-none scroll">
                     <q-form
+                        v-if="productList.length <= 0"
+                        ref="formDetails"
+                        class="row"
+                    >   
+                        <div class="col col-md-12">
+                            <span class="text-h5">Product Details</span>
+                            <q-separator />
+                        </div>
+                        <div class="col col-md-12 q-pa-sm">
+                            <q-input 
+                                outlined 
+                                v-model="form.productName" 
+                                label="Product Name" 
+                                stack-label 
+                                dense
+                            />
+                        </div>
+                        <div class="col col-md-12 q-pa-sm">
+                            <q-input 
+                                outlined 
+                                v-model="form.supplier" 
+                                label="Supplier Name" 
+                                stack-label 
+                                dense
+                            />
+                        </div>
+                        <div class="col col-md-6 q-pa-sm">
+                            <q-input 
+                                outlined 
+                                v-model="form.productSRP" 
+                                label="SRP (PHP)" 
+                                stack-label 
+                                dense
+                            />
+                        </div>
+                        <div class="col col-md-6 q-pa-sm">
+                            <q-input 
+                                outlined 
+                                v-model="form.netCost" 
+                                label="Net Cost (PHP)" 
+                                stack-label 
+                                dense
+                            />
+                        </div>
+                        <div class="col col-md-6 q-pa-sm">
+                            <q-input 
+                                outlined 
+                                v-model="form.minSellPrice" 
+                                label="Min. Sell Price" 
+                                stack-label 
+                                dense
+                            />
+                        </div>
+                        <div class="col col-md-6 q-pa-sm">
+                            <q-input 
+                                outlined 
+                                v-model="form.maxSellPrice" 
+                                label="Max Sell Price" 
+                                stack-label 
+                                dense
+                            />
+                        </div>
+                        <div class="col col-md-12 q-pa-sm">
+                            <q-input 
+                                outlined 
+                                v-model="form.commissionType" 
+                                label="Commission Type" 
+                                stack-label 
+                                hint="e.g. percentage or bag"
+                                dense
+                            />
+                        </div>
+                        
+                    </q-form>
+                    <q-form
+                        v-if="productList.length > 0"
                         ref="formDetails"
                         class="row"
                     >   
@@ -78,7 +154,7 @@
 
                 <q-separator />
 
-                <q-card-actions align="right">
+                <q-card-actions v-if="productList.length <= 0" align="right">
                     <q-btn
                         v-if="processType === 'add'"
                         flat 
@@ -92,6 +168,14 @@
                         label="Update Data" 
                         color="primary"
                         @click="updateProduct" 
+                    />
+                </q-card-actions>
+                <q-card-actions v-if="productList.length > 0" align="right">
+                    <q-btn
+                        flat 
+                        label="Submit Bulk" 
+                        color="primary"
+                        @click="submitModalClick" 
                     />
                 </q-card-actions>
             </q-card>
@@ -115,16 +199,13 @@ export default{
             productList: [],
             csvFile: null,
             form: {
-                sku: '',
                 productName: '',
-                productCost: '',
+                supplier: '',
                 productSRP: '',
-                unit: '',
-                category: '',
-                description: '',
-                hasPriceGroup: false,
-                costGroup: {},
-                createdBy: 0,
+                netCost: '',
+                minSellPrice: '',
+                maxSellPrice: '',
+                commissionType: '',
             },
             catOptions: [
                 {label: 'Box', value: 'BX'},
@@ -250,15 +331,13 @@ export default{
 		},
         fillTheDetails(){
             this.form = {
-                sku: this.appId.sku,
                 productName: this.appId.productName,
-                productCost: this.appId.productCost,
+                supplier: this.appId.supplier,
                 productSRP: this.appId.productSRP,
-                unit: JSON.parse(this.appId.unit),
-                category: JSON.parse(this.appId.category),
-                description: this.appId.description,
-                hasPriceGroup: false,
-                costGroup: {},
+                netCost: this.appId.netCost,
+                minSellPrice: this.appId.minSellPrice,
+                maxSellPrice: this.appId.maxSellPrice,
+                commissionType: this.appId.commissionType,
             }
         },
         async closeModal(){
@@ -292,17 +371,48 @@ export default{
                         },
                         persistent: true
                     }).onOk(() => {
-                        // this.$emit('submitModalClick', vm.form);
-                        this.addNewProduct();
+                        if(vm.productList.length > 0){
+                            vm.addNewProductBulk();
+                        } else {
+                            vm.addNewProduct();
+                        }
+                        // this.addNewProduct();
                     })
                 }
             })
             
         },
 
-        async addNewProduct(){
+        async addNewProductBulk(){
             this.$q.loading.show();
             let payload = { list: this.productList}
+            
+            api.post('product/add/bulk', payload).then((response) => {
+                const data = {...response.data};
+                if(!data.error){
+                    this.$emit('refreshData')
+                    this.clearForm();
+                    this.closeModal();
+                } else {
+                    this.$q.notify({
+                        color: 'negative',
+                        position: 'top-right',
+                        title:data.title,
+                        message: this.$t(`errors.${data.error}`),
+                        icon: 'report_problem'
+                    })
+                }
+
+            })
+
+            this.$q.loading.hide();
+        },
+        async addNewProduct(){
+            this.$q.loading.show();
+            let payload = { 
+                ...this.form,
+                createdBy: this.user.id
+            }
             
             api.post('product/add/new', payload).then((response) => {
                 const data = {...response.data};
@@ -324,6 +434,7 @@ export default{
 
             this.$q.loading.hide();
         },
+
         async updateProduct(){
             this.$q.loading.show();
             let payload = {

@@ -187,9 +187,10 @@ export default{
                 const data = {...response.data};
                 if(!data.error){
                     let activcate = this.activities.map((item) => {
+                        let tobeEnable = "Client Trades,Client List,Order List"
                         return {
                             ...item,
-                            active: true
+                            active: tobeEnable.includes(item.title)
                         }
                     })
 

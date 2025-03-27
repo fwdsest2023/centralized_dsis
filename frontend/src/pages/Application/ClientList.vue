@@ -262,6 +262,7 @@ export default{
                     const data = {...response.data};
                     if(!data.error){
                        this.addClient = false
+                       this.resetForm()
                        this.getLists();
                     } else {
                         this.$q.notify({
@@ -275,6 +276,17 @@ export default{
                 
             })
            
+        },
+        resetForm(){
+            this.form = {
+                storeName: '',
+                ownerName: '',
+                address: '',
+                contact: '',
+                businessPermit: '',
+                idPicture: '',
+                storePicture: '',
+            }
         }
     }
 }

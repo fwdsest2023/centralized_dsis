@@ -14,6 +14,53 @@ class InventoryController extends BaseController
     }
     
     public function addProduct(){
+        // Check Auth header bearer
+        $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
+        if(!$authorization){
+            $response = [
+                'message' => 'Unauthorized Access'
+            ];
+
+            return $this->response
+                    ->setStatusCode(401)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+            exit();
+        }
+
+        //Get API Request Data from Frontend
+        $payload = $this->request->getJSON();
+        $payload = json_decode(json_encode($payload), true);
+
+        
+        // Insert the data
+        $query = $this->inventoryModel->insert($payload);
+
+        if($query){
+            $response = [
+                'title' => 'Product added',
+                'message' => 'Product added successfully',
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+            
+        } else {
+            $response = [
+                'title' => 'Registration Failed!',
+                'message' => 'Please check your data.'
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+    }
+
+    public function addBulkProduct(){
         
         //Get API Request Data from Frontend
         $payload = $this->request->getJSON();
@@ -59,19 +106,18 @@ class InventoryController extends BaseController
 
 
     public function updateProduct(){
-        // Check Auth header bearer
-        // $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
-        // if(!$authorization){
-        //     $response = [
-        //         'message' => 'Unauthorized Access'
-        //     ];
+        $authorization = $this->request->getServer('HTTP_AUTHORIZATION');
+        if(!$authorization){
+            $response = [
+                'message' => 'Unauthorized Access'
+            ];
 
-        //     return $this->response
-        //             ->setStatusCode(401)
-        //             ->setContentType('application/json')
-        //             ->setBody(json_encode($response));
-        //     exit();
-        // }
+            return $this->response
+                    ->setStatusCode(401)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+            exit();
+        }
 
         $payload = $this->request->getJSON();
         $where = ['id' => $payload->id];
@@ -79,23 +125,13 @@ class InventoryController extends BaseController
 
         $setProductData = [
             'productName' => $payload->productName,
-            'unit' => json_encode($payload->unit),
-            'description' => $payload->description,
-            'category' => json_encode($payload->category),
-            'productCost' => $payload->productCost,
-            'productSRP' => $payload->productSRP
+            'supplier' => $payload->supplier,
+            'productSRP' => $payload->productSRP,
+            'netCost' => $payload->netCost,
+            'minSellPrice' => $payload->minSellPrice,
+            'maxSellPrice' => $payload->maxSellPrice,
+            'commissionType' => $payload->commissionType,
         ];
-
-        
-        // $history = [
-        //     'prodId' => $data->prodId,
-        //     'requestData' => json_encode($data),
-        //     'actionStatus' => str_replace(['<user>'], [$userData->firstName .' '. $userData->lastName .' '. $userData->suffix], $data->action),
-        //     'createdBy' => $data->user,
-        // ];
-
-        // print_r($setData);
-        // exit;
 
         //Update Query for finding User Information
         $updateProduct = $this->inventoryModel->updateProduct($where, $setProductData);

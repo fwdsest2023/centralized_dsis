@@ -142,30 +142,90 @@
                                     ref="customerPopup"
                                     no-parent-event
                                 >
-                                    <q-list bordered style="width: 100dvw;">
-                                        <q-item 
-                                            v-for="(val, index) in productList" 
-                                            :key="index" 
-                                            clickable
-                                            @click="pushToTableList(val)" 
-                                            v-ripple
-                                        >
-                                            <!-- <q-item-section avatar>
-                                                <q-icon color="primary" name="face" />
-                                            </q-item-section> -->
-
-                                            <q-item-section>({{ val.supplier }}) {{ val.productName }}</q-item-section>
-                                        </q-item>
-                                    </q-list>
+                                    <q-card>
+                                        <q-card-section>
+                                            <q-list>
+                                                <q-item 
+                                                    v-for="(val, index) in productList" 
+                                                    :key="index" 
+                                                    clickable
+                                                    @click="pushToTableList(val)" 
+                                                    v-ripple
+                                                >
+                                                    <q-item-section>{{ val.productName }}</q-item-section>
+                                                </q-item>
+                                            </q-list>
+                                        </q-card-section>
+                                    </q-card>
                                 </q-popup-proxy>
                             </q-input>
-                            <q-list v-if="form.orderItem.length > 0" >
+
+                            <div v-if="form.orderItem.length > 0" class="q-mt-md">
+                                <q-card v-for="item in form.orderItem" :key="item.id" class="my-card q-mt-sm" flat bordered>
+                                    <q-item>
+                                        <q-item-section>
+                                            <q-item-label class="text-bold">{{ item.product }}</q-item-label>
+                                        </q-item-section>
+                                        <q-item-section side>
+                                            <q-btn @click="removeStockItem(item)" size="sm" class="full-width" color="red" icon="delete" />
+                                        </q-item-section>
+                                    </q-item>
+
+                                    <q-separator />
+
+                                    <q-card-section horizontal>
+                                        <q-card-section class="col-4">
+                                            <q-item-label>Order Details: </q-item-label>
+                                        </q-card-section>
+
+                                        <q-separator vertical />
+
+                                        <q-card-section>
+                                            <q-input
+                                                outlined
+                                                v-model="item.srp" 
+                                                stack-label 
+                                                dense
+                                                label="Price"
+                                                :rules="[
+                                                    val => val > 0 || 'Invalid Price',
+                                                    val => val >= item.minSell || `Price cannot be lower than ${item.minSell}`,
+                                                    val => val <= item.minSell || `Price cannot be greater than ${item.minSell}`
+                                                ]"
+                                            >
+                                            </q-input>
+                                            <q-input
+                                                label="Quantity"
+                                                outlined
+                                                v-model="item.quantity" 
+                                                stack-label 
+                                                dense
+                                            >
+                                            </q-input>
+                                        </q-card-section>
+                                    </q-card-section>
+                                </q-card>
+                            </div>
+                            <!-- <q-list v-if="form.orderItem.length > 0" >
                                 <q-item v-for="item in form.orderItem" :key="item.id" class="q-my-sm" clickable v-ripple >
                                     <q-item-section>
-                                        <q-item-label>{{ item.product }}</q-item-label>
-                                        
+                                        <q-item-label class="ellipsis">{{ item.product }}</q-item-label>
                                     </q-item-section>
-
+                                    
+                                    <q-item-section>
+                                        <q-input
+                                            outlined
+                                            v-model="item.srp" 
+                                            stack-label 
+                                            dense
+                                            :rules="[
+                                                val => val > 0 || 'Invalid Price',
+                                                val => val >= item.minSell || `Price cannot be lower than ${item.minSell}`,
+                                                val => val <= item.minSell || `Price cannot be greater than ${item.minSell}`
+                                            ]"
+                                        >
+                                        </q-input>
+                                    </q-item-section>
                                     <q-item-section class="q-pa-sm" side>
                                         <q-input
                                             input-style="width: 50px;"
@@ -180,7 +240,7 @@
                                         <q-btn @click="removeStockItem(item)" size="sm" class="full-width" color="red" icon="delete" />
                                     </q-item-section>
                                 </q-item>
-                            </q-list>
+                            </q-list> -->
                         </div>
                         
                         <div class="col col-12 q-mt-sm">
@@ -500,7 +560,7 @@ export default{
   background: linear-gradient(148deg, rgb(0 61 250) 0%, rgb(241 48 48) 98%);
 }
 .my-card{
-    border-radius: 15px;
+    border-radius: 10px;
     box-shadow: 0px 0px 3px -2px !important;
 }
 .my-card-item{

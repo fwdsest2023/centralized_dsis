@@ -88,7 +88,7 @@
                                     label="Edit"
                                     @click="openProductModal('edit', props.row)"
                                 />
-                                <q-btn 
+                                <!-- <q-btn 
                                     dense
                                     flat
                                     outline
@@ -96,7 +96,7 @@
                                     color="red" 
                                     label="Delete"
                                     @click="deleleSaveData(props.row.key)"
-                                />
+                                /> -->
                             </q-td>
                         </template>
                     </q-table>
@@ -301,6 +301,11 @@ export default {
                     field: row => row.netCost,
                     format: val => `${this.convertCurrency(val)}`,
                     sortable: true
+                },
+                {
+                    name: 'actions',
+                    required: true,
+                    label: 'Action',
                 },
             ]
         }
