@@ -8,7 +8,7 @@
                     class="my-card bg-white"
                 >
                     <q-card-section>
-                        <span class="text-h6 text-bold">Check Voucher Overview</span><br/>
+                        <span class="text-h6 text-bold">Agent Sales Overview</span><br/>
                         <!-- <span class="text-caption text-grey">Invoice & Check summary</span><br/> -->
 
                         <div class="row">
@@ -55,7 +55,7 @@
                                 @click="openAddCheckModal = !openAddCheckModal" 
                                 color="secondary" 
                                 no-caps 
-                                label="Add New Voucher" 
+                                label="Add New Agent" 
                             />
                         </div>
                         <div v-if="tableLoading && rows.length <= 0" class="text-center">
@@ -92,31 +92,31 @@
                                         :key="col.name"
                                         :props="props"
                                     >
-                                        <div v-if="col.name === 'docNo'">
-                                            <q-chip 
-                                                v-if="col.value.checkDetails === undefined"
-                                                outline 
-                                                color="green"
+                                        <div v-if="col.name === 'commission'">
+                                            Pecentage: <q-chip
+                                                color="blue"
                                                 size="sm"
                                                 text-color="white"
-                                                icon="tag"
-                                            >{{ col.value.docNo }}</q-chip>
-                                            <div v-else>
-                                                <q-chip 
-                                                    v-for="(itm) in col.value.checkDetails" 
-                                                    :key="itm" 
-                                                    outline 
-                                                    color="green"
-                                                    size="sm"
-                                                    text-color="white"
-                                                    icon="tag"
-                                                >
-                                                    {{ itm.docNo }}
-                                                </q-chip>
-                                            </div>
+                                            >{{ props.row.commission.percent }}</q-chip>
+                                            <br />
+                                            Per Bag: <q-chip
+                                                color="positive"
+                                                size="sm"
+                                                text-color="white"
+                                            >{{ props.row.commission.bag }}</q-chip>
                                         </div>
-                                        <div v-else-if="col.name === 'amount'">
-                                            {{ generateAmount(col.value) }}
+                                        <div v-else-if="col.name === 'target'">
+                                            Milestone: <q-chip
+                                                color="blue"
+                                                size="sm"
+                                                text-color="white"
+                                            >{{ props.row.target.percent }}</q-chip>
+                                            <br />
+                                            Bag: <q-chip
+                                                color="positive"
+                                                size="sm"
+                                                text-color="white"
+                                            >{{ props.row.target.bag }}</q-chip>
                                         </div>
                                         <span v-else>
                                             {{ col.value }}
@@ -144,13 +144,7 @@
         <addCheckModal 
             :modalStatus="openAddCheckModal"
             @updateModalStatus="closeClientModal"
-            @refreshData="getCheckVouchers"
-        />
-        <printModal
-            :modalStatus="openPrintModal"
-            :appData="previewData"
-            @updatePrintStatus="closePrintModal"
-            @refreshData="getCheckVouchers"
+            @refreshData="getList"
         />
     </div>
 </template>
@@ -158,7 +152,7 @@
 <script>
 import moment from 'moment'
 import { LocalStorage } from 'quasar'
-import addCheckModal from '../../components/Modals/AddCheckVoucher.vue'
+import addCheckModal from '../../components/Modals/AddAgentModal.vue'
 import printModal from '../../components/Modals/PrintVoucherModal.vue'
 
 export default {
@@ -249,36 +243,36 @@ export default {
         columns(){
             return [
                 {
-                    name: 'voucherNumber',
+                    name: 'name',
                     required: true,
-                    label: 'Voucher #',
+                    label: 'Agent Name',
                     align: 'left',
-                    field: row => row.voucherNumber,
+                    field: row => row.name,
                     format: val => `${val}`,
                     sortable: true
                 },
                 {
-                    name: 'vendor',
+                    name: 'username',
                     required: true,
-                    label: 'Payee',
+                    label: 'Username',
                     align: 'left',
-                    field: row => row.vendor,
+                    field: row => row.username,
                     format: val => `${val}`,
                     sortable: true
                 },
                 {
-                    name: 'checkDate',
+                    name: 'commission',
                     required: true,
-                    label: 'Date',
+                    label: 'Commission',
                     align: 'left',
                     field: row => row,
-                    format: val => `${moment(val.checkDate).format('LL')}`,
+                    format: val => val.commission,
                     sortable: true
                 },
                 {
-                    name: 'amount',
+                    name: 'target',
                     required: true,
-                    label: 'Amount',
+                    label: 'Target Sales',
                     align: 'left',
                     field: row => row,
                     format: val => val,
@@ -288,19 +282,33 @@ export default {
         }
     },
     created(){
-        this.getCheckVouchers()
+        this.getList();
     },
     methods: {
         moment,
-        async getCheckVouchers(){
-            this.rows = []
-            this.$api.get('voucher/list').then((response) => {
+        async getList(){
+            this.rows = [];
+            this.isLoading = true;
+            let vm = this;
+            
+            this.$api.get('users/getAgents').then((response) => {
                 const data = {...response.data};
-                if (!data.error) {
-                    this.rows = data.list; 
+
+                if(!data.error){
+                    this.rows = response.status < 300 ? data.list : [];
+                } else {
+                    this.$q.notify({
+                        color: 'negative',
+                        position: 'top-right',
+                        title:data.title,
+                        message: this.$t(`errors.${data.error}`),
+                        icon: 'report_problem'
+                    })
                 }
-                
+
             })
+
+            this.isLoading = false;
         },
         generateAmount(data){
             let res = 0;

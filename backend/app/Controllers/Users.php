@@ -95,6 +95,11 @@ class Users extends BaseController
         //Get API Request Data from NuxtJs
         $data = $this->request->getJSON(); 
         $data->password = sha1($data->password);
+
+        if($data->commission && $data->targetSales){
+            $data->commission = json_encode($data->commission);
+            $data->targetSales = json_encode($data->targetSales);
+        }
         
         $query = $this->userModel->insert($data);
 
@@ -234,14 +239,14 @@ class Users extends BaseController
             "status" => 1,
         ];
         // $list['list'] = $this->userModel->getAllUserInfo($where);
-        $query = $this->userModel->getAllUserAgentInfo($where, [3, 1]);
+        $query = $this->userModel->getAllUserAgentInfo($where, [3]);
         foreach ($query as $key => $value) {
             $list['list'][$key] = [
                 "key" => $value['id'],
                 "username" => $value['username'],
                 "name" => $value['firstName'] .' '. $value['middleName'] .' '. $value['lastName'] .' '. $value['suffix'],
-                "userType" =>  $value['userType'],
-                "desc" =>  $value['userTypeDescription'],
+                "commission" =>  json_decode($value['commission']),
+                "target" =>  json_decode($value['targetSales']),
             ];
         }
         

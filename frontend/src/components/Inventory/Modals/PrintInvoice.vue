@@ -120,12 +120,12 @@ export default {
               color: rgb(0, 0, 0),
             })
 
-            let stdTextHeight = height - 133;
+            let stdTextHeight = height - 130;
             let totalAmount = 0
             data.orderItem.forEach(el => {
 
                 fpage.drawText(`${el.quantity}`, {
-                    x: 55,
+                    x: 48,
                     y: stdTextHeight,
                     size: 9,
                     font: fontBold,
@@ -134,7 +134,7 @@ export default {
                 })
 
                 fpage.drawText(`${el.product}`, {
-                    x: 85,
+                    x: 80,
                     y: stdTextHeight,
                     size: 7,
                     font: fontBold,
@@ -147,7 +147,7 @@ export default {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2
                     })}`, {
-                    x: 280,
+                    x: 275,
                     y: stdTextHeight,
                     size: 7,
                     font: fontBold,
@@ -178,7 +178,7 @@ export default {
                     color: rgb(0, 0, 0),
                 })
 
-                stdTextHeight -= 20
+                stdTextHeight -= 17
                 totalAmount += (Number(el.srp) * Number(el.quantity)) - Number(el.discount)
             })
             
@@ -195,8 +195,8 @@ export default {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
                 })}`, {
-                x: 340,
-                y: height - 270,
+                x: 320,
+                y: height - 272,
                 size: 9,
                 font: fontBold,
                 color: rgb(0, 0, 0),
@@ -249,8 +249,8 @@ export default {
               color: rgb(0, 0, 0),
             })
             fpage.drawText(`${data.address}`, {
-              x: 275,
-              y: height - 287,
+              x: 265,
+              y: height - 286,
               size: 7,
               color: rgb(0, 0, 0),
             })

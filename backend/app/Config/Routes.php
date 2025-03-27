@@ -75,14 +75,28 @@ $routes->group('mlrs/api/v1', function($routes){
 
 	$routes->group('transaction', function($routes){
 		$routes->post('temp/list', 'InventoryController::temporaryTransactions');
+		$routes->post('temp/list/pending', 'InventoryController::temporaryPendingTransactions');
 		$routes->post('temp/create/order', 'InventoryController::temporaryOrderCreate');
+		$routes->post('temp/update/order', 'InventoryController::temporaryOrderUpdate');
 		$routes->post('temp/reference', 'InventoryController::getReferenceContinues');
 
 	});
 
+	// Distribution Processflow 
+	$routes->group('distribution', function($routes){
+		$routes->post('setTimeIn', 'Distribution::createTimeInAgent');
+		$routes->post('getTimeInDetails', 'Distribution::getTimeInAgent');
+		$routes->post('addClient', 'Distribution::addNewClient');
+		$routes->post('getAllClients', 'Distribution::getClientList');
+		$routes->post('create/order', 'InventoryController::temporaryOrderCreateAgent');
+		$routes->post('order/list', 'InventoryController::temporaryTransactionsAgent');
+	});
+	
+
 	// Stock Group
 	$routes->group('stock', function($routes){
 		$routes->post('add/new', 'InventoryController::addStock');
+		$routes->post('add/bulk', 'InventoryController::addStockBulk');
 		$routes->post('add', 'InventoryController::addUpdateStock');
 		$routes->post('get/stocks', 'InventoryController::getStockList');
 		
@@ -100,6 +114,7 @@ $routes->group('mlrs/api/v1', function($routes){
 		$routes->get('fetch/list', 'InvoiceController::fetchInvoice');
 	});
 
+	
 	// Generate PDF's and Reports
 	$routes->group('generate', function($routes){
 		$routes->post('invoice', 'Generate::createInvoice');
@@ -123,6 +138,7 @@ $routes->group('mlrs/api/v1', function($routes){
 	// All Users mmodule
 	$routes->group('users', function($routes){
 		$routes->post('create', 'Users::registerUser');
+		$routes->post('create/agent', 'Users::registerUserAgent');
 		$routes->get('getUsersList', 'Users::getAllUserList');
 		$routes->post('changePassword', 'Users::ChangePassword');
 		$routes->post('getUserById', 'Users::getUserDetails');
@@ -145,6 +161,8 @@ $routes->group('mlrs/api/v1', function($routes){
 		$routes->post('getScheduleList', 'DashboardController::fetchScheduleList');
 		$routes->get('getDashboard', 'DashboardController::fetchDashboard');
 	});
+
+	
 
 
 	// Mobile Application

@@ -8,6 +8,37 @@ const routes = [
       { path: 'admin', component: () => import('pages/Admin.vue') },
     ]
   },
+  {
+    path: '/distribution',
+    component: () => import('layouts/TabletLayout.vue'),
+    children: [
+      { path: 'agent', component: () => import('pages/Application/Index.vue') },
+      { path: 'admin', component: () => import('pages/Application/Admin.vue') },
+    ]
+  },
+  {
+    path: '/distribution',
+    component: () => import('layouts/AgentLayout.vue'),
+    children: [
+      { path: 'dashboard', name: 'distributionDashboard', component: () => import('pages/Application/Dashboard.vue') },
+      { path: 'client-list', name: 'distributionClientList', component: () => import('pages/Application/ClientList.vue') },
+      { path: 'client-trades', name: 'distributionClientTrades', component: () => import('pages/Application/ClientTrades.vue') },
+      { path: 'order-list', name: 'distributionOrderList', component: () => import('pages/Application/OrderList.vue') },
+    ]
+  },
+
+  {
+    path: '/agent/',
+    component: () => import('layouts/AgentLayout.vue'),
+    children: [
+      // Sales Management
+      { 
+        path: 'create-transaction',
+        name: 'salesForm',
+        component: () => import('pages/Inventory/Sales.vue') 
+      },
+    ]
+  },
 
   {
     path: '/admin',
@@ -22,6 +53,7 @@ const routes = [
       { path: 'crsmanagement', name: 'crsmanagement', component: () => import('pages/Philhealth.vue') },
     ]
   },
+  
   
   {
     path: '/clinic-management/',
@@ -60,6 +92,11 @@ const routes = [
         name: 'invoiceList',
         component: () => import('pages/Inventory/Invoice.vue') 
       },
+      { 
+        path: 'invoice-pending-list',
+        name: 'invoicePendingList',
+        component: () => import('pages/Inventory/PendingInvoice.vue') 
+      },
     ]
   },
   {
@@ -76,6 +113,18 @@ const routes = [
         path: 'postdated-list',
         name: 'postdatedList',
         component: () => import('pages/Vouchers/Postdated.vue') 
+      }
+    ]
+  },
+  {
+    path: '/agent-management/',
+    component: () => import('layouts/LoginLayout.vue'),
+    children: [
+      // Inventory Management
+      { 
+        path: 'agent-list',
+        name: 'agentList',
+        component: () => import('pages/Agents/List.vue') 
       }
     ]
   },
@@ -109,6 +158,8 @@ const routes = [
       },
     ]
   },
+
+ 
 
   // Always leave this as last one,
   // but you can also remove it

@@ -34,11 +34,18 @@
                         row-key="productName"
                     >
                         <template v-slot:top-right>
-                            <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
+                            <q-input borderless dense debounce="300" class="q-mr-md" v-model="filter" placeholder="Search">
                                 <template v-slot:append>
                                     <q-icon name="search" />
                                 </template>
                             </q-input>
+
+                            <q-btn
+                                unelevated
+                                color="primary"
+                                @click="exportCSVForProduct"
+                                label="Export CSV For Stock Import"
+                            />
                         </template>
                         <template v-slot:body-cell-unit="props">
                             <q-td :props="props">
@@ -189,13 +196,72 @@ export default {
 
             this.isLoading = false;
         },
-        
+        async exportCSVForProduct(){
+            let exportColumn = [
+                'id',
+                'productName',
+                'quantity',
+                'stockNotice'
+            ]
+			const content = [exportColumn.map(col => this.wrapCsvValue(col))].concat(
+				this.tableRow.map(row => exportColumn.map(col => this.wrapCsvValue(
+					row[ col === void 0 ? col : col ],
+					col.format,
+					row
+				)).join(','))
+			).join('\n')
+
+			const anchor = document.createElement('a');
+			anchor.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(content);
+			anchor.target = '_blank';
+			anchor.download = 'ProductStockValues.csv';
+			anchor.click();
+		},
+		wrapCsvValue (val, formatFn, row) {
+			let formatted = formatFn !== void 0
+				? formatFn(val, row)
+				: val
+
+			formatted = formatted === void 0 || formatted === null
+				? ''
+				: String(formatted)
+
+			formatted = formatted.split('"').join('""')
+			/**
+			 * Excel accepts \n and \r in strings, but some other CSV parsers do not
+			 * Uncomment the next two lines to escape new lines
+			 */
+			// .split('\n').join('\\n')
+			// .split('\r').join('\\r')
+
+			return `"${formatted}"`
+		},
         // end
     },
     computed: {
         user: function(){
             let profile = LocalStorage.getItem('userData');
             return jwt_decode(profile);
+        },
+        exportedColumns(){
+            return [
+                {
+                    dataIndex : 'productName',
+                    field: 'productName',
+                },
+                {
+                    dataIndex : 'productName',
+                    field: 'productName',
+                },
+                {
+                    dataIndex : 'productName',
+                    field: 'productName',
+                },
+                {
+                    dataIndex : 'productName',
+                    field: 'productName',
+                },
+            ]
         },
         tableColumns: function(){
             // "SKU", "Products", "Unit Type", "Unit Price", "Category ID", "Total Stock", "Action"

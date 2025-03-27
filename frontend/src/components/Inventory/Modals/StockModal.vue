@@ -14,9 +14,26 @@
                         <q-tooltip class="bg-white text-primary">Close</q-tooltip>
                     </q-btn>
                 </q-bar>
-
+                <q-card-section class="row items-center no-wrap" >
+                    <div>
+                        <div class="text-h6 ">Upload Product Stock Details: </div>
+                    </div>
+                    <q-space />
+                    <div>
+                        <q-file 
+                            outlined 
+                            v-model="csvFile"
+                            dense
+                        >
+                            <template v-slot:prepend>
+                                <q-icon name="attach_file" />
+                            </template>
+                        </q-file>
+                    </div>
+                </q-card-section>
                 <q-card-section style="max-height: 70vh;" class="q-pt-none scroll">
                     <q-form
+                        v-if="productList.length <= 0"
                         ref="formDetails"
                         class="row"
                     >   
@@ -40,7 +57,7 @@
                                 <template v-slot:no-option>
                                     <q-item>
                                         <q-item-section class="text-grey">
-                                        No product found!
+                                            No product found!
                                         </q-item-section>
                                     </q-item>
                                 </template>
@@ -77,31 +94,49 @@
                                 options-dense
                             />
                         </div>
-                        <!-- <div class="col col-md-4 q-pa-sm">
-                            <q-input 
-                                outlined 
-                                v-model="form.itemPrice" 
-                                label="Price" 
-                                stack-label 
-                                dense
-                            />
-                        </div> -->
-                        
-                        <!-- <div class="col col-md-12"></div>
-                        <div
-                            v-for="(el, index) in form.otherDetails"
-                            class="col col-md-4 q-pa-sm"
-                            :key="index"
-                        >
-                            <q-input 
-                                outlined 
-                                v-model="form.otherDetails[index]" 
-                                :label="otherDetailsLabels[index]" 
-                                stack-label 
-                                dense 
-                            />
-                        </div> -->
-                        
+                    </q-form>
+                    <q-form
+                        v-if="productList.length > 0"
+                        ref="formDetails"
+                        class="row"
+                    >   
+                        <div class="col col-md-12 q-pa-sm q-mt-md">
+                            <span class="text-h5">Product Stock Details</span>
+                            <q-separator />
+                        </div>
+                        <div class="col-12">
+                            <q-table
+                                flat bordered
+                                :rows="productList"
+                                wrap-cells
+                                :columns="capacityColumns"
+                                row-key="capacity"
+                                separator="cell"
+                            >  
+                                <template v-slot:header="props">
+                                    <q-tr :props="props">
+                                        <q-th
+                                            v-for="col in props.cols"
+                                            :key="col.name"
+                                            :props="props"
+                                        >
+                                            {{ col.label }}
+                                        </q-th>
+                                    </q-tr>
+                                </template>
+                                <template v-slot:body="props">
+                                    <q-tr :props="props">
+                                        <q-td
+                                            v-for="col in props.cols"
+                                            :key="col.name"
+                                            :props="props"
+                                        >
+                                            {{ col.value }}
+                                        </q-td>
+                                    </q-tr>
+                                </template>
+                            </q-table>
+                        </div>
                     </q-form>
                 </q-card-section>
 
@@ -109,8 +144,16 @@
 
                 <q-card-actions align="right">
                     <q-btn 
+                        v-if="productList.length <= 0"
                         flat 
                         label="Submit" 
+                        color="primary"
+                        @click="submitModalClick" 
+                    />
+                    <q-btn 
+                        v-if="productList.length > 0"
+                        flat 
+                        label="Submit Bulk Upload" 
                         color="primary"
                         @click="submitModalClick" 
                     />
@@ -120,9 +163,9 @@
     </div>
 </template>
 <script>
+import * as d3 from "d3"
 import moment from 'moment';
 import { LocalStorage } from 'quasar'
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import jwt_decode from 'jwt-decode'
 import { api } from 'boot/axios'
 
@@ -132,6 +175,8 @@ export default {
     name: 'PrintModal',
     data(){
         return {
+            csvFile: null,
+            productList: [],
             openModal: false,
             form: {
                 productId: { label: '', value: '' },
@@ -168,6 +213,9 @@ export default {
         }
     },
     watch:{
+        csvFile(newVal){
+            this.getFile(newVal)
+        },
         modalStatus(newVal){
             this.openModal = newVal
             if(newVal){
@@ -179,9 +227,63 @@ export default {
         user: function(){
             let profile = LocalStorage.getItem('userData');
             return jwt_decode(profile);
+        },
+        capacityColumns(){
+            return [
+                {
+                    name: 'productName',
+                    required: true,
+                    label: 'Product',
+                    align: 'left',
+                    field: row => row.productName,
+                    format: val => `${val}`,
+                    sortable: true
+                },
+                {
+                    name: 'quantity',
+                    required: true,
+                    label: 'Quantity',
+                    align: 'left',
+                    field: row => row.quantity,
+                    format: val => `${val}`,
+                    sortable: true
+                },
+                {
+                    name: 'stockNotice',
+                    required: true,
+                    label: 'Stock Notice',
+                    align: 'left',
+                    field: row => row.stockNotice,
+                    format: val => `${val}`,
+                    sortable: true
+                },
+            ]
         }
     },
     methods: {
+        async getFile(data){
+			// console.log(file)
+			// return
+			var reader = new FileReader();
+			// let filePath = data.file.originFileObj
+			let filePath = data
+			reader.readAsText(new Blob(
+				[filePath],
+				{"type": filePath.type}
+			))
+			const fileContent = await new Promise(resolve => {
+				reader.onloadend = (event) => {
+                    console.log(event.target)
+				    resolve(event.target.result)
+				}
+			})
+			let csvData = d3.csvParse(fileContent)
+			
+
+            this.productList = csvData
+
+			return false
+		},
         async searchProductsFn(val, update){
             const vm = this;
             if (val === '') {
@@ -229,8 +331,12 @@ export default {
                         },
                         persistent: true
                     }).onOk(() => {
-                        // this.$emit('submitModalClick', vm.form);
-                        this.addStock()
+                        if(vm.productList.length <= 0){
+                            vm.addStock()
+                        } else {
+                            vm.addStockBulk()
+                        }
+                        // this.addStock()
                     })
                 }
             })
@@ -243,6 +349,30 @@ export default {
             payload.status = payload.status.value
 
             api.post('stock/add/new', payload).then((response) => {
+                const data = {...response.data};
+                if(!data.error){
+                    this.$emit('refreshData')
+                    this.clearForm();
+                    this.closeModal();
+                } else {
+                    this.$q.notify({
+                        color: 'negative',
+                        position: 'top-right',
+                        title:data.title,
+                        message: this.$t(`errors.${data.error}`),
+                        icon: 'report_problem'
+                    })
+                }
+
+            })
+
+            this.$q.loading.hide();
+        },
+        async addStockBulk(){
+            this.$q.loading.show();
+            let payload = { list: this.productList}
+
+            api.post('stock/add/bulk', payload).then((response) => {
                 const data = {...response.data};
                 if(!data.error){
                     this.$emit('refreshData')

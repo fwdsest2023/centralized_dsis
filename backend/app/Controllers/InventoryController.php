@@ -298,6 +298,67 @@ class InventoryController extends BaseController
         }
 
     }
+    public function addStockBulk(){
+        
+        //Get API Request Data from Frontend
+        $payload = $this->request->getJSON();
+
+        // conversion of dateTime
+        // $payload = json_decode(json_encode($payload), true);
+        $i = 0;
+        foreach($payload->list as $key => $value){
+            // Check if the Stock of Product Already Exist
+            $check = $this->inventoryModel->checkStockExist($value->id);
+            if($check){
+                $req = [
+                    'productId' => $value->id
+                ];
+                $this->inventoryModel->addStockItem($req, $value->quantity);
+                $i++;
+                continue;
+            } else {
+                $req = [
+                    'productId' => $value->id,
+                    'quantity' => $value->quantity,
+                    'stockNotice' => $value->stockNotice
+                ];
+                $this->inventoryModel->insertStock($req);
+            }
+
+            $i++;
+        }
+        
+        
+        // Insert the data
+        // $query = $this->inventoryModel->insertProduct($payload);
+
+        if($i === sizeof($payload->list)){
+
+            $response = [
+                'title' => 'Product added',
+                'message' => 'Product added successfully',
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+            
+        } else {
+            $response = [
+                'title' => 'Registration Failed!',
+                'message' => 'Please check your data.'
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
+
+
     public function addUpdateStock(){
 
         //Get API Request Data from Frontend
@@ -490,6 +551,58 @@ class InventoryController extends BaseController
         }
 
     }
+    public function temporaryPendingTransactions(){
+        $list = [];
+        $list['list'] = $this->inventoryModel->getPendingStoreList();
+
+        if($list){
+            $list['message'] = "successfully fetch product list";
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($list));
+        } else {
+            $response = [
+                'title' => 'Error',
+                'message' => 'No Data Found'
+            ];
+
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
+    public function temporaryTransactionsAgent(){
+        //Get API Request Data from Frontend
+        $payload = $this->request->getJSON();
+
+        $list = [];
+        $list['list'] = $this->inventoryModel->getOrderListAgent([
+            "agentId" => $payload->agentId,
+            "orderDate" => $payload->orderDate,
+        ]);
+
+        if($list){
+            $list['message'] = "successfully fetch product list";
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($list));
+        } else {
+            $response = [
+                'title' => 'Error',
+                'message' => 'No Data Found'
+            ];
+
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
     public function temporaryOrderCreate(){
         
         //Get API Request Data from Frontend
@@ -507,6 +620,100 @@ class InventoryController extends BaseController
         if($query){
             // Foreach the Items
             $items = json_decode($payload['orderItem'], true);
+            $i = 0;
+            foreach($items as $key => $value){
+                $req = [
+                    'productId' => $value['id']
+                ];
+                $this->inventoryModel->updateStockItems($req, $value['quantity']);
+                $i++;
+            }
+
+            $response = [
+                'title' => 'Product added',
+                'message' => 'Product added successfully',
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+            
+        } else {
+            $response = [
+                'title' => 'Registration Failed!',
+                'message' => 'Please check your data.'
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
+
+    public function temporaryOrderCreateAgent(){
+        
+        //Get API Request Data from Frontend
+        $payload = $this->request->getJSON();
+        
+        $transaction = $payload->transaction;
+        $transaction->orderItem = json_encode($transaction->orderItem);
+        $transaction = json_decode(json_encode($transaction), true);
+
+        
+        // Insert the data
+        $query = $this->inventoryModel->insertToTemporaryOrder($transaction);
+
+        if($query){
+
+            // update the attendance order
+            $attWhere = [
+                'userId' => $payload->updateDetails->attendanceId,
+                'timeInDate' => $payload->updateDetails->attendanceDate,
+            ];
+            $this->inventoryModel->addOrderCount($attWhere, $payload->updateDetails->lastOrderDate);
+
+            $response = [
+                'title' => 'Product added',
+                'message' => 'Product added successfully',
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+            
+        } else {
+            $response = [
+                'title' => 'Registration Failed!',
+                'message' => 'Please check your data.'
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
+    public function temporaryOrderUpdate(){
+        
+        //Get API Request Data from Frontend
+        $payload = $this->request->getJSON();
+        
+        $transaction = $payload->updateDetails;
+        $transaction->orderItem = json_encode($transaction->orderItem);
+        $transaction = json_decode(json_encode($transaction), true);
+
+        
+        // Insert the data
+        $query = $this->inventoryModel->updateToTemporaryOrder($transaction, $payload->id);
+
+        if($query){
+            // Foreach the Items
+            $items = json_decode($transaction['orderItem'], true);
             $i = 0;
             foreach($items as $key => $value){
                 $req = [

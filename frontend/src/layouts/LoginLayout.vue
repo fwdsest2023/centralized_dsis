@@ -78,27 +78,16 @@ const linksList = [
       {label: 'OR Forms', icon: 'history_edu', link: 'forms'}
     ]
   },
-  // {
-  //   title: 'Patient Management',
-  //   icon: 'pets',
-  //   code: 103,
-  //   children: [
-  //     {
-  //       title: 'Patient Records',
-  //       icon: 'source',
-  //       link: 'patientRecords',
-  //     },
-  //     {
-  //       title: 'Announcement',
-  //       icon: 'source',
-  //       link: 'announcements',
-  //     },
-  //   ],
-  //   crumbs: [
-  //     {label: '', icon: 'home', link: '/'},
-  //     {label: 'Patient List', icon: 'view_list', link: 'mylist'}
-  //   ]
-  // },
+  {
+    title: 'Pending Invoice',
+    icon: 'receipt',
+    link: 'invoicePendingList',
+    code: 102,
+    crumbs: [
+      {label: '', icon: 'home', link: '/'},
+      {label: 'OR Forms', icon: 'history_edu', link: 'forms'}
+    ]
+  },
   {
     title: 'Inventory Management',
     icon: 'inventory',
@@ -150,6 +139,23 @@ const linksList = [
       {label: '', icon: 'home', link: '/'},
       {label: 'Patient List', icon: 'view_list', link: 'mylist'}
     ]
+  },
+  {
+    title: 'Agent Management',
+    icon: 'tablet_mac',
+    code: 104,
+    children: [
+      {
+        title: 'Agent List',
+        icon: 'contact_emergency',
+        link: 'agentList',
+      },
+      // {
+      //   title: 'Agent Sales',
+      //   icon: 'point_of_sale',
+      //   link: 'postdatedList',
+      // },
+    ],
   },
   // {
   //   title: 'Mobile App Management',

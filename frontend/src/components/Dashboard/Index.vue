@@ -8,7 +8,7 @@
                     class="my-card bg-white"
                 >
                     <q-card-section>
-                        <span class="text-h6 text-bold">Check Voucher Overview</span><br/>
+                        <span class="text-h6 text-bold">Dashboard Overview</span><br/>
                         <!-- <span class="text-caption text-grey">Invoice & Check summary</span><br/> -->
 
                         <div class="row">

@@ -260,7 +260,7 @@
                                         <q-icon color="primary" name="face" />
                                     </q-item-section> -->
 
-                                    <q-item-section>({{ val.supplier }}) {{ val.productName }}</q-item-section>
+                                    <q-item-section>{{ val.productName }}</q-item-section>
                                 </q-item>
                             </q-list>
                         </q-popup-proxy>
@@ -575,7 +575,7 @@ import printInvoiceModal from '../Modals/PrintInvoice.vue';
                 persistent: true
             }).onOk(() => {
 
-                this.form.createdBy = this.user.userId
+                this.form.createdBy = this.user.userId || 1
                 api.post('transaction/temp/create/order', this.form).then((response) => {
                     const data = {...response.data};
                     if(!data.error){

@@ -10,6 +10,7 @@ class InventoryModel extends Model
     protected $tableStocks    = 'tblstocks';
     protected $tableCategories    = 'tblcategory';
     protected $tableUnits    = 'tblunits';
+    protected $tableAttendance    = 'tblattendance';
     protected $tableTempOrder    = 'tbltemp_transaction';
 
     protected $primaryKey = 'id';
@@ -72,16 +73,22 @@ class InventoryModel extends Model
     }
 
     // Stock
+
+    public function checkStockExist($id){
+        $query = $this->db->table($this->tableStocks)->where('productId', $id)->get();
+        $results = $query->getRow();
+        return $results;
+    }
     public function insertStock($data){
         $query = $this->db->table($this->tableStocks)->insert($data);
         return $query ? true : false;
     }
     public function addStockItem($where, $qty){
-        $query = $this->db->table($this->tableStocks)->set('quantity', 'quantity+'.$qty, false)->where($where)->update();
+        $query = $this->db->table($this->tableStocks)->set('quantity', 'quantity+'.(int)$qty, false)->where($where)->update();
         return $query ? true : false;
     }
     public function updateStockItems($where, $qty){
-        $query = $this->db->table($this->tableStocks)->set('quantity', 'quantity-'.$qty, false)->where($where)->update();
+        $query = $this->db->table($this->tableStocks)->set('quantity', 'quantity-'.(int)$qty, false)->where($where)->update();
         return $query ? true : false;
     }
 
@@ -106,8 +113,34 @@ class InventoryModel extends Model
         $query = $this->db->table($this->tableTempOrder)->insert($data);
         return $query ? true : false;
     }
+    public function updateToTemporaryOrder($data, $id){
+        $query = $this->db->table($this->tableTempOrder)->set($data)->where('id', $id)->update();
+        return $query ? true : false;
+    }
     public function getStoreList() {
-        $query = $this->db->table($this->tableTempOrder)->orderBy('id', 'DESC')->get();
+        $query = $this->db->table($this->tableTempOrder)
+                      ->where('referenceNumber !=', '') // Exclude rows with empty referenceNumber
+                      ->orderBy('id', 'DESC')
+                      ->get();
+        $results = $query->getResult('array');
+        foreach($results as $key => $value){
+            $results[$key]['orderItem'] = json_decode($results[$key]['orderItem'], true);
+        }
+        return $results;
+    }
+    public function getPendingStoreList() {
+        $query = $this->db->table($this->tableTempOrder)
+                      ->where('referenceNumber', '') // Fetch rows with blank referenceNumber
+                      ->orderBy('id', 'DESC')
+                      ->get();
+        $results = $query->getResult('array');
+        foreach($results as $key => $value){
+            $results[$key]['orderItem'] = json_decode($results[$key]['orderItem'], true);
+        }
+        return $results;
+    }
+    public function getOrderListAgent($where) {
+        $query = $this->db->table($this->tableTempOrder)->where($where)->orderBy('id', 'DESC')->get();
         $results = $query->getResult('array');
         foreach($results as $key => $value){
             $results[$key]['orderItem'] = json_decode($results[$key]['orderItem'], true);
@@ -120,5 +153,13 @@ class InventoryModel extends Model
         $results = $query->getResult('array');
         return $results;
     }
+
+    // Attendance
+    public function addOrderCount($where, $lastOrder){
+        $query = $this->db->table($this->tableAttendance)->set('orderCount', 'orderCount+1', false)->set('lastOrderTakenDateTime',  $lastOrder)->where($where)->update();
+        return $query ? true : false;
+    }
+
+
 
 }

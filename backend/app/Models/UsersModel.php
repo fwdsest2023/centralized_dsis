@@ -31,6 +31,8 @@ class UsersModel extends Model
         'contact', 
         'address', 
         'branchId', 
+        'commission', 
+        'targetSales', 
         'profilePhoto', 
         'eSignature', 
         'status'
@@ -76,12 +78,12 @@ class UsersModel extends Model
         $results = $query->getResult('array');
 
         $all = array_map(function($el){
-            foreach($el as $key => $val){
-                $type = $this->db->table($this->typeTable)->where('id', $el['userType'])->get()->getRow();
-                $el['userTypeDescription'] = $type->description;
-                $branch = $this->db->table($this->branchTable)->where('id', $el['branchId'])->get()->getRow();
-                $el['branch'] = $branch->branchName;
-            }
+            // foreach($el as $key => $val){
+            //     $type = $this->db->table($this->typeTable)->where('id', $el['userType'])->get()->getRow();
+            //     $el['userTypeDescription'] = $type->description;
+            //     $branch = $this->db->table($this->branchTable)->where('id', $el['branchId'])->get()->getRow();
+            //     $el['branch'] = $branch->branchName;
+            // }
             return $el;
         }, $results);
 
