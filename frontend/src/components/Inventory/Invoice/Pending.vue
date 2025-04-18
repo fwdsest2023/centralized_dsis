@@ -69,7 +69,16 @@
         <div v-if="isContinueEdit" class="q-pa-md" style="width: 100%;">
             <div class="row">
                 <div class="col-12 col-md-12 q-pa-xs q-mb-md">
-                    
+                    <q-btn 
+                        @click="backToList"
+                        class="q-mt-sm q-mr-sm" 
+                        no-caps 
+                        unelevated 
+                        rounded 
+                        color="red" 
+                        label="Back to List" 
+                        icon="arrow_back" 
+                    />
                 </div>
                 <div class="col-12 col-md-5 q-pa-xs">
                     <q-card
@@ -134,7 +143,7 @@
                             </div>
                         </div>
                         <div class="fit row wrap justify-start items-center content-center q-mt-lg q-mb-sm">
-                            <span class="text-h6 q-mr-lg">Order Details</span>
+                            <span class="text-h6 q-mr-lg">Order Details # {{ this.appData.referenceNumber }}</span>
                         </div>
                         <q-separator />
                         <div class="row">
@@ -236,7 +245,7 @@
                         unelevated 
                         rounded 
                         color="primary" 
-                        label="Save Order Details" 
+                        label="Move to Delivery" 
                         icon="receipt_long" 
                     />
                     <q-btn 
@@ -492,6 +501,10 @@ export default {
             this.isContinueEdit = true
             this.getReference()
         },
+        backToList(){
+            this.isContinueEdit = false
+            this.getList()
+        },
         getReference(){
             api.post('transaction/temp/reference').then((response) => {
                 const data = {...response.data}; 
@@ -514,6 +527,7 @@ export default {
                 let payload = {
                     id: this.appData.id,
                     updateDetails:{
+                        orderStatus: 2,
                         referenceNumber: this.appData.referenceNumber,
                         orderItem: this.appData.orderItem,
                         terms: this.appData.terms,

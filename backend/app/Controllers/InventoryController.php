@@ -610,6 +610,33 @@ class InventoryController extends BaseController
         }
 
     }
+    public function collectionList(){
+        $payload = $this->request->getJSON();
+        $list = [];
+        $list['list'] = $this->inventoryModel->getCollectionList([
+            "deliveryDate" => $payload->deliveryDate,
+            "status" => 0 
+        ]);
+
+        if($list){
+            $list['message'] = "successfully fetch product list";
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($list));
+        } else {
+            $response = [
+                'title' => 'Error',
+                'message' => 'No Data Found'
+            ];
+
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
     public function temporaryTransactionsAgent(){
         //Get API Request Data from Frontend
         $payload = $this->request->getJSON();
@@ -639,6 +666,36 @@ class InventoryController extends BaseController
         }
 
     }
+    public function temporaryTransactionsDelivery(){
+        //Get API Request Data from Frontend
+        $payload = $this->request->getJSON();
+
+        $list = [];
+        $list['list'] = $this->inventoryModel->getOrderListAgent([
+            "orderStatus" => 2,
+            "deliveryDate" => $payload->orderDate,
+        ]);
+
+        if($list){
+            $list['message'] = "successfully fetch product list";
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($list));
+        } else {
+            $response = [
+                'title' => 'Error',
+                'message' => 'No Data Found'
+            ];
+
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
+
     public function temporaryOrderCreate(){
         
         //Get API Request Data from Frontend
@@ -688,6 +745,42 @@ class InventoryController extends BaseController
         }
 
     }
+    public function collectionAmountCreate(){
+        
+        //Get API Request Data from Frontend
+        $payload = $this->request->getJSON();
+
+        $payload = json_decode(json_encode($payload), true);
+
+        
+        // Insert the data
+        $query = $this->inventoryModel->insertCollectionAmount($payload);
+
+        if($query){
+
+            $response = [
+                'title' => 'Order Floating Collection',
+                'message' => 'Floating Collection Added successfully',
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+            
+        } else {
+            $response = [
+                'title' => 'Registration Failed!',
+                'message' => 'Please check your data.'
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
 
     public function temporaryOrderCreateAgent(){
         
@@ -696,6 +789,7 @@ class InventoryController extends BaseController
         
         $transaction = $payload->transaction;
         $transaction->orderItem = json_encode($transaction->orderItem);
+        $transaction->geoTag = json_encode($transaction->geoTag);
         $transaction = json_decode(json_encode($transaction), true);
 
         
@@ -741,6 +835,9 @@ class InventoryController extends BaseController
         
         $transaction = $payload->updateDetails;
         $transaction->orderItem = json_encode($transaction->orderItem);
+        if(isset($transaction->geoTag)){
+            $transaction->geoTag = json_encode($transaction->geoTag);
+        }
         $transaction = json_decode(json_encode($transaction), true);
 
         
@@ -762,6 +859,47 @@ class InventoryController extends BaseController
             $response = [
                 'title' => 'Product added',
                 'message' => 'Product added successfully',
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+            
+        } else {
+            $response = [
+                'title' => 'Registration Failed!',
+                'message' => 'Please check your data.'
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
+    public function collectionAmountUpdate(){
+        
+        //Get API Request Data from Frontend
+        $payload = $this->request->getJSON();
+        
+        $transaction = $payload->updateDetails;
+        $transaction = json_decode(json_encode($transaction), true);
+        
+        // Insert the data
+        $query = $this->inventoryModel->updateCollectionAmount($transaction, $payload->id);
+
+        if($query){
+            if(!$payload->isPaid){
+                $newCollect = json_decode(json_encode($payload->newCollection), true);
+                $this->inventoryModel->insertCollectionAmount($newCollect);
+            } 
+
+            // Foreach the Items
+            $response = [
+                'title' => 'Collection Updated',
+                'message' => 'Collection Updated successfully',
             ];
  
             return $this->response
@@ -840,6 +978,76 @@ class InventoryController extends BaseController
 
             return $this->response
                     ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
+
+
+
+    public function createAdminActivity(){
+        
+        //Get API Request Data from Frontend
+        $payload = $this->request->getJSON();
+        
+        $payload = json_decode(json_encode($payload), true);
+
+        
+        // Insert the data
+        $query = $this->inventoryModel->insertAdminActivity($payload);
+
+        if($query){
+
+            // update the attendance order
+            $response = [
+                'title' => 'Activity Details',
+                'message' => 'Activity added successfully',
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+            
+        } else {
+            $response = [
+                'title' => 'Registration Failed!',
+                'message' => 'Please check your data.'
+            ];
+ 
+            return $this->response
+                    ->setStatusCode(400)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
+
+    public function activityList(){
+        //Get API Request Data from Frontend
+        $payload = $this->request->getJSON();
+
+        $list = [];
+        $list['list'] = $this->inventoryModel->getActivityList([
+            "userId" => $payload->userId,
+            "schedule" => $payload->schedule,
+        ]);
+
+        if($list){
+            $list['message'] = "successfully fetch product list";
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($list));
+        } else {
+            $response = [
+                'title' => 'Error',
+                'message' => 'No Data Found'
+            ];
+
+            return $this->response
+                    ->setStatusCode(400)
                     ->setContentType('application/json')
                     ->setBody(json_encode($response));
         }

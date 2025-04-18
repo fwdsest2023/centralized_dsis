@@ -3,47 +3,6 @@
         <div class="row">
             <!-- Users Count Overview -->
             <div class="col-12 col-xs-12 col-sm-12 col-md-12 q-pa-sm">
-                <q-card
-                    flat
-                    class="my-card bg-white"
-                >
-                    <q-card-section>
-                        <span class="text-h6 text-bold">Agent Sales Overview</span><br/>
-                        <!-- <span class="text-caption text-grey">Invoice & Check summary</span><br/> -->
-
-                        <div class="row">
-                            <div
-                                v-for="(item, idx) in dashCards"
-                                :key="idx"
-                                class="col-3 col-xs-12 col-sm-4 col-md-3 q-pa-xs"
-                            >
-                                <q-card
-                                    flat
-                                    class="my-card-item "
-                                    :class="item.color"
-                                >
-
-                                    <q-card-section>
-                                        <q-avatar
-                                            size="md"
-                                            :color="item.iconBg"
-                                            text-color="white"
-                                            :icon="item.icon"
-                                        />
-                                        <br/>
-                                        <span class="text-bold text-h6 text-blue-grey-9" >{{item.value}}</span>
-                                        <br/>
-                                        <span class="text-subtitle text-blue-grey-9" >{{item.title}}</span>
-                                        <br/>
-                                        <span class="text-caption ellipsis" :class="item.captionColor" >{{item.captions}}</span>
-                                    </q-card-section>
-                                </q-card>
-                            </div>
-                        </div>
-                    </q-card-section>
-                </q-card>
-            </div>
-            <div class="col-12 col-xs-12 col-sm-12 col-md-12 q-pa-sm">
                 
                 <q-card
                     flat
@@ -127,7 +86,7 @@
                                             size="sm" 
                                             color="primary"
                                             dense
-                                            icon="print"
+                                            icon="edit"
                                             no-caps
                                             label="Edit"
                                         />
@@ -151,7 +110,7 @@
 <script>
 import moment from 'moment'
 import { LocalStorage } from 'quasar'
-import addCheckModal from '../../components/Modals/AddAgentModal.vue'
+import addCheckModal from '../../components/Modals/AddDeliveryAgentModal.vue'
 import printModal from '../../components/Modals/PrintVoucherModal.vue'
 
 export default {
@@ -167,68 +126,6 @@ export default {
             openAddCheckModal: false,
             openPrintModal: false,
             previewData: {},
-            dashCards: [
-                {
-                    key: 'applicants',
-                    title: 'Check Vouchers',
-                    value: 0,
-                    subVal: '',
-                    type: '',
-                    info: '',
-                    icon: 'contact_emergency',
-                    valueType: 'Count',
-                    chartType: '',
-                    color: 'bg-amber-2',
-                    iconBg: 'amber-5',
-                    captions: 'All check vouchers record count',
-                    captionColor: 'text-blue-14',
-                },
-                {
-                    key: 'totalSales',
-                    title: 'Outgoing Checks',
-                    value: 0.00,
-                    subVal: '',
-                    type: '',
-                    info: '',
-                    icon: 'attach_money',
-                    valueType: 'Number',
-                    chartType: '',
-                    color: 'bg-red-2',
-                    iconBg: 'red-5',
-                    captions: 'Total amount of checks issued',
-                    captionColor: 'text-blue-14',
-                },
-                {
-                    key: 'totalLoans',
-                    title: 'Available Balance',
-                    value: 0,
-                    subVal: '',
-                    type: '',
-                    info: '',
-                    icon: 'devices_other',
-                    valueType: 'Count',
-                    chartType: '',
-                    color: 'bg-light-green-2',
-                    iconBg: 'light-green-5',
-                    captions: 'Amount available cash in bank',
-                    captionColor: 'text-blue-14',
-                },
-                {
-                    key: 'totalRedeem',
-                    title: 'Post Dated Checks',
-                    value: 0,
-                    subVal: '',
-                    type: '',
-                    info: '',
-                    icon: 'fact_check',
-                    valueType: 'Count',
-                    chartType: '',
-                    color: 'bg-blue-grey-2',
-                    iconBg: 'blue-grey-5',
-                    captions: 'Amount accumulated for post dated checks',
-                    captionColor: 'text-blue-14',
-                }
-            ],
             eventList: [],
 
             
@@ -259,24 +156,6 @@ export default {
                     format: val => `${val}`,
                     sortable: true
                 },
-                {
-                    name: 'commission',
-                    required: true,
-                    label: 'Commission',
-                    align: 'left',
-                    field: row => row,
-                    format: val => val.commission,
-                    sortable: true
-                },
-                {
-                    name: 'target',
-                    required: true,
-                    label: 'Target Sales',
-                    align: 'left',
-                    field: row => row,
-                    format: val => val,
-                    sortable: true
-                },
             ]
         }
     },
@@ -290,7 +169,7 @@ export default {
             this.isLoading = true;
             let vm = this;
             
-            this.$api.get('users/getAgents').then((response) => {
+            this.$api.get('users/getDeliveryAgents').then((response) => {
                 const data = {...response.data};
 
                 if(!data.error){

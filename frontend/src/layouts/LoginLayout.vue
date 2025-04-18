@@ -150,6 +150,11 @@ const linksList = [
         icon: 'contact_emergency',
         link: 'agentList',
       },
+      {
+        title: 'Delivery Agent List',
+        icon: 'contact_emergency',
+        link: 'deliveryAgentList',
+      },
       // {
       //   title: 'Agent Sales',
       //   icon: 'point_of_sale',

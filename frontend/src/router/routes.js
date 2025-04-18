@@ -24,6 +24,9 @@ const routes = [
       { path: 'client-list', name: 'distributionClientList', component: () => import('pages/Application/ClientList.vue') },
       { path: 'client-trades', name: 'distributionClientTrades', component: () => import('pages/Application/ClientTrades.vue') },
       { path: 'order-list', name: 'distributionOrderList', component: () => import('pages/Application/OrderList.vue') },
+      { path: 'activity-list', name: 'distributionActivityList', component: () => import('pages/Application/ActivityList.vue') },
+      { path: 'delivery-list', name: 'distributionDeliveryList', component: () => import('pages/Application/DeliveryList.vue') },
+      { path: 'collection-list', name: 'distributionCollectionList', component: () => import('pages/Application/CollectionList.vue') },
     ]
   },
 
@@ -125,6 +128,11 @@ const routes = [
         path: 'agent-list',
         name: 'agentList',
         component: () => import('pages/Agents/List.vue') 
+      },
+      { 
+        path: 'delivery-agent-list',
+        name: 'deliveryAgentList',
+        component: () => import('pages/Agents/Delivery.vue') 
       }
     ]
   },

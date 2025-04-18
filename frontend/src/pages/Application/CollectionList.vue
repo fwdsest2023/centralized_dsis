@@ -61,15 +61,15 @@
             </div>
             <div class="col-12">
                 <q-list >
-                    <q-item v-for="contact in filteredStores" :key="contact.id" class="q-my-sm" clickable v-ripple>
+                    <q-item v-for="contact in filteredStores" :key="contact.id" class="q-my-sm" clickable v-ripple @click="addOrder(contact)" >
                         <q-item-section>
-                            <q-item-label class="text-bold">{{ contact.storeName }}</q-item-label>
-                            <q-item-label caption lines="1">{{ contact.address }}</q-item-label>
-                            <q-item-label caption lines="1">{{ contact.contact }}</q-item-label>
+                            <q-item-label class="text-bold">{{ contact.customerInfo.storeName }}</q-item-label>
+                            <q-item-label caption lines="1">{{ contact.customerInfo.address }}</q-item-label>
+                            <q-item-label caption lines="1">{{ contact.customerInfo.contact }}</q-item-label>
                         </q-item-section>
                         <q-item-section side>
-                            <span class="text-caption">Order Count</span>
-                            <q-item-label>{{ contact.orderItem.length }}</q-item-label>
+                            <span class="text-caption">Account Balance</span>
+                            <q-item-label class="text-bold text-h6">{{ convertToCurrency(contact.amount) }}</q-item-label>
                         </q-item-section>
                     </q-item>
                     <q-item v-if="filteredStores.length === 0" class="q-my-sm">
@@ -86,7 +86,7 @@
             <q-card style="width: 100%; height: 100dvh;">
                 <q-card-section>
                     <div class="fit row wrap justify-start items-center content-center q-mb-sm">
-                        <span class="text-bold">{{selectedClient.storeName}}</span>
+                        <span class="text-bold">{{selectedClient.customerInfo.storeName}}</span>
                         <q-space />
                         <q-btn
                             flat
@@ -101,124 +101,34 @@
                             </template>
                         </q-btn>
                     </div>
-                    <span class="text-caption"><span class="text-bold">Owner: </span>{{ selectedClient.ownerName }}</span><br>
-                    <span class="text-caption"><span class="text-bold">Address: </span>{{ selectedClient.address }}</span>
+                    <span class="text-caption"><span class="text-bold">Owner: </span>{{ selectedClient.customerInfo.ownerName }}</span><br>
+                    <span class="text-caption"><span class="text-bold">Address: </span>{{ selectedClient.customerInfo.address }}</span><br>
                 </q-card-section>
                 <q-separator />
                 <q-card-section>
+                    <span class="text-bold">Payment Details</span>
+                    <q-space />
                     <div class="row">
-                        <div class="col-6 col-md-6 q-pa-xs">
-                            <q-input
-                                outlined
-                                v-model="form.terms" 
-                                label="Terms" 
-                                stack-label 
-                                dense
-                            >
-                            </q-input>
+                        <div class="col-6 q-mt-sm q-pa-sm">
+                            <span class="text-bold">Total Amount: </span>
                         </div>
-                        <div class="col-6 col-md-6 q-pa-xs">
-                            <q-input
-                                outlined
-                                v-model="form.modePayment" 
-                                label="Mode of Payment" 
-                                stack-label 
-                                dense
-                            >
-                            </q-input>
-                        </div>
-                        <div class="col-12 col-md-12 q-pa-xs">
-                            <q-input
-                                outlined
-                                v-model="form.notes" 
-                                label="Note" 
-                                stack-label 
-                                dense
-                            >
-                            </q-input>
-                        </div>
-                    </div>
-                    <q-separator class="q-mt-sm q-mb-sm" />
-
-                    <div class="row">
-                        <div class="col col-12 q-mb-sm">
-                            <q-input v-model="selectedScan" dense round outlined placeholder="Search to add Product" @keypress.enter="getProducts(selectedScan)" >
-                            
-                                <template v-slot:append>
-                                    <q-icon
-                                        v-if="selectedScan.length > 2 && !showProductSearch"
-                                        name="search" 
-                                        @click="getProducts(selectedScan)" 
-                                        class="cursor-pointer" 
-                                    />
-                                    <q-icon
-                                        v-if="selectedScan.length > 2 && showProductSearch"
-                                        name="search_off" 
-                                        @click="showProductSearch = false" 
-                                        class="cursor-pointer" 
-                                    />
-                                </template>
-                                <q-popup-proxy
-                                    v-model="showProductSearch"
-                                    ref="customerPopup"
-                                    no-parent-event
-                                >
-                                    <q-list bordered style="width: 100dvw;">
-                                        <q-item 
-                                            v-for="(val, index) in productList" 
-                                            :key="index" 
-                                            clickable
-                                            @click="pushToTableList(val)" 
-                                            v-ripple
-                                        >
-                                            <!-- <q-item-section avatar>
-                                                <q-icon color="primary" name="face" />
-                                            </q-item-section> -->
-
-                                            <q-item-section>({{ val.supplier }}) {{ val.productName }}</q-item-section>
-                                        </q-item>
-                                    </q-list>
-                                </q-popup-proxy>
-                            </q-input>
-                            <q-list v-if="form.orderItem.length > 0" >
-                                <q-item v-for="item in form.orderItem" :key="item.id" class="q-my-sm" clickable v-ripple >
-                                    <q-item-section>
-                                        <q-item-label>{{ item.product }}</q-item-label>
-                                        
-                                    </q-item-section>
-
-                                    <q-item-section class="q-pa-sm" side>
-                                        <q-input
-                                            input-style="width: 50px;"
-                                            outlined
-                                            v-model="item.quantity" 
-                                            stack-label 
-                                            dense
-                                        >
-                                        </q-input>
-                                    </q-item-section>
-                                    <q-item-section side>
-                                        <q-btn @click="removeStockItem(item)" size="sm" class="full-width" color="red" icon="delete" />
-                                    </q-item-section>
-                                </q-item>
-                            </q-list>
+                        <div class="col-6 text-right q-mt-sm q-pa-sm">
+                            {{ convertToCurrency(selectedClient.amount) }}
                         </div>
                         
-                        <div class="col col-12 q-mt-sm">
-                            <div 
-                                v-if="this.form.orderItem.length === 0" 
-                                class="text-center q-pa-md"
-                            >
-                                <q-img
-                                width="30%"
-                                class="singleImgOpcity"
-                                src="/barcode-scanner.png"
-                                /><br/>
-                                <span class="text-caption text-grey-8">
-                                No Items Added Yet.
-                                </span>
-                            </div>
+                        <div class="col-6 q-mt-sm q-pa-sm">
+                            <span class="text-bold">Collection Amount: </span>
                         </div>
+                        <div class="col-6 text-right q-mt-sm q-pa-sm">
+                            <q-input
+                                outlined
+                                v-model="selectedClient.collectedAmount" 
+                                stack-label 
+                                dense
+                            >
+                            </q-input>
+                        </div>
+
                     </div>
                 </q-card-section>
 
@@ -230,7 +140,7 @@
                         unelevated 
                         rounded 
                         color="primary" 
-                        label="Save Order Details" 
+                        label="Receive Payment" 
                         icon="receipt_long" 
                     />
                 </q-card-actions>
@@ -244,6 +154,7 @@ import { LocalStorage } from 'quasar'
 import jwt_decode from 'jwt-decode'
 import { api } from 'boot/axios'
 import moment from 'moment'
+import { Loader } from "@googlemaps/js-api-loader"
 
 const dateNow = moment().format('YYYY-MM-DD');
 
@@ -291,7 +202,7 @@ export default{
         },
         filteredStores(){
             return this.contacts.filter((item) => {
-                return item.storeName.toLowerCase().includes(this.search.toLowerCase())
+                return item.customerInfo.storeName.toLowerCase().includes(this.search.toLowerCase())
             })
         },
         capacityColumns(){
@@ -313,6 +224,31 @@ export default{
     },
     methods: {
         moment,
+        initMapLoad(data){
+            loader
+            .load()
+            .then(async (google) => {
+                // Loading the maps
+                await this.$nextTick(() => {
+                    console.log(data)
+                    const mstore = new google.maps.LatLng(Number(data.latitude), Number(data.longitude));
+                    const map = new google.maps.Map(document.getElementById("mapIn"), {
+                        center: mstore,
+                        zoom: 16,
+                    });
+                    map.setMapTypeId('satellite');
+                    // Store Marker
+                    const marker = new google.maps.Marker({
+                        map,
+                        position: {lat: Number(data.latitude), lng:  Number(data.longitude)},
+                    });
+                })
+            })
+            .catch((e) => {
+                // do something
+                console.log(e)
+            });
+        },
         getBackDashboard(){
             this.$router.push({name: 'distributionDashboard'})
         },
@@ -330,7 +266,10 @@ export default{
         },
         async getLists(){
             this.$q.loading.show();
-            await api.post('distribution/order/list', { agentId: this.user.userId, orderDate: moment(this.dateToday).format('YYYY-MM-DD') }).then((response) => {
+            await api.post('transaction/temp/list/collections', { 
+                userId: this.user.userId,
+                deliveryDate: moment(this.dateToday).format('YYYY-MM-DD') 
+            }).then((response) => {
                 const data = {...response.data};
                 if(!data.error){
                     let list = data.list;
@@ -353,50 +292,13 @@ export default{
         },
         addOrder(details){
             this.selectedClient = details
+            console.log(details)
             this.addOrderModal = true
-        },
-        addNewClient(){
-            this.$q.dialog({
-                title: 'Create New Client',
-                message: 'Would you like to add this client?',
-                ok: {
-                    label: 'Yes'
-                },
-                cancel: {
-                    label: 'No',
-                    color: 'negative'
-                },
-                persistent: true
-            }).onOk(() => {
-                this.$q.loading.show();
-
-                let payload = {
-                    ...this.form,
-                    createdBy: this.user.userId
-                }
-
-                api.post('distribution/addClient', payload).then((response) => {
-                    const data = {...response.data};
-                    if(!data.error){
-                       this.addClient = false
-                       this.getLists();
-                    } else {
-                        this.$q.notify({
-                            color: 'negative',
-                            position: 'top',
-                            message: data.message
-                        })
-                    }
-                })
-                this.$q.loading.hide();
-                
-            })
-           
         },
         submitForm(){
             this.$q.dialog({
-                title: 'Create Order',
-                message: 'Would you like to finalize this order',
+                title: 'Receive Payment',
+                message: 'Would you like to complete this payment?',
                 ok: {
                     label: 'Yes'
                 },
@@ -406,39 +308,41 @@ export default{
                 },
                 persistent: true
             }).onOk(() => {
-
-
                 let payload = {
-                    transaction: {
-                        ...this.form,
-                        storeName: this.selectedClient.storeName,
-                        address: this.selectedClient.address,
-                        ownerName: this.selectedClient.ownerName,
-                        contact: this.selectedClient.contact,
-                        agentName: this.user.fullName,
-                        clientId: this.selectedClient.id,
-                        agentId: this.user.userId,
-                        createdBy: this.user.userId || 1
+                    id: this.selectedClient.id,
+                    orderId: this.selectedClient.orderId,
+                    isPaid: Number(this.selectedClient.amount) === Number(this.selectedClient.collectedAmount),
+                    updateDetails:{
+                        collectedAmount: Number(this.selectedClient.collectedAmount),
+                        collectedDate: dateNow,
+                        collectedBy: this.user.userId,
+                        status: 1,
                     },
-                    updateDetails: {
-                        attendanceId: this.user.userId,
-                        attendanceDate: dateNow,
-                        lastOrderDate: moment().format('YYYY-MM-DD HH:mm'),
-                    },
+                    newCollection:{
+                        amount: (Number(this.selectedClient.amount) - Number(this.selectedClient.collectedAmount)),
+                        userId: this.selectedClient.userId,
+                        orderId: this.selectedClient.orderId,
+                        clientId: this.selectedClient.clientId,
+                        deliveryDate: this.selectedClient.deliveryDate,
+                        status: 0
+                    }
                 }
-                api.post('distribution/create/order', payload).then((response) => {
+                // console.log(payload)
+                // return
+                api.post('transaction/temp/update/collection', payload).then((response) => {
                     const data = {...response.data};
                     if(!data.error){
                         this.$q.notify({
                             color: 'positive',
                             position: 'top-right',
-                            message: 'Order Successfully Save',
+                            message: 'Payment Received',
                             icon: 'verified'
                         })
+
                         this.selectedClient = {}
                         this.addOrderModal = false
                         this.addClient = false
-                        this.resetForm()
+                        this.getLists()
                     } else {
                         this.$q.notify({
                             color: 'negative',
@@ -517,6 +421,16 @@ export default{
                 createdBy: '',
             }
         },
+        convertToCurrency(price){
+            let amount = Number(price)
+            let res = Number(amount).toLocaleString('en-US', {
+                style: 'decimal',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })
+    
+            return res
+        }
     }
 }
 </script>

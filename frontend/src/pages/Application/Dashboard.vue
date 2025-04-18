@@ -30,7 +30,7 @@
                 <q-card
                     :class="item.active ? '' : 'disabled'"
                     flat
-                    @click="item.active ? item.action() : ''"
+                    @click="item.active ? handleAction(item.action) : ''"
                     class="my-card-item bg-green-6"
                 >
                     <q-card-section>
@@ -55,6 +55,7 @@ import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import moment from 'moment'
+import menus from './menus.json'
 
 export default{
     name: 'Dashboard',
@@ -77,64 +78,7 @@ export default{
                 events: [],
                 eventContent: 'Patient Schedules',
             },
-            activities: [
-                {
-                    active: false,
-                    title: "Client Trades",
-                    icon: "local_shipping",
-                    action: () => { return this.$router.push({ name: 'distributionClientTrades' }) }
-                },
-                {
-                    active: false,
-                    title: "Client List",
-                    icon: "people_alt",
-                    action: (val) => { return this.$router.push({ name: 'distributionClientList' }) }
-                },
-                {
-                    active: false,
-                    title: "Admin Activity",
-                    icon: "meeting_room",
-                    action: () => { return false }
-                },
-
-                {
-                    active: false,
-                    title: "Order List",
-                    icon: "shopping_cart",
-                    action: () => { return this.$router.push({ name: 'distributionOrderList' }) }
-                },
-                {
-                    active: false,
-                    title: "Collections",
-                    icon: "account_balance_wallet",
-                    action: () => { return false }
-                },
-                {
-                    active: false,
-                    title: "Expenses",
-                    icon: "paid",
-                    action: () => { return false }
-                },
-
-                {
-                    active: false,
-                    title: "Approvals",
-                    icon: "verified",
-                    action: () => { return false }
-                },
-                {
-                    active: false,
-                    title: "Performance Report",
-                    icon: "insights",
-                    action: () => { return false }
-                },
-                {
-                    active: false,
-                    title: "Attendance Calendar",
-                    icon: "today",
-                    action: () => { return false }
-                },
-            ],
+            activities: [],
         }
     },
     computed: {
@@ -142,12 +86,35 @@ export default{
             let profile = LocalStorage.getItem('userData');
             return jwt_decode(profile);
         },
+        userMenus(){
+            console.log(this.user.userId)
+            let type = this.user.userType === '3' ? 'agent' : 'delivery';
+            let res = menus[type] || []
+            this.activities = res
+        }
     },
     created(){
-      this.getTimeDetails()
+        this.userMenus
+        this.getTimeDetails()
     },
     methods: {
         moment,
+        handleAction(action) {
+            const actionsMap = {
+                goToClientTrades: () => this.$router.push({ name: 'distributionClientTrades' }),
+                goToClientList: () => this.$router.push({ name: 'distributionClientList' }),
+                goToAdminActivity: () => this.$router.push({ name: 'distributionActivityList' }),
+                goToOrderList: () => this.$router.push({ name: 'distributionOrderList' }),
+                goToDeliveryList: () => this.$router.push({ name: 'distributionDeliveryList' }),
+                goToCollectionList: () => this.$router.push({ name: 'distributionCollectionList' }),
+            };
+
+            if (actionsMap[action]) {
+                actionsMap[action]();
+            } else {
+                console.error(`Action "${action}" is not defined.`);
+            }
+        },
         closeModals(){
             this.openCheckupModal = false
             this.openWellnessModal = false
@@ -159,10 +126,10 @@ export default{
                 if(!data.error){
                     let activcate = this.activities.map((item) => {
 
-                        let tobeEnable = "Client Trades,Client List,Order List"
+                        let tobeEnable = "Approvals, Expenses"
                         return {
                             ...item,
-                            active: tobeEnable.includes(item.title)
+                            active: !tobeEnable.includes(item.title)
                         }
                     })
 
@@ -187,10 +154,10 @@ export default{
                 const data = {...response.data};
                 if(!data.error){
                     let activcate = this.activities.map((item) => {
-                        let tobeEnable = "Client Trades,Client List,Order List"
+                        let tobeEnable = "Approvals, Expenses"
                         return {
                             ...item,
-                            active: tobeEnable.includes(item.title)
+                            active: !tobeEnable.includes(item.title)
                         }
                     })
 

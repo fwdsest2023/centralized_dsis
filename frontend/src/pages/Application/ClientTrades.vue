@@ -206,41 +206,6 @@
                                     </q-card-section>
                                 </q-card>
                             </div>
-                            <!-- <q-list v-if="form.orderItem.length > 0" >
-                                <q-item v-for="item in form.orderItem" :key="item.id" class="q-my-sm" clickable v-ripple >
-                                    <q-item-section>
-                                        <q-item-label class="ellipsis">{{ item.product }}</q-item-label>
-                                    </q-item-section>
-                                    
-                                    <q-item-section>
-                                        <q-input
-                                            outlined
-                                            v-model="item.srp" 
-                                            stack-label 
-                                            dense
-                                            :rules="[
-                                                val => val > 0 || 'Invalid Price',
-                                                val => val >= item.minSell || `Price cannot be lower than ${item.minSell}`,
-                                                val => val <= item.minSell || `Price cannot be greater than ${item.minSell}`
-                                            ]"
-                                        >
-                                        </q-input>
-                                    </q-item-section>
-                                    <q-item-section class="q-pa-sm" side>
-                                        <q-input
-                                            input-style="width: 50px;"
-                                            outlined
-                                            v-model="item.quantity" 
-                                            stack-label 
-                                            dense
-                                        >
-                                        </q-input>
-                                    </q-item-section>
-                                    <q-item-section side>
-                                        <q-btn @click="removeStockItem(item)" size="sm" class="full-width" color="red" icon="delete" />
-                                    </q-item-section>
-                                </q-item>
-                            </q-list> -->
                         </div>
                         
                         <div class="col col-12 q-mt-sm">
@@ -284,6 +249,7 @@ import jwt_decode from 'jwt-decode'
 import { api } from 'boot/axios'
 import moment from 'moment'
 import { last } from 'pdf-lib';
+import geolocation from 'geolocation';
 
 const dateNow = moment().format('YYYY-MM-DD');
 
@@ -316,7 +282,12 @@ export default{
                 agentName: '',
                 orderDate: dateNow,
                 deliveryDate: '',
+                orderStatus: 1,
                 createdBy: '',
+                geoTag: {
+                    latitude: 0,
+                    longitude: 0
+                }
             },
             selectedModalData: {},
             contacts: [],
@@ -380,7 +351,21 @@ export default{
 
             this.$q.loading.hide();
         },
-        addOrder(details){
+        async addOrder(details){
+
+            // Get GeoLocation
+            let vm = this
+            geolocation.getCurrentPosition(function (err, position) {
+                if (err) throw err
+
+                console.log(position.coords.latitude, position.coords.longitude)
+                alert(`Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`)
+                vm.form.geoTag = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                }
+            })
+            
             this.selectedClient = details
             this.addOrderModal = true
         },

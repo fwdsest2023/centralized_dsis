@@ -12,6 +12,9 @@ class InventoryModel extends Model
     protected $tableUnits    = 'tblunits';
     protected $tableAttendance    = 'tblattendance';
     protected $tableTempOrder    = 'tbltemp_transaction';
+    protected $tableAdmin    = 'tbladmin';
+    protected $tableCollection    = 'tblcollections';
+    protected $clientsTable    = 'tblclients';
 
     protected $primaryKey = 'id';
 
@@ -143,6 +146,7 @@ class InventoryModel extends Model
         $query = $this->db->table($this->tableTempOrder)->where($where)->orderBy('id', 'DESC')->get();
         $results = $query->getResult('array');
         foreach($results as $key => $value){
+            $results[$key]['geoTag'] = json_decode($results[$key]['geoTag'], true);
             $results[$key]['orderItem'] = json_decode($results[$key]['orderItem'], true);
         }
         return $results;
@@ -158,6 +162,49 @@ class InventoryModel extends Model
     public function addOrderCount($where, $lastOrder){
         $query = $this->db->table($this->tableAttendance)->set('orderCount', 'orderCount+1', false)->set('lastOrderTakenDateTime',  $lastOrder)->where($where)->update();
         return $query ? true : false;
+    }
+
+
+    // Get Admin
+    public function insertAdminActivity($data){
+        $query = $this->db->table($this->tableAdmin)->insert($data);
+        return $query ? true : false;
+    }
+    public function getActivityList($where) {
+        $query = $this->db->table($this->tableAdmin)
+                    ->where($where)
+                    ->orderBy('id', 'DESC')
+                    ->get();
+        $results = $query->getResult('array');
+
+        return $results;
+    }
+
+    // Get Collections
+    public function insertCollectionAmount($data){
+        $query = $this->db->table($this->tableCollection)->insert($data);
+        return $query ? true : false;
+    }
+    public function updateCollectionAmount($data, $id){
+        $query = $this->db->table($this->tableCollection)->set($data)->where('id', $id)->update();
+        return $query ? true : false;
+    }
+    public function getCollectionList($where) {
+        $query = $this->db->table($this->tableCollection)
+                    ->where($where)
+                    ->orderBy('id', 'DESC')
+                    ->get();
+        $results = $query->getResult();
+
+        $all = array_map(function($el){
+            foreach($el as $key => $val){
+                $clientInfo = $this->db->table($this->clientsTable)->where('id', $el->clientId)->get();
+                $el->customerInfo = $clientInfo->getRow();
+            }
+            return $el;
+        }, $results);
+
+        return $all;
     }
 
 

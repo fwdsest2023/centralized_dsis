@@ -662,6 +662,7 @@ import printInvoiceModal from '../Modals/PrintInvoice.vue';
                 postDated: '',
                 orderItem: [],
                 amount: '',
+                remarks: '',
                 notes: '',
                 checkNo: '',
                 agentName: '',

@@ -78,6 +78,9 @@ $routes->group('mlrs/api/v1', function($routes){
 		$routes->post('temp/list', 'InventoryController::temporaryTransactions');
 		$routes->post('temp/list/pending', 'InventoryController::temporaryPendingTransactions');
 		$routes->post('temp/create/order', 'InventoryController::temporaryOrderCreate');
+		$routes->post('temp/create/collection', 'InventoryController::collectionAmountCreate');
+		$routes->post('temp/update/collection', 'InventoryController::collectionAmountUpdate');
+		$routes->post('temp/list/collections', 'InventoryController::collectionList');
 		$routes->post('temp/update/order', 'InventoryController::temporaryOrderUpdate');
 		$routes->post('temp/reference', 'InventoryController::getReferenceContinues');
 
@@ -91,6 +94,11 @@ $routes->group('mlrs/api/v1', function($routes){
 		$routes->post('getAllClients', 'Distribution::getClientList');
 		$routes->post('create/order', 'InventoryController::temporaryOrderCreateAgent');
 		$routes->post('order/list', 'InventoryController::temporaryTransactionsAgent');
+		$routes->post('delivery/list', 'InventoryController::temporaryTransactionsDelivery');
+
+		// Admin Activity
+		$routes->post('activity/list', 'InventoryController::activityList');
+		$routes->post('add/activity', 'InventoryController::createAdminActivity');
 	});
 	
 
@@ -146,6 +154,7 @@ $routes->group('mlrs/api/v1', function($routes){
 
 		// For the Mobile App API's
 		$routes->get('getAgents', 'Users::getAgentUsers');
+		$routes->get('getDeliveryAgents', 'Users::getDeliveryAgentUsers');
 	});
 
 

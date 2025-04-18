@@ -60,40 +60,347 @@
                                     {{ col.value }}
                                 </q-td>
                                 <q-td>
-                                    <q-btn @click="printInvoice(props.row)" size="sm" class="full-width" color="primary" icon="print" />
+                                    <q-btn 
+                                        @click="editInvoice(props.row)" 
+                                        size="sm" 
+                                        class="q-mr-sm"
+                                        color="primary" 
+                                        label="Edit Invoice"
+                                        icon="edit" />
+                                    <q-btn @click="printInvoice(props.row)" size="sm"  color="primary" label="Print" icon="print" />
                                 </q-td>
                             </q-tr>
                         </template>
                     </q-table>
-                    <!-- <q-table
-                        :rows="tableRow"
-                        :filter="filter"
-                        :columns="tableColumns"
-                        row-key="productName"
-                    >
-                        <template v-slot:top-right>
-                            <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
-                                <template v-slot:append>
-                                    <q-icon name="search" />
-                                </template>
-                            </q-input>
-                        </template>
-                       
-                        <template v-slot:body-cell-actions="props">
-                            <q-td :props="props">
-                                <q-btn 
-                                    dense
-                                    flat
-                                    outline
-                                    size="md"
-                                    color="primary" 
-                                    label="View Details"
-                                    @click="openInvoiceModal(props.row)"
-                                />
-                            </q-td>
-                        </template>
-                    </q-table> -->
                 </div>
+            </div>
+        </div>
+
+        <div v-if="isContinueEdit" class="q-pa-md" style="width: 100%;">
+            <div class="row">
+                <div class="col-12 col-md-12 q-pa-xs q-mb-md">
+                    <q-btn 
+                        @click="backToList"
+                        class="q-mt-sm q-mr-sm" 
+                        no-caps 
+                        unelevated 
+                        rounded 
+                        color="red" 
+                        label="Back to List" 
+                        icon="arrow_back" 
+                    />
+                </div>
+                <div class="col-12 col-md-5 q-pa-xs">
+                    <q-card
+                        flat
+                        class="my-card bg-white"
+                    >
+                        <q-card-section>
+                        <div class=" q-mb-sm">
+                            <span class="text-h6 q-mr-lg">Customer Details</span>
+                        </div>
+                        
+                        <q-separator />
+                        <div class="row">
+                            
+                            
+                            <div class="col-12 col-md-12 q-pa-sm">
+                                <q-input
+                                    outlined 
+                                    v-model="appData.storeName" 
+                                    label="Store Name" 
+                                    stack-label 
+                                    dense
+                                    :disable="true"
+                                    ref="customerInput"
+                                > 
+                                </q-input>
+                                
+                            </div>
+                            <div  class="col-12 col-md-6 q-pa-sm">
+                                <q-input
+                                    outlined 
+                                    v-model="appData.ownerName" 
+                                    label="Owener Name"
+                                    :disable="true" 
+                                    stack-label 
+                                    dense
+                                >
+                                </q-input>
+                            </div>
+                            <div  class="col-12 col-md-6 q-pa-sm">
+                                <q-input
+                                    outlined 
+                                    v-model="appData.contact" 
+                                    :disable="true"
+                                    label="Contact Number" 
+                                    stack-label 
+                                    dense
+                                >
+                                </q-input>
+                            </div>
+                            <div class="col-12 col-md-12 q-pa-sm">
+                                <q-input
+                                    outlined
+                                    type="textarea"
+                                    v-model="appData.address"
+                                    :disable="true" 
+                                    label="Address" 
+                                    stack-label 
+                                    dense
+                                >
+                                </q-input>
+                            </div>
+                        </div>
+                        <div class="fit row wrap justify-start items-center content-center q-mt-lg q-mb-sm">
+                            <span class="text-h6 q-mr-lg">Order Details # {{ this.appData.referenceNumber }}</span>
+                        </div>
+                        <q-separator />
+                        <div class="row">
+                            <div class="col-12 col-md-12 q-pa-sm">
+                                <q-input
+                                    outlined
+                                    v-model="appData.agentName" 
+                                    label="Agent Name" 
+                                    stack-label 
+                                    :disable="true"
+                                    dense
+                                >
+                                </q-input>
+                            </div>
+                            <div class="col-12 col-md-6 q-pa-sm">
+                                <q-input
+                                    outlined
+                                    v-model="appData.terms" 
+                                    label="Terms" 
+                                    stack-label 
+                                    dense
+                                >
+                                </q-input>
+                            </div>
+                            <div class="col-12 col-md-6 q-pa-sm">
+                                <q-input
+                                    outlined
+                                    v-model="appData.modePayment" 
+                                    label="Mode of Payment" 
+                                    stack-label 
+                                    dense
+                                >
+                                </q-input>
+                            </div>
+                            <div class="col-12 col-md-6 q-pa-sm">
+                                <q-input
+                                    outlined 
+                                    type="date"
+                                    :disable="true"
+                                    v-model="appData.orderDate" 
+                                    label="Order Date"
+                                    stack-label 
+                                    dense
+                                >
+                                </q-input>
+                            </div>
+                            <div class="col-12 col-md-6 q-pa-sm">
+                                <q-input
+                                    outlined 
+                                    type="date"
+                                    v-model="appData.deliveryDate" 
+                                    label="Delivery Date" 
+                                    stack-label 
+                                    dense
+                                >
+                                </q-input>
+                            </div>
+                            <div class="col-12 col-md-6 q-pa-sm">
+                                <q-input
+                                    outlined
+                                    v-model="appData.bank" 
+                                    label="Bank" 
+                                    stack-label 
+                                    dense
+                                >
+                                </q-input>
+                            </div>
+                            <div class="col-12 col-md-6 q-pa-sm">
+                                <q-input
+                                    outlined
+                                    v-model="appData.checkNo" 
+                                    label="Check Number" 
+                                    stack-label 
+                                    dense
+                                >
+                                </q-input>
+                            </div>
+                            <div class="col-12 col-md-12 q-pa-sm">
+                                <q-input
+                                    outlined
+                                    v-model="appData.notes" 
+                                    label="Note" 
+                                    stack-label 
+                                    dense
+                                >
+                                </q-input>
+                            </div>
+                        </div>
+                        
+                    </q-card-section>
+        
+                    
+                </q-card>
+                <!-- Button Transact -->
+                    <q-btn 
+                        @click="submitForm"
+                        class="q-mt-sm q-mr-sm" 
+                        no-caps 
+                        unelevated 
+                        rounded 
+                        color="primary" 
+                        label="Save Edit" 
+                        icon="receipt_long" 
+                    />
+                    <q-btn 
+                        @click="printInvoice(appData)"
+                        class="q-mt-sm" 
+                        no-caps 
+                        unelevated 
+                        rounded 
+                        color="positive" 
+                        label="Preview Receipt" 
+                        icon="receipt_long" 
+                    />
+                </div>
+                <div class="col-12 col-md-7 q-pa-xs">
+                <div class="row">
+                    <div class="col col-12 q-mb-sm">
+                        <q-input v-model="selectedScan" dense round outlined placeholder="Search to add Product" @keypress.enter="getProducts(selectedScan)" >
+                        
+                            <template v-slot:append>
+                                <q-icon
+                                    v-if="selectedScan.length > 2 && !showProductSearch"
+                                    name="search" 
+                                    @click="getProducts(selectedScan)" 
+                                    class="cursor-pointer" 
+                                />
+                                <q-icon
+                                    v-if="selectedScan.length > 2 && showProductSearch"
+                                    name="search_off" 
+                                    @click="showProductSearch = false" 
+                                    class="cursor-pointer" 
+                                />
+                            </template>
+                            <q-popup-proxy
+                                v-model="showProductSearch"
+                                ref="customerPopup"
+                                no-parent-event
+                            >
+                                <q-list bordered style="width: 30dvw;">
+                                    <q-item 
+                                        v-for="(val, index) in productList" 
+                                        :key="index" 
+                                        clickable
+                                        @click="pushToTableList(val)" 
+                                        v-ripple
+                                    >
+                                        <q-item-section>{{ val.productName }}</q-item-section>
+                                    </q-item>
+                                </q-list>
+                            </q-popup-proxy>
+                        </q-input>
+                        <q-table
+                            class="q-mt-sm"
+                            v-if="appData?.orderItem.length > 0"
+                            flat bordered
+                            :rows="appData.orderItem"
+                            wrap-cells
+                            :columns="capacityColumns"
+                            row-key="capacity"
+                            separator="cell"
+                        >  
+                            <template v-slot:header="props">
+                                <q-tr :props="props">
+                                    <q-th
+                                        v-for="col in props.cols"
+                                        :key="col.name"
+                                        :props="props"
+                                    >
+                                        {{ col.label }}
+                                    </q-th>
+                                    <q-th>
+                                        Price
+                                    </q-th>
+                                    <q-th>
+                                        Discount
+                                    </q-th>
+                                    <q-th>
+                                        Quantity
+                                    </q-th>
+                                    <q-th>
+                                        Action
+                                    </q-th>
+                                </q-tr>
+                            </template>
+                            <template v-slot:body="props">
+                                <q-tr :props="props">
+                                    <q-td
+                                        v-for="col in props.cols"
+                                        :key="col.name"
+                                        :props="props"
+                                    >
+                                        {{ col.value }}
+                                    </q-td>
+                                    <q-td>
+                                        <q-input
+                                            outlined 
+                                            v-model="props.row.srp"
+                                            stack-label 
+                                            dense
+                                        >
+                                        </q-input>
+                                    </q-td>
+                                    <q-td>
+                                        <q-input
+                                            outlined 
+                                            v-model="props.row.discount"
+                                            stack-label 
+                                            dense
+                                        >
+                                        </q-input>
+                                    </q-td>
+                                    <q-td>
+                                        <q-input
+                                            outlined 
+                                            v-model="props.row.quantity" 
+                                            stack-label 
+                                            dense
+                                        >
+                                        </q-input>
+                                    </q-td>
+                                    <q-td>
+                                        <q-btn @click="removeStockItem(props.row)" size="sm" class="full-width" color="red" icon="delete" />
+                                    </q-td>
+                                </q-tr>
+                            </template>
+                        </q-table>
+                    </div>
+                    
+                    <div class="col col-12 q-mt-sm">
+                        <div 
+                            v-if="appData.orderItem.length === 0" 
+                            class="text-center q-pa-md"
+                        >
+                            <q-img
+                            width="30%"
+                            class="singleImgOpcity"
+                            src="/barcode-scanner.png"
+                            /><br/>
+                            <span class="text-caption text-grey-8">
+                            No Items Scanned Yet.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                
             </div>
         </div>
 
@@ -124,6 +431,9 @@ export default {
     name: 'ProductList',
     data(){
         return {
+            appData: {},
+            isContinueEdit: false,
+            selectedScan: "",
             printModal: false,
             isContinueEdit: false,
             isPwd: true,
@@ -149,6 +459,10 @@ export default {
     },
     methods: {
         moment,
+        editInvoice(row){
+            this.appData = row
+            this.isContinueEdit = true
+        },
         printInvoice(row){
             // show preview
             this.appId = row
@@ -171,6 +485,10 @@ export default {
             // console.log(typeof res)
             return res.label
             
+        },
+        backToList(){
+            this.isContinueEdit = false
+            this.getList()
         },
         async getList(){
             this.tableRow = [];
@@ -195,13 +513,76 @@ export default {
 
             this.isLoading = false;
         },
-        
+        submitForm(){
+            this.$q.dialog({
+                title: 'Finalize Edit Order',
+                message: 'Would you like to finalize this order',
+                ok: {
+                    label: 'Yes'
+                },
+                cancel: {
+                    label: 'No',
+                    color: 'negative'
+                },
+                persistent: true
+            }).onOk(() => {
+                let payload = {
+                    id: this.appData.id,
+                    updateDetails:{
+                        orderItem: this.appData.orderItem,
+                        terms: this.appData.terms,
+                        modePayment: this.appData.modePayment,
+                        deliveryDate: this.appData.deliveryDate,
+                        bank: this.appData.bank,
+                        checkNo: this.appData.checkNo,
+                        notes: this.appData.notes
+                    }
+                }
+                api.post('transaction/temp/update/order', payload).then((response) => {
+                    const data = {...response.data};
+                    if(!data.error){
+                        this.$q.notify({
+                            color: 'positive',
+                            position: 'top-right',
+                            message: 'Order Successfully Updated',
+                            icon: 'verified'
+                        })
+                        
+                        this.getList();
+                        this.isContinueEdit = false
+                        this.appData = {}
+                    } else {
+                        this.$q.notify({
+                            color: 'negative',
+                            position: 'top-right',
+                            title:data.title,
+                            message: this.$t(`errors.${data.error}`),
+                            icon: 'report_problem'
+                        })
+                    }
+
+                })
+            })
+        },
         // end
     },
     computed: {
         user: function(){
             let profile = LocalStorage.getItem('userData');
             return jwt_decode(profile);
+        },
+        capacityColumns(){
+            return [
+                {
+                    name: 'product',
+                    required: true,
+                    label: 'Product Name',
+                    align: 'left',
+                    field: row => row.product,
+                    format: val => `${val}`,
+                    sortable: true
+                },
+            ]
         },
         tableColumns: function(){
             return [

@@ -149,7 +149,13 @@ export default defineComponent({
         logout(){
             localStorage.removeItem('userData');
             SessionStorage.remove('userDataLogin');
-            this.$router.push('/admin')
+
+            if(this.user.aud == 'agent' || this.user.aud == 'delivery'){
+                this.$router.push('/distribution/agent')
+            } else {
+                this.$router.push('/admin')
+            }
+            
         },
         async submitChangePass(){
             let vm = this;
