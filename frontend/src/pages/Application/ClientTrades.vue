@@ -357,9 +357,6 @@ export default{
             let vm = this
             geolocation.getCurrentPosition(function (err, position) {
                 if (err) throw err
-
-                console.log(position.coords.latitude, position.coords.longitude)
-                alert(`Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`)
                 vm.form.geoTag = {
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude

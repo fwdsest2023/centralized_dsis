@@ -21,7 +21,7 @@
                     <span class="text-h6">CLIENT LIST</span>
                     <q-space />
                     <q-btn
-                        @click="addClient = true"
+                        @click="openAddClient"
                         size="sm"
                         color="positive" 
                         text-color="white" 
@@ -145,6 +145,14 @@
                         </template>
                     </q-file>
                 </div>
+                <div class="col-12 q-mt-sm q-pl-md q-pr-md">
+                    <span class="text-bold">Location Details</span>
+                    <div class="row q-mt-sm">
+                        <div class="col-12 col-md-6 q-pa-xs">
+                            <div id="mapIn" style="width:100%; height: 200px;"></div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="col-12 q-mt-md">
                     <q-separator />
@@ -178,6 +186,14 @@ import { LocalStorage } from 'quasar'
 import jwt_decode from 'jwt-decode'
 import { api } from 'boot/axios'
 import moment from 'moment'
+import { Loader } from "@googlemaps/js-api-loader"
+import geolocation from 'geolocation';
+
+const loader = new Loader({
+    apiKey: process.env.GMAPS_API_KEY,
+    version: "weekly",
+    libraries: ["places"]
+});
 
 export default{
     name: 'Dashboard',
@@ -193,6 +209,10 @@ export default{
                 businessPermit: '',
                 idPicture: '',
                 storePicture: '',
+                geoLocation: {
+                    latitude: 0,
+                    longitude: 0
+                }
             },
             selectedModalData: {},
             contacts: [],
@@ -209,8 +229,52 @@ export default{
     },
     methods: {
         moment,
+        openAddClient(){
+            this.getLocation();
+            this.addClient = true
+        },
         getBackDashboard(){
             this.$router.push({name: 'distributionDashboard'})
+        },
+        async getLocation(){
+            // Get GeoLocation
+            let vm = this
+            geolocation.getCurrentPosition(function (err, position) {
+                if (err) throw err
+                console.log(position)
+                vm.form.geoLocation = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                }
+                vm.initMapLoad({latitude: position.coords.latitude, longitude: position.coords.longitude})
+            }, (error) => {
+                console.log(error)
+            }, {enableHighAccuracy: true})
+        },
+        initMapLoad(data){
+            loader
+            .load()
+            .then(async (google) => {
+                // Loading the maps
+                await this.$nextTick(() => {
+                    console.log(data)
+                    const mstore = new google.maps.LatLng(Number(data.latitude), Number(data.longitude));
+                    const map = new google.maps.Map(document.getElementById("mapIn"), {
+                        center: mstore,
+                        zoom: 16,
+                    });
+                    map.setMapTypeId('satellite');
+                    // Store Marker
+                    const marker = new google.maps.Marker({
+                        map,
+                        position: {lat: Number(data.latitude), lng:  Number(data.longitude)},
+                    });
+                })
+            })
+            .catch((e) => {
+                // do something
+                console.log(e)
+            });
         },
         getLists(){
             this.$q.loading.show();

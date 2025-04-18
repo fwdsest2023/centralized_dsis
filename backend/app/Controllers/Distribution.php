@@ -133,7 +133,7 @@ class Distribution extends BaseController
 
         //Get API Request Data from NuxtJs
         $data = $this->request->getJSON();
-
+        $data->geoLocation = json_encode($data->geoLocation);
         $query = $this->distModel->insertClient(json_decode(json_encode($data), true));
 
         if($query){

@@ -222,7 +222,7 @@ import moment from 'moment'
 import { Loader } from "@googlemaps/js-api-loader"
 
 const loader = new Loader({
-    apiKey: 'AIzaSyB3DQ31zrDrMQNnbHQkLqj-vMeYVNi8hnM',
+    apiKey: process.env.GMAPS_API_KEY,
     version: "weekly",
     libraries: ["places"]
 });
