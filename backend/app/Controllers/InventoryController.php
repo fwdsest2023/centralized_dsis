@@ -34,7 +34,7 @@ class InventoryController extends BaseController
 
         
         // Insert the data
-        $query = $this->inventoryModel->insert($payload);
+        $query = $this->inventoryModel->insertProduct($payload);
 
         if($query){
             $response = [

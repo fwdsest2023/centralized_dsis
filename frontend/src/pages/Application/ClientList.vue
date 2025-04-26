@@ -147,6 +147,19 @@
                 </div>
                 <div class="col-12 q-mt-sm q-pl-md q-pr-md">
                     <span class="text-bold">Location Details</span>
+                    <q-btn
+                        color="positive" 
+                        text-color="white" 
+                        unelevated
+                        class="full-width"
+                        label="Current Location"
+                        icon="my_location"
+                        @click="getLocation"
+                    >
+                        <template v-slot:loading>
+                            <q-spinner-rings color="white" />
+                        </template>
+                    </q-btn>
                     <div class="row q-mt-sm">
                         <div class="col-12 col-md-6 q-pa-xs">
                             <div id="mapIn" style="width:100%; height: 200px;"></div>
@@ -163,6 +176,7 @@
                         color="positive" 
                         text-color="white" 
                         unelevated
+                        size="sm"
                         class="full-width"
                         label="Submit Information"
                         @click="addNewClient"
