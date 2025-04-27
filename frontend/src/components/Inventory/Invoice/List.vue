@@ -211,6 +211,17 @@
                                 >
                                 </q-input>
                             </div>
+                            <div v-if="appData.modePayment === 'CHECK'" class="col-12 col-md-6 q-pa-sm">
+                                <q-input
+                                    outlined 
+                                    type="date"
+                                    v-model="appData.postDated" 
+                                    label="Post Date" 
+                                    stack-label 
+                                    dense
+                                >
+                                </q-input>
+                            </div>
                             <div class="col-12 col-md-6 q-pa-sm">
                                 <q-input
                                     outlined
@@ -526,6 +537,10 @@ export default {
                 },
                 persistent: true
             }).onOk(() => {
+                let items = this.appData.orderItem;
+                let amount = items.reduce((acc, item) => acc + (item.srp * item.quantity), 0);
+
+
                 let payload = {
                     id: this.appData.id,
                     updateDetails:{
@@ -533,11 +548,25 @@ export default {
                         terms: this.appData.terms,
                         modePayment: this.appData.modePayment,
                         deliveryDate: this.appData.deliveryDate,
+                        postDated: this.appData.postDated,
                         bank: this.appData.bank,
                         checkNo: this.appData.checkNo,
                         notes: this.appData.notes
+                    },
+                    voucher:{
+                        vendor: this.appData.storeName,
+                        bank: this.appData.bank,
+                        invoiceNumber: this.appData.referenceNumber,
+                        checkDate: this.appData.postDated,
+                        checkNumber: this.appData.checkNo,
+                        amount: amount,
+                        particulars: '',
+                        type: "CHECK",
+                        checkType: "postdated",
+                        createdBy: this.user.userId,
                     }
                 }
+                
                 api.post('transaction/temp/update/order', payload).then((response) => {
                     const data = {...response.data};
                     if(!data.error){

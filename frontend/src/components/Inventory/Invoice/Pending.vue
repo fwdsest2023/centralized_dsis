@@ -201,6 +201,17 @@
                                 >
                                 </q-input>
                             </div>
+                            <div v-if="appData.modePayment === 'CHECK'" class="col-12 col-md-6 q-pa-sm">
+                                <q-input
+                                    outlined 
+                                    type="date"
+                                    v-model="appData.postDated" 
+                                    label="Post Date" 
+                                    stack-label 
+                                    dense
+                                >
+                                </q-input>
+                            </div>
                             <div class="col-12 col-md-6 q-pa-sm">
                                 <q-input
                                     outlined

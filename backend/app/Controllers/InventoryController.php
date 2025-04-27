@@ -1,6 +1,7 @@
 <?php namespace App\Controllers;
 
 use CodeIgniter\HTTP\IncomingRequest;
+use App\Models\VoucherModel;
 use App\Models\InventoryModel;
 use App\Models\HistoryModel;
 use \Firebase\JWT\JWT;
@@ -11,6 +12,7 @@ class InventoryController extends BaseController
         //Models
         $this->inventoryModel = new InventoryModel();
         $this->historyModel = new HistoryModel();
+        $this->vouchModel = new VoucherModel();
     }
     
     public function addProduct(){
@@ -854,6 +856,21 @@ class InventoryController extends BaseController
                 ];
                 $this->inventoryModel->updateStockItems($req, $value['quantity']);
                 $i++;
+            }
+
+            if($transaction['modePayment'] === 'CHECK'){
+                $existing = $this->vouchModel->getVoucherDetails([
+                    'invoiceNumber' => $payload->voucher->invoiceNumber,
+                    'checkDate' => $payload->voucher->checkDate
+                ]);
+                
+                if($existing){
+                    $newCollect = json_decode(json_encode($payload->voucher), true);
+                    $this->vouchModel->updateVoucher($newCollect, ["id" => $existing->id]);
+                } else {
+                    $newCollect = json_decode(json_encode($payload->voucher), true);
+                    $this->vouchModel->insert($newCollect) ;
+                }
             }
 
             $response = [

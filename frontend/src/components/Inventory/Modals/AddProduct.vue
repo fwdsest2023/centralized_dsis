@@ -96,14 +96,21 @@
                             />
                         </div>
                         <div class="col col-md-12 q-pa-sm">
-                            <q-input 
+                            <!-- <q-input 
                                 outlined 
                                 v-model="form.commissionType" 
                                 label="Commission Type" 
                                 stack-label 
                                 hint="e.g. percentage or bag"
                                 dense
-                            />
+                            /> -->
+                            <q-select
+                                v-model="form.commissionType" 
+                                :options="commiOption" 
+                                label="Commission Type"
+                                dense 
+                                :options-dense="true"
+                            ></q-select>
                         </div>
                         
                     </q-form>
@@ -198,6 +205,10 @@ export default{
             openModal: false,
             productList: [],
             csvFile: null,
+            commiOption:[
+                'PERCENTAGE',
+                'BAG',
+            ],
             form: {
                 productName: '',
                 supplier: '',

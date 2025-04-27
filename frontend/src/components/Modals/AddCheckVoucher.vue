@@ -383,7 +383,7 @@ export default {
                 let payload = {
                     ...this.form,
                     voucherNumber: this.form.checkType === 'voucher' ? `TPST ${this.form.voucherNumber}` : "",
-                    createdBy: this.user.id
+                    createdBy: this.user.userId
                 }
 
                 api.post('voucher/add', payload).then((response) => {
