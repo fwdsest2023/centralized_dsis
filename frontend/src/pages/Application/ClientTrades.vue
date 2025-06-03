@@ -237,6 +237,16 @@
                         label="Save Order Details" 
                         icon="receipt_long" 
                     />
+                    <q-btn 
+                        @click="submitDirectSales"
+                        class="q-mt-sm q-mr-sm full-width" 
+                        no-caps 
+                        unelevated 
+                        rounded 
+                        color="primary" 
+                        label="Direct Sales" 
+                        icon="receipt_long" 
+                    />
                 </q-card-actions>
             </q-card>
         </q-dialog>
@@ -248,7 +258,6 @@ import { LocalStorage } from 'quasar'
 import jwt_decode from 'jwt-decode'
 import { api } from 'boot/axios'
 import moment from 'moment'
-import { last } from 'pdf-lib';
 import geolocation from 'geolocation';
 
 const dateNow = moment().format('YYYY-MM-DD');
@@ -265,6 +274,7 @@ export default{
             showProductSearch: false,
             productList: [],
             productListLoading: false,
+            directReference: '',
             form: {
                 referenceNumber: '',
                 storeName: '',
@@ -461,6 +471,73 @@ export default{
                     }
 
                 })
+            })
+        },
+        async getReference(){
+            api.post('transaction/temp/reference/directOrder').then((response) => {
+                const data = {...response.data}; 
+
+                let payload = {
+                        transaction: {
+                            ...this.form,
+                            referenceNumber: data.reference,
+                            storeName: this.selectedClient.storeName,
+                            address: this.selectedClient.address,
+                            ownerName: this.selectedClient.ownerName,
+                            contact: this.selectedClient.contact,
+                            agentName: this.user.fullName,
+                            clientId: this.selectedClient.id,
+                            agentId: this.user.userId,
+                            createdBy: this.user.userId || 1
+                        },
+                        updateDetails: {
+                            attendanceId: this.user.userId,
+                            attendanceDate: dateNow,
+                            lastOrderDate: moment().format('YYYY-MM-DD HH:mm'),
+                        },
+                    }
+
+                    api.post('distribution/create/order', payload).then((response) => {
+                        const data = {...response.data};
+                        if(!data.error){
+                            this.$q.notify({
+                                color: 'positive',
+                                position: 'top-right',
+                                message: 'Order Successfully Save',
+                                icon: 'verified'
+                            })
+                            this.selectedClient = {}
+                            this.addOrderModal = false
+                            this.addClient = false
+                            this.resetForm()
+                        } else {
+                            this.$q.notify({
+                                color: 'negative',
+                                position: 'top-right',
+                                title:data.title,
+                                message: this.$t(`errors.${data.error}`),
+                                icon: 'report_problem'
+                            })
+                        }
+
+                    })
+            });
+        },
+        submitDirectSales(){
+
+            this.$q.dialog({
+                title: 'Create Direct Order',
+                message: 'Would you like to finalize this order',
+                ok: {
+                    label: 'Yes'
+                },
+                cancel: {
+                    label: 'No',
+                    color: 'negative'
+                },
+                persistent: true
+            }).onOk(async () => {
+                await this.getReference()
             })
         },
         pushToTableList(item){

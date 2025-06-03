@@ -87,8 +87,12 @@ export default{
             return jwt_decode(profile);
         },
         userMenus(){
-            console.log(this.user.userId)
-            let type = this.user.userType === '3' ? 'agent' : 'delivery';
+            const utypes = {
+                '1': 'admin',
+                '3': 'agent',
+                '4': 'delivery'
+            }
+            let type = utypes[this.user.userType]
             let res = menus[type] || []
             this.activities = res
         }

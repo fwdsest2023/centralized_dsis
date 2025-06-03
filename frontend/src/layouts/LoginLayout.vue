@@ -162,27 +162,23 @@ const linksList = [
       // },
     ],
   },
-  // {
-  //   title: 'Mobile App Management',
-  //   icon: 'devices',
-  //   code: 105,
-  //   children: [
-  //     {
-  //       title: 'Agent Call Sync',
-  //       icon: 'contact_phone',
-  //       link: 'agentCallSync',
-  //     },
-  //     {
-  //       title: 'Client List',
-  //       icon: 'storefront',
-  //       link: 'clientList',
-  //     },
-  //   ],
-  //   crumbs: [
-  //     {label: '', icon: 'home', link: '/'},
-  //     {label: 'Patient List', icon: 'view_list', link: 'mylist'}
-  //   ]
-  // },
+  {
+    title: 'Client Management',
+    icon: 'devices',
+    code: 105,
+    children: [
+      // {
+      //   title: 'Agent Call Sync',
+      //   icon: 'contact_phone',
+      //   link: 'agentCallSync',
+      // },
+      {
+        title: 'Client List',
+        icon: 'storefront',
+        link: 'clientList',
+      },
+    ],
+  },
   // {
   //   title: 'Reports',
   //   icon: 'analytics',

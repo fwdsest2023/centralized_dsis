@@ -715,13 +715,11 @@ class InventoryController extends BaseController
         if($query){
             // Foreach the Items
             $items = json_decode($payload['orderItem'], true);
-            $i = 0;
             foreach($items as $key => $value){
                 $req = [
                     'productId' => $value['id']
                 ];
                 $this->inventoryModel->updateStockItems($req, $value['quantity']);
-                $i++;
             }
 
             $response = [
@@ -799,6 +797,16 @@ class InventoryController extends BaseController
         $query = $this->inventoryModel->insertToTemporaryOrder($transaction);
 
         if($query){
+            if($transaction['referenceNumber'] !== ''){
+                $items = json_decode($transaction['orderItem'], true);
+                foreach($items as $key => $value){
+                    $req = [
+                        'productId' => $value['id']
+                    ];
+                    $this->inventoryModel->updateStockItems($req, $value['quantity']);
+                }
+            }
+            
 
             // update the attendance order
             $attWhere = [
@@ -977,6 +985,40 @@ class InventoryController extends BaseController
         // if the series is not yet started
         if($query){
             $result = sprintf('TRA-COM%06d', $query[0]['id'] + 1);
+        }
+        
+        if($result){
+            $response = [
+                "reference" => $result
+            ];
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        } else {
+            $response = [
+                'error' => 404,
+                'message' => 'No Data Found'
+            ];
+
+            return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('application/json')
+                    ->setBody(json_encode($response));
+        }
+
+    }
+    public function getReferenceDirectContinues(){
+        //Get API Request Data from UI
+        $payload = $this->request->getJSON();
+
+        // Check if there was starting loan application on the user
+        $result = 'DS'. sprintf('%06d',  1);
+        $query = $this->inventoryModel->getStoreList();
+
+        // if the series is not yet started
+        if($query){
+            $result = sprintf('DS%06d', $query[0]['id'] + 1);
         }
         
         if($result){

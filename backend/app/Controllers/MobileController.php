@@ -184,18 +184,14 @@ class MobileController extends BaseController
             
             if($query){
                 foreach ($query as $key => $value) {
-                    $contact = json_decode($value->contactPerson);
 
                     $list['list'][$key] = [
                         "key" => $value->id,
                         "storeName" => $value->storeName,
                         "address" => $value->address,
-                        "addressInfo" => json_decode($value->addressInfo),
                         "geoLocation" => json_decode($value->geoLocation),
-                        "contactPerson" => $contact->name,
-                        "contactNumber" => $contact->contactNum,
-                        "status" => $value->status,
-                        "details" => $value
+                        "contactPerson" => $value->ownerName,
+                        "contactNumber" => $value->contact
                     ];
                 }
             } 

@@ -69,12 +69,70 @@
             "title": "Delivery List",
             "icon": "today",
             "action": "goToDeliveryList"
+        }
+    ],
+    "admin": [
+        {
+            "active": false,
+            "title": "Client Trades",
+            "icon": "local_shipping",
+            "action": "goToClientTrades"
+        },
+        {
+            "active": false,
+            "title": "Client List",
+            "icon": "people_alt",
+            "action": "goToClientList"
+        },
+        {
+            "active": false,
+            "title": "Admin Activity",
+            "icon": "meeting_room",
+            "action": "goToAdminActivity"
+        },
+
+        {
+            "active": false,
+            "title": "Order List",
+            "icon": "shopping_cart",
+            "action": "goToOrderList"
+        },
+        {
+            "active": false,
+            "title": "Delivery List",
+            "icon": "today",
+            "action": "goToDeliveryList"
         },
         {
             "active": false,
             "title": "Collections",
             "icon": "account_balance_wallet",
             "action": "goToCollectionList"
+        },
+        {
+            "active": false,
+            "title": "Expenses",
+            "icon": "paid",
+            "action": ""
+        },
+
+        {
+            "active": false,
+            "title": "Approvals",
+            "icon": "verified",
+            "action": ""
+        },
+        {
+            "active": false,
+            "title": "Performance Report",
+            "icon": "insights",
+            "action": ""
+        },
+        {
+            "active": false,
+            "title": "Attendance Calendar",
+            "icon": "today",
+            "action": ""
         }
     ]
 

@@ -83,6 +83,7 @@ $routes->group('mlrs/api/v1', function($routes){
 		$routes->post('temp/list/collections', 'InventoryController::collectionList');
 		$routes->post('temp/update/order', 'InventoryController::temporaryOrderUpdate');
 		$routes->post('temp/reference', 'InventoryController::getReferenceContinues');
+		$routes->post('temp/reference/directOrder', 'InventoryController::getReferenceDirectContinues');
 
 	});
 

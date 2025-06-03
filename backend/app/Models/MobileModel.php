@@ -47,7 +47,7 @@ class MobileModel extends Model
         return $results;
     }
     public function getAllClients(){
-        $query = $this->db->table($this->clientTable)->where("status", 1)->get();
+        $query = $this->db->table($this->clientTable)->get();
         $results = $query->getResult();
         return $results;
     }

@@ -2,124 +2,46 @@
     <div>
         <div v-if="!isContinueEdit" class="q-pa-md" style="width: 100%;">
             <div class="row">
-                <div class="col col-md-6">
-                    <span class="title">Client List</span>
-                </div>
                 <div v-if="isLoading" class="col col-md-12 text-center">
                     <q-spinner-orbit
                         color="primary"
                         size="3em"
                     />
                 </div>
-                <!-- Filter -->
-                <!-- <div class="col col-md-12 q-pa-md">
-                    <div class="row">
-                        <q-input 
-                            class="col col-md-2 q-pa-sm"
-                            outlined 
-                            type="date"
-                            v-model="syncDate"
-                            label="Sync Date"
-                            stack-label
-                            dense
-                        />
-                        <q-select
-                            class="col col-md-2 q-pa-sm"
-                            outlined 
-                            v-model="agentId" 
-                            :options="agentList" 
-                            label="Agent" 
-                            stack-label 
-                            dense
-                            options-dense
-                        />
-                        <div class="col col-md-2 q-pa-sm">
-                            <q-btn 
-                                class="q-pa-sm"
-                                dense
-                                size="md"
-                                color="primary" 
-                                label="Show Record"
-                                @click="getList"
-                            />
-                        </div>
-                    </div>
-                </div> -->
                 <div v-if="tableRow.length === 0" class="col col-md-12 text-center">
                     <noData
                         @reloadData="getList"
                     />
                 </div>
                 <div v-if="tableRow.length > 0" class="col col-md-12 q-mt-md">
-                    <q-table
-                        :rows="tableRow"
-                        :filter="filter"
-                        :columns="tableColumns"
-                        row-key="key"
-                        separator="cell"
+                    <q-splitter
+                        v-model="splitterModel"
+                        style="height: 80dvh"
                     >
-                        <template v-slot:top-left>
-                            <span class="text-h6">Agent Transaction from {{syncDate}}</span>
-                        </template>
-                        <template v-slot:top-right>
-                            <q-input outlined dense debounce="300" v-model="filter" placeholder="Search">
-                                <template v-slot:append>
-                                    <q-icon name="search" />
-                                </template>
-                            </q-input>
-                        </template>
-                        <template v-slot:header="props">
-                            <q-tr :props="props">
-                                <q-th auto-width />
-                                <q-th
-                                    v-for="col in props.cols"
-                                    :key="col.name"
-                                    :props="props"
-                                >
-                                    {{ col.label }}
-                                </q-th>
-                            </q-tr>
-                        </template>
-                        <template v-slot:body="props">
-                            <q-tr :props="props">
-                                <q-td auto-width>
-                                    <q-btn 
-                                        size="sm" 
-                                        :color="props.expand ? 'negative' : 'primary'"
-                                        round 
-                                        dense 
-                                        @click="props.expand = !props.expand" 
-                                        :icon="props.expand ? 'cancel' : 'display_settings'"
-                                    />
-                                </q-td>
-                                <q-td
-                                    v-for="col in props.cols"
-                                    :key="col.name"
-                                    :props="props"
-                                >
-                                    {{ col.value }}
-                                </q-td>
-                            </q-tr>
 
-                            <q-tr v-if="props.expand" :props="props">
-                                <q-td colspan="100%">
-                                    <div class="row">
-                                        <div class="col col-md-4">
-                                            <q-btn
-                                                class="block full-width q-mt-sm"
-                                                unelevated 
-                                                rounded
-                                                size="sm"
-                                                color="primary" 
-                                                label="Store Relocation"
-                                                @click="updateClientGeoLocation(props.row)"
-                                            />
-                                        </div>
-                                    </div>
-                                </q-td>
-                            </q-tr>
+                        <template v-slot:before>
+                            <div class="q-pa-md">
+                            <div class="text-h4 q-mb-md">Clients</div>
+                                <q-list>
+                                    <q-item v-for="(item, idx) in tableRow" :key="idx" clickable v-ripple>
+                                        <q-item-section avatar>
+                                        <q-icon color="primary" name="location_on" />
+                                        </q-item-section>
+
+                                        <q-item-section>{{ item.storeName }}</q-item-section>
+                                    </q-item>
+                            </q-list>
+                            </div>
                         </template>
-                    </q-table>
+
+                        <template v-slot:after>
+                            <div class="q-pa-md">
+                            <div class="text-h4 q-mb-md">Locations</div>
+                                <div id="map" style="width:100%; height: 70dvh; border:1px solid black;"></div>
+                            </div>
+                        </template>
+
+                    </q-splitter>
                 </div>
             </div>
         </div>
@@ -135,7 +57,7 @@ import jwt_decode from 'jwt-decode'
 import { api } from 'boot/axios'
 
 const loader = new Loader({
-    apiKey: 'AIzaSyCrQ2gSBwhbFsnj8JSYxCnTkXrb1ZJbmjw',
+    apiKey: process.env.GMAPS_API_KEY,
     version: "weekly",
     libraries: ["places"]
 });
@@ -144,6 +66,7 @@ export default {
     name: 'ProductList',
     data(){
         return {
+            splitterModel: 20,
             isContinueEdit: false,
             isPwd: true,
             isLoading: false,
@@ -179,6 +102,7 @@ export default {
                 const data = {...response.data};
                 if(!data.error){
                     this.tableRow = response.status < 300 ? data.list : [];
+                    this.initLocations();
                 } else {
                     this.$q.notify({
                         color: 'negative',
@@ -192,6 +116,40 @@ export default {
             })
 
             this.isLoading = false;
+        },
+        initLocations(){
+            let locations = [...this.tableRow];
+            let mappedLoc = locations.map((item) => {
+                return {
+                    lat: item.geoLocation.latitude,
+                    lng: item.geoLocation.longitude,
+                    title: item.storeName
+                }
+            })
+
+            console.log(mappedLoc);
+            loader.load().then(() => {
+                const map = new google.maps.Map(document.getElementById("map"), {
+                    center: { lat: 13.41, lng: 122.56 }, // Initial center
+                    zoom: 6,
+                });
+
+                mappedLoc.forEach((location) => {
+                    console.log(location);
+                    const marker = new google.maps.Marker({
+                        position: { lat: location.lat, lng: location.lng },
+                        map: map,
+                        title: location.title,
+                        // label: location.title,
+                    });
+                    const infowindow = new google.maps.InfoWindow({
+                        content: `<div style="display:inline-block;white-space:nowrap;padding:4px 8px;font-size:16px;">${location.title}</div>`,
+                    });
+                    marker.addListener('click', function() {
+                        infowindow.open(map, marker);
+                    });
+                });
+            });
         },
         updateClientGeoLocation(row){
             this.$q.dialog({
